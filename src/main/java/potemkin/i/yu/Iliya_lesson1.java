@@ -8,15 +8,15 @@ public class Iliya_lesson1 {
 	public static void main(String[] args) {
 		
 		// строки для вывода
-		String str1 = "кто ходит в гости по утрам тот паступает мудро, на то оно и утро";
-		String str2 = "Кто ходит в гости по утрам тот паступает мудро, На то оно и Утро";
+		String poemStr1 = "кто ходит в гости по утрам тот паступает мудро, на то оно и утро";
+		String poemStr2 = "Кто ходит в гости по утрам тот паступает мудро, На то оно и Утро";
 		
 		// выводим строки какие будем использовать
 		System.out.println("// stroki dlya sravneniya\r\n"
 				+ "		String str1 = \"кто ходит в гости по утрам тот паступает мудро, на то оно и утро\";\r\n"
 				+ "		String str2 = \"Кто ходит в гости по утрам тот паступает мудро, На то оно и Утро\";");
 		
-		StringMethods stringMethods = new StringMethods(str1, str2);
+		StringMethods stringMethods = new StringMethods(poemStr1, poemStr2);
 		
 		
 		// метод вывода "Hello World"

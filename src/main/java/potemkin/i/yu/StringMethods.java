@@ -10,13 +10,13 @@ import java.util.Arrays;
 
 public class StringMethods {
 
-	String str1;
-	String str2;
+	String poemStr1;
+	String poemStr2;
 	
 	public StringMethods(String str1, String str2) {
 		
-		this.str1 = str1;
-		this.str2 = str2;
+		this.poemStr1 = str1;
+		this.poemStr2 = str2;
 		
 	}
 	
@@ -31,7 +31,7 @@ public class StringMethods {
 	
 		public void comparison() {
 			
-			int i = str1.compareTo(str2);
+			int i = poemStr1.compareTo(poemStr2);
 			
 			if(i == 0) {
 				System.out.println("Через метод compareTo без ignorCase:\n\t Строки равны;");
@@ -39,7 +39,7 @@ public class StringMethods {
 				System.out.println("Через метод compareTo без ignorCase:\n\t Строки не равны;\n");
 			}
 			
-			i = str1.compareToIgnoreCase(str2);
+			i = poemStr1.compareToIgnoreCase(poemStr2);
 			
 			if(i == 0) {
 				System.out.println("Через compareTo с ignorCase:\n\t Строки равны;");
@@ -52,13 +52,13 @@ public class StringMethods {
 		// Метод вывода длины строки
 		
 		public void stringLength() {
-			System.out.println("Длина строки 1)"+str1.length()+"\n"+"Длина строки 2)"+str2.length()); // длины 2-х строк
+			System.out.println("Длина строки 1)"+poemStr1.length()+"\n"+"Длина строки 2)"+poemStr2.length()); // длины 2-х строк
 		}
 		
 		// Метод получения массива символов из строки
 		
 		public void gettingSymbols() {
-			char [] masChar = str1.toCharArray(); // Массив символов из строки
+			char [] masChar = poemStr1.toCharArray(); // Массив символов из строки
 			
 			System.out.println("Получаем массив символов: "+Arrays.toString(masChar));
 		}
@@ -66,7 +66,7 @@ public class StringMethods {
 		// Метод получения массива байтов из строки
 		
 		public void gettingByte() {
-			byte [] masByte = str1.getBytes(); // массив байтов из строки
+			byte [] masByte = poemStr1.getBytes(); // массив байтов из строки
 			
 			System.out.println("Получаем массив байтов: " + Arrays.toString(masByte));
 		}
@@ -75,7 +75,7 @@ public class StringMethods {
 		
 		public void convertingToUppercase() {
 			
-			System.out.println("Преоброзования строки к верхнему регистру: " + str1.toUpperCase()); // преоброзования строки к верхнему регистру
+			System.out.println("Преоброзования строки к верхнему регистру: " + poemStr1.toUpperCase()); // преоброзования строки к верхнему регистру
 		
 		}
 		
@@ -83,7 +83,7 @@ public class StringMethods {
 		
 		public void firstOccurrence() {
 		
-			System.out.println("Первое вхождение символа 'a': "+ str1.indexOf('а')); //
+			System.out.println("Первое вхождение символа 'a': "+ poemStr1.indexOf('а')); //
 		
 		}
 		
@@ -91,7 +91,7 @@ public class StringMethods {
 		
 		public void lastOccurrence() {
 			
-			System.out.println("Последнее вхождение символа 'a': "+ str1.lastIndexOf('а')); //
+			System.out.println("Последнее вхождение символа 'a': "+ poemStr1.lastIndexOf('а')); //
 			
 		}
 		
@@ -99,7 +99,7 @@ public class StringMethods {
 		
 		public void substringSearch () {
 			
-			System.out.println("Содержит ли подстроку \"Sun\": "+ str1.contains("Sun")); // Содержит ли подстроку "Sun" 	
+			System.out.println("Содержит ли подстроку \"Sun\": "+ poemStr1.contains("Sun")); // Содержит ли подстроку "Sun" 	
 			
 		}
 		
@@ -107,7 +107,7 @@ public class StringMethods {
 		
 		public void breakString() {
 			
-			String [] masString = str1.split("( )|(, )"); // указываем символы для делителя
+			String [] masString = poemStr1.split("( )|(, )"); // указываем символы для делителя
 			
 			for(int i = 0; i < masString.length; i++) {      // запускаем цикл для печати массива
 				System.out.println(i+")"+masString[i]+";");
