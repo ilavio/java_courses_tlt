@@ -39,7 +39,7 @@ public class IliyaLesson1 {
 		stringMethods.lastOccurrence(poemStr1);
 
 		// 9) Метод поиска подстроки "Sun" в строке
-		stringMethods.substringSearch(poemStr1);
+		stringMethods.substringSearch(poemStr1, "Sun");
 
 		// 14) Метод разбития строки на слова
 		stringMethods.breakString(poemStr1);
