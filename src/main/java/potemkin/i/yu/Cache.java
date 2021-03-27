@@ -58,6 +58,12 @@ public class Cache<T> {
 		}
 	}
 
+	/**
+	 * Метод добавления елемента и индекса элемента
+	 * 
+	 * @param element - елемент добавления
+	 * @param index   - индекс элемента
+	 */
 	public void add(Object element, int index) {
 		if (serchNextItem() > (cashe.length - 1)) {
 			deleteIndex(0);
