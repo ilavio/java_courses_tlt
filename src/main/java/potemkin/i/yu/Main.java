@@ -5,19 +5,23 @@ import java.util.Random;
 
 public class Main {
 	public static void main(String[] args) {
-		Cache<CacheElement<Character>> cashe = new Cache<CacheElement<Character>>(10);
+		CacheElement<Character> cachE1 = new CacheElement<Character>(1, 'a');
+		CacheElement<Character> cachE2 = new CacheElement<Character>(1, 'a');
+		System.out.println(cachE1.equals(cachE2) + ", " + cachE1);
+
+		Cache<String> cashe = new Cache<String>(10);
 		Random random = new Random();
 		System.out.println(cashe);
 		for (int i = 0; i < 10; i++) {
-			cashe.add(new CacheElement(i, (char) (random.nextInt(25) + 'a')));
+			cashe.add(Character.toString(random.nextInt(25) + 'a'), i);
 		}
 		System.out.println(cashe);
 		char charTest = (char) (random.nextInt(25) + 'a');
-		cashe.add(new CacheElement(25, charTest));
-		cashe.add('a', 21);
+		cashe.add(Character.toString(charTest), 10);
+		cashe.add(Character.toString('a'), 21);
 		System.out.println(cashe);
-		cashe.delete(new CacheElement<Character>(25, charTest));
-		System.out.println(cashe);
+		cashe.delete(Character.toString(charTest));
+		System.out.println(charTest + " :" + cashe);
 		cashe.clear();
 		System.out.println(cashe + "\n");
 

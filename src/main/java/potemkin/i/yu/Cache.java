@@ -3,14 +3,14 @@ package potemkin.i.yu;
 import java.util.Arrays;
 
 /**
- * Параметрорезированный Класс Cashe
+ * Параметрорезированный Класс Cache
  * 
  * @author Илья Пот
  */
 public class Cache<T> {
-	private Object[] cashe;
+	private CacheElement<T>[] cache;
 	private int capacity;
-	private int nextItem = 0;
+	private int nextItem;
 
 	/**
 	 * Конструктор
@@ -19,43 +19,8 @@ public class Cache<T> {
 	 */
 	public Cache(int capacity) {
 		this.capacity = capacity;
-		this.cashe = new Object[capacity];
-	}
-
-	/**
-	 * Метод для вычесления следующей позиции для вставки в массиве
-	 * 
-	 * @return int - номер последней пустой ячейки
-	 */
-	private int serchNextItem() {
-		if (cashe != null) {
-			for (int i = cashe.length - 1; i >= 0; i -= 1) {
-				if (i == 0) {
-					nextItem = i;
-				}
-				if (cashe[i] != null) {
-					nextItem = i + 1;
-					break;
-				}
-			}
-		} else {
-			nextItem = 0;
-		}
-		return nextItem;
-	}
-
-	/**
-	 * Метод добавления
-	 * 
-	 * @param element - объект который добавляем
-	 */
-	public void add(T element) {
-		if (serchNextItem() > (cashe.length - 1)) {
-			deleteIndex(0);
-			add(element);
-		} else {
-			cashe[serchNextItem()] = element;
-		}
+		this.cache = new CacheElement[this.capacity];
+		nextItem = 0;
 	}
 
 	/**
@@ -64,12 +29,13 @@ public class Cache<T> {
 	 * @param element - елемент добавления
 	 * @param index   - индекс элемента
 	 */
-	public void add(Object element, int index) {
-		if (serchNextItem() > (cashe.length - 1)) {
+	public void add(T element, int index) {
+		if (nextItem > (cache.length - 1)) {
 			deleteIndex(0);
 			add(element, index);
 		} else {
-			cashe[serchNextItem()] = new CacheElement<T>(index, (T) element);
+			cache[nextItem] = new CacheElement<>(index, element);
+			nextItem += 1;
 		}
 	}
 
@@ -79,30 +45,34 @@ public class Cache<T> {
 	 * @param index - индекс положения
 	 */
 	private void deleteIndex(int index) {
-		if (index < cashe.length) {
-			cashe[index] = null;
-			for (int x = index; x < (serchNextItem() - 1); x++) {
-				cashe[x] = cashe[x + 1];
+		if (index < cache.length) {
+			cache[index] = null;
+			for (int x = index; x < (nextItem - 1); x++) {
+				cache[x] = cache[x + 1];
 			}
-			cashe[serchNextItem() - 1] = null;
+			nextItem -= 1;
 		}
 	}
 
 	/**
-	 * Метод удаления по объекту и с двиг в лево
+	 * Метод удаления по элементу и с двиг в лево
 	 * 
 	 * @param element - объект который надо удалить
 	 */
 	public void delete(T element) {
 		int nenaideno = 1;
-		for (int i = 0; i < cashe.length; i++) {
-			if (element.equals(cashe[i])) {
-				cashe[i] = null;
+		for (int i = 0; i < cache.length; i++) {
+			if (cache[i].getCacheElement().equals(element)) {
+				cache[i] = null;
 				nenaideno = 0;
-				for (int a = i; a < (serchNextItem() - 1); a++) {
-					cashe[a] = cashe[a + 1];
-					cashe[a + 1] = null;
+				for (int a = i; a < (nextItem - 1); a++) {
+					cache[a] = cache[a + 1];
+					cache[a + 1] = null;
 				}
+				nextItem -= 1;
+			}
+			if (nenaideno == 0) {
+				break;
 			}
 		}
 		if (nenaideno == 1) {
@@ -117,14 +87,12 @@ public class Cache<T> {
 	 * @return boolean - нашел true, не нашел false
 	 */
 	public boolean isPresent(T element) {
-		boolean ret = false;
-		for (int i = 0; (element != null) && (i < cashe.length); i++) {
-			if (element.equals(cashe[i])) {
-				ret = true;
-				return ret;
+		for (int i = 0; i < nextItem; i++) {
+			if (cache[i].getCacheElement().equals(element)) {
+				return true;
 			}
 		}
-		return ret;
+		return false;
 	}
 
 	/**
@@ -134,18 +102,18 @@ public class Cache<T> {
 	 * @return возвращаемый объект, если объект не найден вернет null
 	 */
 	public T get(T element) {
-		T elementX = null;
+		CacheElement<T> elementX = null;
 		if (element != null) {
-			for (int i = 0; i < serchNextItem(); i++) {
-				if (cashe[i].equals(element)) {
-					elementX = (T) cashe[i];
+			for (int i = 0; i < nextItem; i++) {
+				if (cache[i].getCacheElement().equals(element)) {
+					elementX = cache[i];
 					deleteIndex(i);
-					cashe[serchNextItem()] = elementX;
+					cache[nextItem] = elementX;
 					break;
 				}
 			}
 		}
-		return elementX;
+		return elementX.getCacheElement();
 	}
 
 	/**
@@ -156,11 +124,13 @@ public class Cache<T> {
 	 */
 	public T get(int index) {
 		T elementX = null;
-		for (int i = 0; i < serchNextItem(); i++) {
-			if (cashe.length > i) {
-				elementX = (T) cashe[i];
+		CacheElement<T> cachEl = null;
+		for (int i = 0; i < nextItem; i++) {
+			if (cache[i].getIndex() == index) {
+				elementX = cache[i].getCacheElement();
+				cachEl = cache[i];
 				deleteIndex(i);
-				cashe[serchNextItem()] = elementX;
+				cache[nextItem] = cachEl;
 				break;
 			}
 		}
@@ -171,10 +141,10 @@ public class Cache<T> {
 	 * Метод очистки Cashe и массива cashe
 	 */
 	public void clear() {
-		for (int i = 0; i < cashe.length; i++) {
-			cashe[i] = null;
+		for (int i = 0; i < cache.length; i++) {
+			cache[i] = null;
 		}
-		cashe = null;
+		cache = null;
 		capacity = 0;
 		nextItem = 0;
 	}
@@ -185,6 +155,6 @@ public class Cache<T> {
 
 	@Override
 	public String toString() {
-		return "Cache [cashe=" + Arrays.toString(cashe) + " next: " + serchNextItem() + "]";
+		return "Cache [cashe=" + Arrays.toString(cache) + " next: " + nextItem + "]";
 	}
 }

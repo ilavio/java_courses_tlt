@@ -7,7 +7,7 @@ package potemkin.i.yu;
  * @param <T>
  */
 public class CacheElement<T> {
-	private T cacheElement;
+	public T cacheElement;
 	private int index;
 
 	/**
@@ -16,8 +16,8 @@ public class CacheElement<T> {
 	 * @param index        - индекс объекта
 	 * @param cacheElement - объект вложения
 	 */
-	public CacheElement(int index, Object cacheElement) {
-		this.cacheElement = (T) cacheElement;
+	public CacheElement(int index, T cacheElement) {
+		this.cacheElement = cacheElement;
 		this.index = index;
 	}
 
@@ -52,5 +52,13 @@ public class CacheElement<T> {
 		if (index != other.index)
 			return false;
 		return true;
+	}
+
+	public T getCacheElement() {
+		return cacheElement;
+	}
+
+	public int getIndex() {
+		return index;
 	}
 }

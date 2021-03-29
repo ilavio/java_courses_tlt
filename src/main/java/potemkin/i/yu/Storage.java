@@ -2,9 +2,14 @@ package potemkin.i.yu;
 
 import java.util.Arrays;
 
+/**
+ * Параметрорезированный Класс Storage
+ * 
+ * @author Илья Пот
+ */
 public class Storage<T> {
 	private Object[] storage;
-	private Cache<T> innerCashe;
+	private Cache<T> cache;
 	private int capacity;
 
 	/**
@@ -13,7 +18,7 @@ public class Storage<T> {
 	public Storage() {
 		capacity = 10;
 		this.storage = new Object[capacity];
-		this.innerCashe = new Cache<T>(capacity);
+		this.cache = new Cache<T>(capacity);
 	}
 
 	/**
@@ -24,26 +29,14 @@ public class Storage<T> {
 	public Storage(T[] storage) {
 		capacity = 10;
 		if (capacity < storage.length) {
-			this.storage = new Object[expand(storage.length)];
-			this.innerCashe = new Cache<T>(10);
+			capacity = (int) ((double) capacity * 1.5);
+			this.storage = new Object[capacity];
+			this.cache = new Cache<T>(10);
 		} else {
 			this.storage = new Object[10];
-			this.innerCashe = new Cache<T>(10);
+			this.cache = new Cache<T>(10);
 		}
 		System.arraycopy(storage, 0, this.storage, 0, storage.length);
-	}
-
-	/**
-	 * Метод рассчета увелечения кол-ва ячеек
-	 * 
-	 * @param length - данное кол-во ячеек
-	 * @return следующее кол-во ячеек
-	 */
-	private int expand(int length) {
-		while (length >= capacity) {
-			capacity = (int) ((double) capacity * 1.5);
-		}
-		return capacity;
 	}
 
 	/**
@@ -56,7 +49,8 @@ public class Storage<T> {
 			Object[] storageCopy = new Object[storage.length];
 			System.arraycopy(storage, 0, storageCopy, 0, storage.length);
 			storage = null;
-			storage = new Object[expand(storageCopy.length)];
+			capacity = (int) ((double) capacity * 1.5);
+			storage = new Object[capacity];
 			System.arraycopy(storageCopy, 0, storage, 0, storageCopy.length);
 			storageCopy = null;
 		}
@@ -93,8 +87,8 @@ public class Storage<T> {
 		T elementCopy;
 		for (int i = 0; i < serchNextItem(); i++) {
 			elementCopy = (T) storage[i];
-			if (innerCashe.isPresent(elementCopy)) {
-				innerCashe.delete(elementCopy);
+			if (cache.isPresent(elementCopy)) {
+				cache.delete(elementCopy);
 				storage[i] = null;
 				for (int a = i; a < (serchNextItem() - 1); a++) {
 					storage[a] = storage[a + 1];
@@ -115,7 +109,7 @@ public class Storage<T> {
 		}
 		storage = null;
 		capacity = 0;
-		innerCashe.clear();
+		cache.clear();
 	}
 
 	/**
@@ -136,14 +130,11 @@ public class Storage<T> {
 	 */
 	public T get(int index) {
 		T elementCopy = null;
-		if (index >= 0 & index < innerCashe.getCapacity()) {
-			elementCopy = (T) innerCashe.get(index);
-			if (elementCopy != null) {
-				return elementCopy;
-			}
+		if (cache.get(index) != null) {
+			return cache.get(index);
 		} else if (index >= 0 & index < storage.length) {
 			elementCopy = (T) storage[index];
-			innerCashe.add(elementCopy);
+			cache.add((T) elementCopy, index);
 			return elementCopy;
 		}
 		return elementCopy;
@@ -151,8 +142,8 @@ public class Storage<T> {
 
 	@Override
 	public String toString() {
-		return "Storage [storage=" + Arrays.toString(storage) + " next: " + serchNextItem() + "\ninnerCashe="
-				+ innerCashe + "]";
+		return "Storage [storage=" + Arrays.toString(storage) + " next: " + serchNextItem() + "\ninnerCashe=" + cache
+				+ "]";
 	}
 
 }
