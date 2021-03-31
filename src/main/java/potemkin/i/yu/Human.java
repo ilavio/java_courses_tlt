@@ -1,5 +1,10 @@
 package potemkin.i.yu;
 
+/**
+ * Класс Human имплементирует Comparable
+ * 
+ * @author Илья Пот
+ */
 public class Human implements Comparable<Human> {
 	private String name;
 	private String surname;
@@ -7,6 +12,15 @@ public class Human implements Comparable<Human> {
 	private int age;
 	private Address address;
 
+	/**
+	 * Конструктор класса Human
+	 * 
+	 * @param name       - имя
+	 * @param surname    - фамилия
+	 * @param patronymic - отчество
+	 * @param age        - возраст
+	 * @param address    - объект класса Address
+	 */
 	public Human(String name, String surname, String patronymic, int age, Address address) {
 		this.name = name;
 		this.surname = surname;
@@ -34,7 +48,7 @@ public class Human implements Comparable<Human> {
 	public Address getAddress() {
 		return address;
 	}
-	
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -89,8 +103,9 @@ public class Human implements Comparable<Human> {
 
 	@Override
 	public int compareTo(Human o) {
-		return (this.surname.compareTo(o.surname) != 0 ? this.surname.compareTo(o.surname) : 
-			(this.name.compareTo(o.name) != 0 ? this.name.compareTo(o.name) : (this.patronymic.compareTo(o.patronymic))));
+		return (this.surname.compareTo(o.surname) != 0 ? this.surname.compareTo(o.surname)
+				: (this.name.compareTo(o.name) != 0 ? this.name.compareTo(o.name)
+						: (this.patronymic.compareTo(o.patronymic))));
 	}
-	
+
 }

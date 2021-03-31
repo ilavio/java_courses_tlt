@@ -2,17 +2,30 @@ package potemkin.i.yu;
 
 import java.util.HashMap;
 
-public class User {
+/**
+ * Класс User имплементирует Comparable
+ * 
+ * @author Илья Пот
+ */
+public class User implements Comparable<User> {
 	private String name;
 	private String surname;
 	private String patronymic;
 	private Role role;
+	private String city;
 	private HashMap<Role, String> hashMap;
 
-	public User(String name, String surname, String patronymic, Role role) {
-		this.name = name;
-		this.surname = surname;
-		this.patronymic = patronymic;
+	/**
+	 * Конструктор User
+	 * 
+	 * @param human - объект класса Human
+	 * @param role  - перечесление Role
+	 */
+	public User(Human human, Role role) {
+		this.name = human.getName();
+		this.surname = human.getSurname();
+		this.patronymic = human.getPatronymic();
+		this.city = human.getAddress().city;
 		this.role = role;
 		hashMap = new HashMap<Role, String>();
 		hashMap.put(role.ADMIN, "Имеет высший доступ безопасности, добавлять - удалять - блокировать пользователей");
@@ -96,4 +109,15 @@ public class User {
 		return "Приветствуем " + name + " " + surname + " " + patronymic + " с ролью " + hashMap.get(role);
 	}
 
+	public String getCity() {
+		return city;
+	}
+
+	@Override
+	public int compareTo(User o) {
+		return (this.surname.compareTo(o.surname) != 0 ? this.surname.compareTo(o.surname)
+				: (this.name.compareTo(o.name) != 0 ? this.name.compareTo(o.name)
+						: (this.patronymic.compareTo(o.patronymic) != 0 ? this.patronymic.compareTo(o.patronymic)
+								: 0)));
+	}
 }

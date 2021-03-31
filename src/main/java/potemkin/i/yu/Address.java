@@ -1,11 +1,24 @@
 package potemkin.i.yu;
 
+/**
+ * Класс Address имплементирует Comparable
+ * 
+ * @author Илья Пот
+ */
 public class Address implements Comparable<Address> {
 	public String street;
 	public String city;
 	public int house;
 	public int flat;
 
+	/**
+	 * Конструктор класса Address
+	 * 
+	 * @param street - название улицы
+	 * @param city   - название города
+	 * @param house  - номер дома
+	 * @param flat   - номер квартиры
+	 */
 	public Address(String street, String city, int house, int flat) {
 		this.street = street;
 		this.city = city;
