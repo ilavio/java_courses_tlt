@@ -11,6 +11,12 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.Map.Entry;
 
+/**
+ * Класс наполнения arrayList, hashUser и осуществления действий над коллекциями
+ * StartHuman
+ * 
+ * @author Илья Пот
+ */
 public class StartHuman {
 	private ArrayList<Human> arrayList = new ArrayList<Human>();
 	private Random random = new Random();
@@ -18,6 +24,11 @@ public class StartHuman {
 	private HashMap<String, TreeSet<User>> hashUser;
 	private int count = 0;
 
+	/**
+	 * Метод рандомной вставки в arrayList объектов класса Human и Address
+	 * 
+	 * @return String - строка итогового представления arrayList
+	 */
 	public String randomFilling() {
 		StringBuffer stringBuffer = new StringBuffer();
 		String[] street = new String[] { "Октября", "Победа", "40 Лет", "Новозоводская", "Ленина", "Мичурина",
@@ -43,6 +54,11 @@ public class StartHuman {
 		return stringBuffer.toString();
 	}
 
+	/**
+	 * Метод удаления дубликатов в arrayList
+	 * 
+	 * @return String - строка удаленных дублирующих объектов из arrayList
+	 */
 	public String removeDuplicate() {
 		StringBuffer stringBuffer = new StringBuffer();
 		stringBuffer.append("Удаленные дубликаты:\n");
@@ -56,6 +72,11 @@ public class StartHuman {
 		return stringBuffer.toString();
 	}
 
+	/**
+	 * Метод сортировки arrayList по ФИО
+	 * 
+	 * @return String - итог сортировки arrayList
+	 */
 	public String sortFIO() {
 		StringBuffer stringBuffer = new StringBuffer();
 		System.out.println("\nСортировка по ФИО :\n");
@@ -68,6 +89,11 @@ public class StartHuman {
 		return stringBuffer.toString();
 	}
 
+	/**
+	 * Метод сортировки arrayList по возрасту
+	 * 
+	 * @return String - итог сортировки arrayList
+	 */
 	public String sortAge() {
 		StringBuffer stringBuffer = new StringBuffer();
 		stringBuffer.append("Сортировка по возрасту:\n");
@@ -80,6 +106,11 @@ public class StartHuman {
 		return stringBuffer.toString();
 	}
 
+	/**
+	 * Метод сортировки arrayList по адресу
+	 * 
+	 * @return String - итог сортировки arrayList
+	 */
 	public String sortAddress() {
 		StringBuffer stringBuffer = new StringBuffer();
 		stringBuffer.append("Сортировка по адресу:\n");
@@ -92,6 +123,11 @@ public class StartHuman {
 		return stringBuffer.toString();
 	}
 
+	/**
+	 * Метод наполнения hashUser и вывода итога наполнения
+	 * 
+	 * @return String - итог наполнения hashUser User'ами
+	 */
 	public String fillingHashMap() {
 		StringBuffer stringBuffer = new StringBuffer();
 		hashUser = new HashMap<String, TreeSet<User>>();
@@ -116,6 +152,11 @@ public class StartHuman {
 		return stringBuffer.toString();
 	}
 
+	/**
+	 * Метод сортировки hashUser по ключу
+	 * 
+	 * @return String - итог сортировки
+	 */
 	public String sortHashMapByKey() {
 		StringBuffer stringBuffer = new StringBuffer();
 		TreeMap<String, TreeSet<User>> treeUser = new TreeMap<String, TreeSet<User>>(hashUser);
@@ -132,6 +173,11 @@ public class StartHuman {
 		return stringBuffer.toString();
 	}
 
+	/**
+	 * Метод сортировки hashUser по значению
+	 * 
+	 * @return String - итог сортировки
+	 */
 	public String sortHashMapByValue() {
 		StringBuffer stringBuffer = new StringBuffer();
 		stringBuffer.append("Сортировка по значению:\n");
