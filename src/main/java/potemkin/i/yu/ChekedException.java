@@ -2,12 +2,29 @@ package potemkin.i.yu;
 
 import java.lang.reflect.Field;
 
+/**
+ * Класс запроса поля из объекта типа Cache
+ * 
+ * @author Илья Пот
+ */
 public class ChekedException {
 	private Cache cache;
+
+	/**
+	 * Конструктор класса ChekedException
+	 * 
+	 * @param cache
+	 */
 	public ChekedException(Cache cache) {
 		this.cache = cache;
 	}
-	
+
+	/**
+	 * Метод запроса поля nextItem
+	 * 
+	 * @return String - возврат имени поля (переменной)
+	 * @throws NoSuchFieldException - выбрасываемое исключение
+	 */
 	public String fieldCache() throws NoSuchFieldException {
 		Class example = cache.getClass();
 		Field field = example.getField("nextItem");

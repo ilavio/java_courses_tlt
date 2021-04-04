@@ -8,7 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class Main {
 	public static void main(String[] args) {
-		
+
 		CacheElement<Character> cachE1 = new CacheElement<Character>(1, 'a');
 		CacheElement<Character> cachE2 = new CacheElement<Character>(1, 'a');
 		System.out.println(cachE1.equals(cachE2) + ", " + cachE1);
