@@ -79,7 +79,7 @@ public class Cache<T> {
 			}
 		}
 		if (nenaideno == 1) {
-			System.out.println("Элемент не найден при удалении");
+			log.debug("Элемент не найден при удалении");
 		}
 	}
 
@@ -105,13 +105,16 @@ public class Cache<T> {
 	 * @return возвращаемый объект, если объект не найден вернет null
 	 */
 	public T get(T element) {
+		StringBuffer strBuf = new StringBuffer();
 		CacheElement<T> elementX = null;
 		if (element != null) {
 			for (int i = 0; i < nextItem; i++) {
 				if (cache[i].getCacheElement().equals(element)) {
 					elementX = cache[i];
 					deleteIndex(i);
-					log.info(elementX.cacheElement + ": " + elementX.getIndex());
+					strBuf.append("methot get: ").append(elementX.cacheElement).append(": ")
+							.append(elementX.getIndex());
+					log.info(strBuf.toString());
 					cache[nextItem] = elementX;
 					break;
 				}
@@ -127,6 +130,7 @@ public class Cache<T> {
 	 * @return T - возврат объекта, если объект не найден вернет null
 	 */
 	public T get(int index) {
+		StringBuffer strBuf = new StringBuffer();
 		T elementX = null;
 		CacheElement<T> cachEl = null;
 		for (int i = 0; i < nextItem; i++) {
@@ -151,6 +155,8 @@ public class Cache<T> {
 		cache = null;
 		capacity = 0;
 		nextItem = 0;
+		log.info(new StringBuffer().append("Cache [cashe=").append(Arrays.toString(cache)).append(" next: ")
+				.append(nextItem).append("]").toString());
 	}
 
 	public int getCapacity() {
@@ -159,6 +165,7 @@ public class Cache<T> {
 
 	@Override
 	public String toString() {
-		return "Cache [cashe=" + Arrays.toString(cache) + " next: " + nextItem + "]";
+		return new StringBuffer().append("Cache [cashe=").append(Arrays.toString(cache)).append(" next: ")
+				.append(nextItem).append("]").toString();
 	}
 }

@@ -1,7 +1,8 @@
 package potemkin.i.yu;
 
 /**
- * Класс обработки исключения unchecked MyIndexOutOfBoundException
+ * Класс исключения unchecked MyIndexOutOfBoundException в случае выхода за
+ * пределы массива
  * 
  * @author Илья Пот
  */

@@ -11,7 +11,7 @@ public class Main {
 
 		CacheElement<Character> cachE1 = new CacheElement<Character>(1, 'a');
 		CacheElement<Character> cachE2 = new CacheElement<Character>(1, 'a');
-		System.out.println(cachE1.equals(cachE2) + ", " + cachE1);
+		log.info(cachE1.equals(cachE2) + ", " + cachE1);
 
 		Cache<String> cashe = new Cache<String>(10);
 		Random random = new Random();
@@ -19,43 +19,42 @@ public class Main {
 		for (int i = 0; i < 10; i++) {
 			cashe.add(Character.toString(random.nextInt(25) + 'a'), i);
 		}
-		System.out.println(cashe);
+		log.info(cashe.toString());
 		char charTest = (char) (random.nextInt(25) + 'a');
 		cashe.add(Character.toString(charTest), 10);
 		cashe.add(Character.toString('a'), 21);
-		System.out.println(cashe.get(Character.toString(charTest)));
-		System.out.println(cashe);
+		log.info(cashe.get(Character.toString(charTest)));
+		log.info(cashe.toString());
 		cashe.delete(Character.toString(charTest));
-		System.out.println(charTest + " :" + cashe);
+		log.info(charTest + " :" + cashe);
 		cashe.clear();
-		System.out.println(cashe + "\n");
+		log.info(cashe + "\n");
 
 		Storage<Integer> stor = new Storage<Integer>();
-		System.out.println(stor);
+		log.info(stor.toString());
 		for (int x = 0; x < 20; x++) {
 			stor.add(random.nextInt(30));
 		}
-		System.out.println(stor);
+		log.info(stor.toString());
 		for (int i = 20; i >= -2; i -= 1) {
 			try {
-				System.out.println(i + ") " + stor.get(i));
+				stor.get(i);
 			} catch (MyIndexOutOfBoundException e) {
-				System.err.println(e.getMessage());
 				log.debug(e.getMessage());
 			}
 		}
 		stor.delete();
 		stor.delete();
-		System.out.println(stor);
+		log.info(stor.toString());
 		stor.delete();
-		System.out.println("stor.getLast(): " + stor.getLast());
+		log.info("stor.getLast(): " + stor.getLast());
 		stor.clear();
-		System.out.println(stor);
-		ChekedException cheked = new ChekedException(cashe);
+		log.info(stor.toString());
+		CallChekedException cheked = new CallChekedException(cashe);
 		try {
 			cheked.fieldCache();
 		} catch (NoSuchFieldException e) {
-			new MyNoSuchFieldException(e).printStackTrace();
+			log.debug(new MyNoSuchFieldException(e).getMessage());
 		}
 	}
 }

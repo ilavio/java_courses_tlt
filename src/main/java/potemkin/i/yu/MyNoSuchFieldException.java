@@ -1,12 +1,13 @@
 package potemkin.i.yu;
 
 /**
- * Класс обработки исключения checked MyNoSuchFieldException
+ * Класс исключения checked MyNoSuchFieldException, в случае отсутствии искомого
+ * поля (переменной) класса
  * 
  * @author Илья Пот
  */
 public class MyNoSuchFieldException extends Exception {
-	
+
 	/**
 	 * Дефолтный конструктор класса
 	 */

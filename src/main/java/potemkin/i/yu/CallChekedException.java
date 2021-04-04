@@ -3,11 +3,12 @@ package potemkin.i.yu;
 import java.lang.reflect.Field;
 
 /**
- * Класс запроса поля из объекта типа Cache
+ * Класс запроса поля из объекта типа Cache, тестовый класс для вызова
+ * проверяемого исключения
  * 
  * @author Илья Пот
  */
-public class ChekedException {
+public class CallChekedException {
 	private Cache cache;
 
 	/**
@@ -15,7 +16,7 @@ public class ChekedException {
 	 * 
 	 * @param cache
 	 */
-	public ChekedException(Cache cache) {
+	public CallChekedException(Cache cache) {
 		this.cache = cache;
 	}
 

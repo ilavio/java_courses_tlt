@@ -143,7 +143,7 @@ public class Storage<T> {
 		} else if (index >= 0 & index < storage.length) {
 			elementCopy = (T) storage[index];
 			cache.add((T) elementCopy, index);
-			log.debug("Storage element:" + elementCopy);
+			log.info("Storage element:" + elementCopy);
 			return elementCopy;
 		}
 		return elementCopy;

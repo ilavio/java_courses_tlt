@@ -21,7 +21,7 @@
 
 		</rollingPolicy>
 		<encoder>
-			<pattern>%d{dd.MM.yyyy HH:mm} %logger{20} - %msg%n</pattern>
+			<pattern>%d{dd.MM.yyyy HH:mm} %-5level %logger{20} - %msg%n</pattern>
 		</encoder>
 	</appender>
 	
@@ -40,7 +40,7 @@
 
 		</rollingPolicy>
 		<encoder>
-			<pattern>%d{dd.MM.yyyy HH:mm} %logger{20} - %msg%n</pattern>
+			<pattern>%d{dd.MM.yyyy HH:mm} %-5level %logger{20} - %msg%n</pattern>
 		</encoder>
 	</appender>
 
@@ -53,7 +53,7 @@
 		<appender-ref ref="Con-Storage"/>
 	</logger>
 
-	<root level="error">
+	<root level="debug">
 		<appender-ref ref="Con-Storage" />
 	</root>
 </configuration>
