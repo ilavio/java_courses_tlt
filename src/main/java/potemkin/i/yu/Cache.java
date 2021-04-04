@@ -2,11 +2,14 @@ package potemkin.i.yu;
 
 import java.util.Arrays;
 
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * Параметрорезированный Класс Cache
  * 
  * @author Илья Пот
  */
+@Slf4j
 public class Cache<T> {
 	private CacheElement<T>[] cache;
 	private int capacity;
@@ -108,6 +111,7 @@ public class Cache<T> {
 				if (cache[i].getCacheElement().equals(element)) {
 					elementX = cache[i];
 					deleteIndex(i);
+					log.info(elementX.cacheElement + ": " + elementX.getIndex());
 					cache[nextItem] = elementX;
 					break;
 				}
