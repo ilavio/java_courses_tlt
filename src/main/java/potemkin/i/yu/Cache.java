@@ -105,16 +105,13 @@ public class Cache<T> {
 	 * @return возвращаемый объект, если объект не найден вернет null
 	 */
 	public T get(T element) {
-		StringBuffer strBuf = new StringBuffer();
 		CacheElement<T> elementX = null;
 		if (element != null) {
 			for (int i = 0; i < nextItem; i++) {
 				if (cache[i].getCacheElement().equals(element)) {
 					elementX = cache[i];
 					deleteIndex(i);
-					strBuf.append("methot get: ").append(elementX.cacheElement).append(": ")
-							.append(elementX.getIndex());
-					log.info(strBuf.toString());
+					log.info("methot get: {}: {}", elementX.cacheElement, elementX.getIndex());
 					cache[nextItem] = elementX;
 					break;
 				}
@@ -155,8 +152,7 @@ public class Cache<T> {
 		cache = null;
 		capacity = 0;
 		nextItem = 0;
-		log.info(new StringBuffer().append("Cache [cashe=").append(Arrays.toString(cache)).append(" next: ")
-				.append(nextItem).append("]").toString());
+		log.info("Cache [cashe= {} next: {}]", Arrays.toString(cache), nextItem);
 	}
 
 	public int getCapacity() {

@@ -121,7 +121,7 @@ public class Storage<T> {
 	 * @return возвращает элемент массива
 	 */
 	public T getLast() {
-		log.info("getLast: " + storage[serchNextItem() - 1]);
+		log.info("getLast: {}", storage[serchNextItem() - 1]);
 		return (T) storage[serchNextItem() - 1];
 	}
 
@@ -143,7 +143,7 @@ public class Storage<T> {
 		} else if (index >= 0 & index < storage.length) {
 			elementCopy = (T) storage[index];
 			cache.add((T) elementCopy, index);
-			log.info("Storage element:" + elementCopy);
+			log.info("Storage element: {}", elementCopy);
 			return elementCopy;
 		}
 		return elementCopy;
