@@ -18,30 +18,18 @@ import lombok.extern.slf4j.Slf4j;
  * @author Илья Пот
  */
 @Slf4j
-public class AddCommandHandler {
-	private int number = 0;
-	private boolean miss = false;
-	private int commandLength = 0;
-	private String nameFile;
-	private int indexFile;
-	private String addedText;
+public class AddCommandHandler implements Handler {
 
 	/**
 	 * Метод выборки текста для добавления в файл из команды
 	 * 
 	 * @return String - возвращаемый тип
 	 */
-	public void handle(String command) {
-		indexFile = 2;
+	private String[] separation(String command, int commandLength, int indexFile) {
+		boolean miss = false;
 		String[] commandArr = command.split(" ");
-		try {
-			number = Integer.parseInt(commandArr[1]);
-		} catch (NumberFormatException e) {
-			number = 0;
-			indexFile = 1;
-		}
 		commandLength = commandArr.length;
-		nameFile = commandArr[indexFile];
+		String nameFile = commandArr[indexFile];
 		StringBuffer stringBuf = new StringBuffer();
 		int count = 0;
 		String patt = "\"[a-zA-Zа-яА-Я]+";
@@ -67,14 +55,19 @@ public class AddCommandHandler {
 			stringBuf.append("\n");
 		}
 		log.info(stringBuf.toString());
-		addedText = stringBuf.toString();
+		String addedText = stringBuf.toString();
+		return new String[] { nameFile, addedText };
 	}
 
 	/**
 	 * Метод записи в файл
 	 */
-	public void writeFile(String command) {
-		handle(command);
+	public void handle(String command) {
+		int number = getNumber(command)[1];
+		int commandLength = getNumber(command)[2];
+		int indexFile = getNumber(command)[0];
+		String nameFile = separation(command, commandLength, indexFile)[0];
+		String addedText = separation(command, commandLength, indexFile)[1];
 		StringBuffer stringBuf = new StringBuffer();
 		if (commandLength > 2 & number == 0) {
 			File file = new File(nameFile);
@@ -144,7 +137,7 @@ public class AddCommandHandler {
 	 * @param text - текс записываемый
 	 * @param file - имя файла
 	 */
-	private void writeToFileInEnd(String text, File file) {
+	private void writeToFileInEnd(String addedText, File file) {
 		try (BufferedOutputStream bufStream = new BufferedOutputStream(new FileOutputStream(file, true), 64)) {
 			bufStream.write(addedText.getBytes());
 			bufStream.flush();
@@ -154,5 +147,18 @@ public class AddCommandHandler {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+
+	private int[] getNumber(String command) {
+		int indexFile = 2;
+		int number = 0;
+		String[] commandArr = command.split(" ");
+		try {
+			number = Integer.parseInt(commandArr[1]);
+		} catch (NumberFormatException e) {
+			number = 0;
+			indexFile = 1;
+		}
+		return new int[] { indexFile, number, commandArr.length };
 	}
 }

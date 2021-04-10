@@ -15,18 +15,16 @@ import lombok.extern.slf4j.Slf4j;
  * @author Илья Пот
  */
 @Slf4j
-public class PrintsFromFile {
-	private StringBuffer stringBuf = new StringBuffer();
-	public int number = 0;
-	private File file;
+public class PrintsFromFile implements Handler {
 
 	/**
 	 * Метод разбора команды на составные переменный
 	 * 
 	 * @param command
 	 */
-	public void handle(String command) {
+	private int[] separation(String command) {
 		String[] commandArr = command.split(" ");
+		int number;
 		int printFile = 2;
 		try {
 			number = Integer.parseInt(commandArr[1]);
@@ -34,7 +32,7 @@ public class PrintsFromFile {
 			number = 0;
 			printFile = 1;
 		}
-		file = new File(commandArr[printFile]);
+		return new int[] {number, printFile};
 	}
 
 	/**
@@ -43,7 +41,8 @@ public class PrintsFromFile {
 	 * @param file - имя файла
 	 * @return String - возвращаемый тип
 	 */
-	public String printAll(File file) {
+	private String printAll(File file) {
+		StringBuffer stringBuf = new StringBuffer();
 		try (BufferedInputStream buf2 = new BufferedInputStream(new FileInputStream(file), 64)) {
 			byte[] bytemas = new byte[64];
 
@@ -64,8 +63,11 @@ public class PrintsFromFile {
 	/**
 	 * Метод печати файла
 	 */
-	public void printF(String command) {
-		handle(command);
+	public void handle(String command) {
+		int number = separation(command)[0];
+		int printFile = separation(command)[1];
+		File file = getFile(command, printFile);
+		separation(command);
 		if (!file.exists()) {
 			log.info("Файла нет!");
 		}
@@ -73,7 +75,7 @@ public class PrintsFromFile {
 			System.out.println(printAll(file));
 		}
 		if (number > 0) {
-			System.out.println(printNum(file));
+			System.out.println(printNum(file, number));
 		}
 	}
 
@@ -83,7 +85,8 @@ public class PrintsFromFile {
 	 * @param file - имя файла
 	 * @return String - возвращаемый тип
 	 */
-	public String printNum(File file) {
+	private String printNum(File file, int number) {
+		StringBuffer stringBuf = new StringBuffer();
 		try (BufferedInputStream buf2 = new BufferedInputStream(new FileInputStream(file), 64)) {
 			byte[] bytemas = new byte[64];
 			while (buf2.available() != 0) {
@@ -103,5 +106,10 @@ public class PrintsFromFile {
 			return "Не найдено";
 		}
 		return printMass[number - 1];
+	}
+
+	private File getFile(String command, int printFile) {
+		String[] commandArr = command.split(" ");
+		return new File(commandArr[printFile]);
 	}
 }

@@ -23,8 +23,8 @@ public class Main {
 				System.out.println("Завершение.");
 				break;
 			}
-			CommandHandler command = new CommandHandler(commandStr);
-			command.execute();
+			CommandHandler command = new CommandHandler();
+			command.execute(commandStr);
 		}
 	}
 }

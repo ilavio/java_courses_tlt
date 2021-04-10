@@ -2,54 +2,38 @@ package potemkin.i.yu;
 
 import java.io.File;
 import java.util.Arrays;
+import java.util.TreeMap;
 
 import lombok.extern.slf4j.Slf4j;
 
 /**
  * Класс обработки команд для рработ с файлом
+ * 
  * @author Илья Пот
  */
 @Slf4j
 public class CommandHandler {
-	private String command;
-	private String[] commandArr;
-	private AddCommandHandler add;
-	private DeletingLines del;
-	private PrintsFromFile print;
+	private AddCommandHandler add = new AddCommandHandler();
+	private DeletingLines del = new DeletingLines();
+	private PrintsFromFile print = new PrintsFromFile();
+	private TreeMap<String, Handler> treeProcessing;
 
-	public CommandHandler(String command) {
-		this.command = command;
-		this.commandArr = command.split(" ");
+	public CommandHandler() {
+		this.treeProcessing = new TreeMap<String, Handler>();
+		treeProcessing.put("add", add);
+		treeProcessing.put("delete", del);
+		treeProcessing.put("print", print);
 	}
 
 	/**
 	 * Метод обработки команды
 	 */
-	public void execute() {
+	public void execute(String command) {
+		String[] commandArr = command.split(" ");
 		if (!command.isEmpty()) {
-			switch (commandArr[0]) {
-			case "add":
-				add = new AddCommandHandler();
-				add.writeFile(command);
-				log.info(Arrays.toString(commandArr));
-				break;
-			case "delete":
-				del = new DeletingLines();
-				del.delete(command);
-				log.info(Arrays.toString(commandArr));
-				break;
-			case "print":
-				print = new PrintsFromFile();
-				print.printF(command);
-				log.info(Arrays.toString(commandArr));
-				break;
-			case "END":
-				break;
-			default:
-				System.out.println("неверная команда");
+			if (commandArr[0] != "END") {
+				treeProcessing.get(commandArr[0]).handle(command);
 			}
-		} else {
-			System.out.println("пустая команда");
 		}
 	}
 }

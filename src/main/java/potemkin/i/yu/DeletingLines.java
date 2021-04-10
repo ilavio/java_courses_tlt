@@ -17,19 +17,15 @@ import lombok.extern.slf4j.Slf4j;
  * @author Илья Пот
  */
 @Slf4j
-public class DeletingLines {
-	private String nameFile;
-	private int number;
-	private StringBuffer stringBuf = new StringBuffer();
-	int deleteFile = 2;
+public class DeletingLines implements Handler {
 
 	/**
 	 * Метод разбора команды на составные переменный
 	 * 
 	 * @param command
 	 */
-	public void handle(String command) {
-		String[] commandArr = command.split(" ");
+	private int[] separation(String[] commandArr) {
+		int number;
 		int deleteFile = 2;
 		try {
 			number = Integer.parseInt(commandArr[1]);
@@ -37,16 +33,20 @@ public class DeletingLines {
 			number = 0;
 			deleteFile = 1;
 		}
-		nameFile = commandArr[deleteFile];
+		return new int[] {number, deleteFile};
 	}
 
 	/**
 	 * Метод удаления строки из файла
 	 */
-	public void delete(String command) {
-		handle(command);
+	public void handle(String command) {
+		String[] commandArr = command.split(" ");
+		int number = separation(commandArr)[0];
+		int deleteFile = separation(commandArr)[1];
+		String nameFile = getNameFile(commandArr, deleteFile);
+		StringBuffer stringBuf = new StringBuffer();
 		File file = new File(nameFile);
-		log.info(read(file));
+		log.info(read(file, stringBuf));
 		String str = editString(number, stringBuf);
 		try (BufferedOutputStream bufStream = new BufferedOutputStream(new FileOutputStream(file), 64)) {
 			bufStream.write(str.getBytes());
@@ -64,7 +64,7 @@ public class DeletingLines {
 	 * @param file - имя файла
 	 * @return String - возвращаемый тип
 	 */
-	public String read(File file) {
+	public String read(File file, StringBuffer stringBuf) {
 		try (BufferedInputStream buf2 = new BufferedInputStream(new FileInputStream(file), 64)) {
 			byte[] bytemas = new byte[64];
 			while (buf2.available() != 0) {
@@ -117,5 +117,9 @@ public class DeletingLines {
 			}
 		}
 		return editBuf.toString();
+	}
+	
+	private String getNameFile(String [] commandArr, int deleteFile) {
+		return commandArr[deleteFile];
 	}
 }
