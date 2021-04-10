@@ -18,21 +18,30 @@ import lombok.extern.slf4j.Slf4j;
  * @author Илья Пот
  */
 @Slf4j
-public class Add {
-	private String[] commandArr;
+public class AddCommandHandler {
 	private int number = 0;
 	private boolean miss = false;
-
-	public Add(String[] commandArr) {
-		this.commandArr = commandArr;
-	}
+	private int commandLength = 0;
+	private String nameFile;
+	private int indexFile;
+	private String addedText;
 
 	/**
 	 * Метод выборки текста для добавления в файл из команды
 	 * 
 	 * @return String - возвращаемый тип
 	 */
-	public String addString() {
+	public void handle(String command) {
+		indexFile = 2;
+		String[] commandArr = command.split(" ");
+		try {
+			number = Integer.parseInt(commandArr[1]);
+		} catch (NumberFormatException e) {
+			number = 0;
+			indexFile = 1;
+		}
+		commandLength = commandArr.length;
+		nameFile = commandArr[indexFile];
 		StringBuffer stringBuf = new StringBuffer();
 		int count = 0;
 		String patt = "\"[a-zA-Zа-яА-Я]+";
@@ -58,53 +67,33 @@ public class Add {
 			stringBuf.append("\n");
 		}
 		log.info(stringBuf.toString());
-		return stringBuf.toString();
+		addedText = stringBuf.toString();
 	}
 
 	/**
 	 * Метод записи в файл
 	 */
-	public void writeFile() {
+	public void writeFile(String command) {
+		handle(command);
 		StringBuffer stringBuf = new StringBuffer();
-		int indexFile = 2;
-		try {
-			number = Integer.parseInt(commandArr[1]);
-		} catch (NumberFormatException e) {
-			number = 0;
-			indexFile = 1;
-		}
-		if (commandArr.length > 2 & number == 0) {
-			File file = new File(commandArr[indexFile]);
-			try (BufferedOutputStream bufStream = new BufferedOutputStream(new FileOutputStream(file, true), 64)) {
-				bufStream.write(addString().getBytes());
-				bufStream.flush();
-			} catch (FileNotFoundException e) {
-				log.info("Ошибка записи!");
-				e.printStackTrace();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+		if (commandLength > 2 & number == 0) {
+			File file = new File(nameFile);
+			createFile(file);
+			writeToFileInEnd(addedText, file);
 		} else if (number > 0) {
-			File file = new File(commandArr[indexFile]);
+			File file = new File(nameFile);
 			try (BufferedReader bufRead = new BufferedReader(new FileReader(file), 64)) {
 				int count = 0;
 				while (bufRead.ready()) {
 					count += 1;
 					if (number == count) {
-						stringBuf.append(addString());
+						stringBuf.append(addedText);
 						stringBuf.append("\n");
 					}
 					stringBuf.append(bufRead.readLine());
 					stringBuf.append("\n");
 				}
-				try (BufferedOutputStream bufStream = new BufferedOutputStream(new FileOutputStream(file), 64)) {
-					bufStream.write(stringBuf.toString().getBytes());
-					bufStream.flush();
-				} catch (FileNotFoundException e) {
-					e.printStackTrace();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
+				writingToFile(stringBuf.toString(), file);
 			} catch (FileNotFoundException e) {
 				log.info("Ошибка записи!");
 				e.printStackTrace();
@@ -130,5 +119,40 @@ public class Add {
 			}
 		}
 		return false;
+	}
+
+	/**
+	 * Метод записи в файл
+	 * 
+	 * @param text - текс записываемый
+	 * @param file - имя файла
+	 */
+	private void writingToFile(String text, File file) {
+		try (BufferedOutputStream bufStream = new BufferedOutputStream(new FileOutputStream(file), 64)) {
+			bufStream.write(text.getBytes());
+			bufStream.flush();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * Метод записи в конец файла
+	 * 
+	 * @param text - текс записываемый
+	 * @param file - имя файла
+	 */
+	private void writeToFileInEnd(String text, File file) {
+		try (BufferedOutputStream bufStream = new BufferedOutputStream(new FileOutputStream(file, true), 64)) {
+			bufStream.write(addedText.getBytes());
+			bufStream.flush();
+		} catch (FileNotFoundException e) {
+			log.info("Ошибка записи!");
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 }

@@ -17,20 +17,19 @@ import lombok.extern.slf4j.Slf4j;
  * @author Илья Пот
  */
 @Slf4j
-public class Delete {
-	private String[] commandArr;
+public class DeletingLines {
+	private String nameFile;
 	private int number;
 	private StringBuffer stringBuf = new StringBuffer();
 	int deleteFile = 2;
 
-	public Delete(String[] commandArr) {
-		this.commandArr = commandArr;
-	}
-
 	/**
-	 * Метод удаления строки из файла
+	 * Метод разбора команды на составные переменный
+	 * 
+	 * @param command
 	 */
-	public void delete() {
+	public void handle(String command) {
+		String[] commandArr = command.split(" ");
 		int deleteFile = 2;
 		try {
 			number = Integer.parseInt(commandArr[1]);
@@ -38,7 +37,15 @@ public class Delete {
 			number = 0;
 			deleteFile = 1;
 		}
-		File file = new File(commandArr[deleteFile]);
+		nameFile = commandArr[deleteFile];
+	}
+
+	/**
+	 * Метод удаления строки из файла
+	 */
+	public void delete(String command) {
+		handle(command);
+		File file = new File(nameFile);
 		log.info(read(file));
 		String str = editString(number, stringBuf);
 		try (BufferedOutputStream bufStream = new BufferedOutputStream(new FileOutputStream(file), 64)) {
@@ -65,10 +72,8 @@ public class Delete {
 				stringBuf.append(new String(bytemas));
 			}
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return stringBuf.toString();

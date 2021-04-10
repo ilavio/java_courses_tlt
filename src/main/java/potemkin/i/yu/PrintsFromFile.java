@@ -15,14 +15,26 @@ import lombok.extern.slf4j.Slf4j;
  * @author Илья Пот
  */
 @Slf4j
-public class Print {
-	private String[] commandArr;
+public class PrintsFromFile {
 	private StringBuffer stringBuf = new StringBuffer();
 	public int number = 0;
 	private File file;
 
-	public Print(String[] commandArr) {
-		this.commandArr = commandArr;
+	/**
+	 * Метод разбора команды на составные переменный
+	 * 
+	 * @param command
+	 */
+	public void handle(String command) {
+		String[] commandArr = command.split(" ");
+		int printFile = 2;
+		try {
+			number = Integer.parseInt(commandArr[1]);
+		} catch (NumberFormatException e) {
+			number = 0;
+			printFile = 1;
+		}
+		file = new File(commandArr[printFile]);
 	}
 
 	/**
@@ -52,15 +64,8 @@ public class Print {
 	/**
 	 * Метод печати файла
 	 */
-	public void printF() {
-		int printFile = 2;
-		try {
-			number = Integer.parseInt(commandArr[1]);
-		} catch (NumberFormatException e) {
-			number = 0;
-			printFile = 1;
-		}
-		file = new File(commandArr[printFile]);
+	public void printF(String command) {
+		handle(command);
 		if (!file.exists()) {
 			log.info("Файла нет!");
 		}

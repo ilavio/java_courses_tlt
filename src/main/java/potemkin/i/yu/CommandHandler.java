@@ -13,9 +13,9 @@ import lombok.extern.slf4j.Slf4j;
 public class CommandHandler {
 	private String command;
 	private String[] commandArr;
-	private Add add;
-	private Delete del;
-	private Print print;
+	private AddCommandHandler add;
+	private DeletingLines del;
+	private PrintsFromFile print;
 
 	public CommandHandler(String command) {
 		this.command = command;
@@ -29,18 +29,18 @@ public class CommandHandler {
 		if (!command.isEmpty()) {
 			switch (commandArr[0]) {
 			case "add":
-				add = new Add(commandArr);
-				add.writeFile();
+				add = new AddCommandHandler();
+				add.writeFile(command);
 				log.info(Arrays.toString(commandArr));
 				break;
 			case "delete":
-				del = new Delete(commandArr);
-				del.delete();
+				del = new DeletingLines();
+				del.delete(command);
 				log.info(Arrays.toString(commandArr));
 				break;
 			case "print":
-				print = new Print(commandArr);
-				print.printF();
+				print = new PrintsFromFile();
+				print.printF(command);
 				log.info(Arrays.toString(commandArr));
 				break;
 			case "END":
