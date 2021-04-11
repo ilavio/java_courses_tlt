@@ -65,7 +65,7 @@ public class Storage<T> {
 	 * 
 	 * @return возвращает следующую позицию для вставки
 	 */
-	private int serchNextItem() {
+	public int serchNextItem() {
 		int nextItem = 0;
 		if (storage != null) {
 			for (int i = storage.length - 1; i >= 0; i -= 1) {
