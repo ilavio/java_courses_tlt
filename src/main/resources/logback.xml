@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration debug="true">
+	<appender name="Con-Storage" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+			<pattern> [%thread] %-5level %logger{20} - %msg%n</pattern>
+		</encoder>
+	</appender>
+
+	<appender name="FILE-CACHE"
+		class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>logbackCache.log</file>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<!-- daily rollover -->
+			<fileNamePattern> logbackCache.%d{yyyy-MM-dd}.log</fileNamePattern>
+
+			<!-- Храним файлы логов 10 дней -->
+			<maxHistory>10</maxHistory>
+
+			<!-- Максимальный размер файлов лога -->
+			<totalSizeCap>10MB</totalSizeCap>
+
+		</rollingPolicy>
+		<encoder>
+			<pattern>%d{dd.MM.yyyy HH:mm} %-5level %logger{20} - %msg%n</pattern>
+		</encoder>
+	</appender>
+	
+	<appender name="FILE-STORAGE"
+		class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>logbackStorage.log</file>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<!-- daily rollover -->
+			<fileNamePattern> logbackStorage.%d{yyyy-MM-dd}.log</fileNamePattern>
+
+			<!-- Храним файлы логов 10 дней -->
+			<maxHistory>10</maxHistory>
+
+			<!-- Максимальный размер файлов лога -->
+			<totalSizeCap>10MB</totalSizeCap>
+
+		</rollingPolicy>
+		<encoder>
+			<pattern>%d{dd.MM.yyyy HH:mm} %-5level %logger{20} - %msg%n</pattern>
+		</encoder>
+	</appender>
+
+	<logger name="potemkin.i.yu.Cache" level="debug" additivity="false">
+		<appender-ref ref="FILE-CACHE"/>
+	</logger>
+	
+	<logger name="potemkin.i.yu.Storage" level="debug" additivity="false">
+		<appender-ref ref="FILE-STORAGE"/>
+		<appender-ref ref="Con-Storage"/>
+	</logger>
+
+	<root level="debug">
+		<appender-ref ref="Con-Storage" />
+	</root>
+</configuration>

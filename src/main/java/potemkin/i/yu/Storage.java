@@ -2,11 +2,14 @@ package potemkin.i.yu;
 
 import java.util.Arrays;
 
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * Параметрорезированный Класс Storage
  * 
  * @author Илья Пот
  */
+@Slf4j
 public class Storage<T> {
 	private Object[] storage;
 	private Cache<T> cache;
@@ -118,6 +121,7 @@ public class Storage<T> {
 	 * @return возвращает элемент массива
 	 */
 	public T getLast() {
+		log.info("getLast: {}", storage[serchNextItem() - 1]);
 		return (T) storage[serchNextItem() - 1];
 	}
 
@@ -127,14 +131,19 @@ public class Storage<T> {
 	 * @param index - индекс позиции елемента которого надо вернуть
 	 * @return возвращает элемент по индексу, если индекс привышает пределы то
 	 *         возвращает null
+	 * @throws MyIndexOutOfBoundException - если выходим за пределы массива
 	 */
-	public T get(int index) {
+	public T get(int index) throws MyIndexOutOfBoundException {
 		T elementCopy = null;
+		if (index < 0 || index > storage.length) {
+			throw new MyIndexOutOfBoundException();
+		}
 		if (cache.get(index) != null) {
 			return cache.get(index);
 		} else if (index >= 0 & index < storage.length) {
 			elementCopy = (T) storage[index];
 			cache.add((T) elementCopy, index);
+			log.info("Storage element: {}", elementCopy);
 			return elementCopy;
 		}
 		return elementCopy;
