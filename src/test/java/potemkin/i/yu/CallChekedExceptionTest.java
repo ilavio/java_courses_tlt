@@ -26,4 +26,10 @@ public class CallChekedExceptionTest {
 	public void fieldCacheNotNull() {
 		assertNotNull(cache.getNextItem());
 	}
+	
+	@Test
+	public void callChekedExceptionTestNotNull() {
+		CallChekedException callChekedException = new CallChekedException(cache);
+		assertNotNull(callChekedException);
+	}
 }

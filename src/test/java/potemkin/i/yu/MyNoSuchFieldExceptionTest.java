@@ -1,6 +1,7 @@
 package potemkin.i.yu;
 
 import static org.junit.Assert.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.Test;
 
@@ -24,6 +25,22 @@ public class MyNoSuchFieldExceptionTest {
 		for (int i = 0; i < 4; i++) {
 			try {
 				String s = mass[i];
+			}catch(Exception e) {
+					Exception exception = assertThrows(MyNoSuchFieldException.class, () -> {
+						throw new MyNoSuchFieldException(message, e);
+					});
+			}
+		}
+	}
+	
+	@Test
+	public void notMyNoSuchFieldExceptionTest() {
+		String[] mass = new String[] { "G", "S", "S" };
+		final String message = "GSS";
+		for (int i = 0; i < 3; i++) {
+			try {
+				String s = mass[i];
+				assertEquals(s, mass[i]);
 			}catch(Exception e) {
 					Exception exception = assertThrows(MyNoSuchFieldException.class, () -> {
 						throw new MyNoSuchFieldException(message, e);

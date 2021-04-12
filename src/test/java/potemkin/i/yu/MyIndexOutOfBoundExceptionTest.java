@@ -32,4 +32,11 @@ public class MyIndexOutOfBoundExceptionTest {
 			});
 		}
 	}
+	
+	@Test
+	public void callMyIndexOutOfBoundExceptionMassege() {
+		Exception exception = assertThrows(MyIndexOutOfBoundException.class, () -> {
+			throw new MyIndexOutOfBoundException("AAA");
+		});
+	}
 }
