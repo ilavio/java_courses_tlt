@@ -33,11 +33,11 @@ public class CacheTest {
 		int result = cache.getNextItem();
 		assertEquals(standard, result);
 	}
-	
+
 	@Test
 	public void deleteElementTestReturnFalse() {
 		Cache<Integer> cache = new Cache<Integer>(5);
-		for(int i = 0; i < cache.getCapacity(); i++) {
+		for (int i = 0; i < cache.getCapacity(); i++) {
 			cache.add(i, i);
 		}
 		assertEquals(cache.getCapacity(), cache.getNextItem());
@@ -45,38 +45,58 @@ public class CacheTest {
 		boolean t = cache.getCapacity() == (cache.getNextItem());
 		assertFalse(t);
 	}
-	
+
 	@Test
 	public void getIndexReturnTrue() {
 		Cache<Integer> cache = new Cache<Integer>(5);
-		for(int i = 0; i < cache.getCapacity()-1; i++) {
+		for (int i = 0; i < cache.getCapacity() - 1; i++) {
 			cache.add(i, i);
 		}
 		cache.add(1, 5);
 		assertEquals(cache.get(1), cache.get(5));
 	}
-	
+
 	@Test
 	public void clearTest() {
 		Cache<Integer> cache = new Cache<Integer>(5);
-		for(int i = 0; i < cache.getCapacity()-1; i++) {
+		for (int i = 0; i < cache.getCapacity() - 1; i++) {
 			cache.add(i, i);
 		}
 		assertNotNull(cache);
 		cache.clear();
 		assertNull(cache.get(1));
 	}
-	
+
 	@Test
 	public void getToStringReturnTrue() {
 		Cache<Integer> cacheA = new Cache<Integer>(5);
-		for(int i = 0; i < cacheA.getCapacity(); i++) {
+		for (int i = 0; i < cacheA.getCapacity(); i++) {
 			cacheA.add(i, i);
 		}
 		Cache<Integer> cacheB = new Cache<Integer>(5);
-		for(int i = 0; i < cacheB.getCapacity(); i++) {
+		for (int i = 0; i < cacheB.getCapacity(); i++) {
 			cacheB.add(i, i);
 		}
 		assertEquals(cacheA.toString(), cacheB.toString());
 	}
+
+	@Test
+	public void checkGetFromDelete() {
+		Cache<Integer> cacheA = new Cache<Integer>(5);
+		for (int i = 0; i < cacheA.getCapacity(); i++) {
+			cacheA.add(i, i);
+		}
+		cacheA.delete(0);
+		assertNull(cacheA.get(0));
+	}
+
+	@Test
+	public void checkIsPresentReturnFalse() {
+		Cache<Integer> cache = new Cache<Integer>(5);
+		for (int i = 0; i < cache.getCapacity(); i++) {
+			cache.add(i, i);
+		}
+		assertFalse(cache.isPresent(7));
+	}
+
 }
