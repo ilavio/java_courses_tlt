@@ -155,4 +155,7 @@ public class Storage<T> {
 				+ "]";
 	}
 
+	public Object[] getStorage() {
+		return storage;
+	}
 }

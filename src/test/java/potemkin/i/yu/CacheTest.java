@@ -1,6 +1,8 @@
 package potemkin.i.yu;
 
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -42,5 +44,39 @@ public class CacheTest {
 		cache.delete(1);
 		boolean t = cache.getCapacity() == (cache.getNextItem());
 		assertFalse(t);
+	}
+	
+	@Test
+	public void getIndexReturnTrue() {
+		Cache<Integer> cache = new Cache<Integer>(5);
+		for(int i = 0; i < cache.getCapacity()-1; i++) {
+			cache.add(i, i);
+		}
+		cache.add(1, 5);
+		assertEquals(cache.get(1), cache.get(5));
+	}
+	
+	@Test
+	public void clearTest() {
+		Cache<Integer> cache = new Cache<Integer>(5);
+		for(int i = 0; i < cache.getCapacity()-1; i++) {
+			cache.add(i, i);
+		}
+		assertNotNull(cache);
+		cache.clear();
+		assertNull(cache.get(1));
+	}
+	
+	@Test
+	public void getToStringReturnTrue() {
+		Cache<Integer> cacheA = new Cache<Integer>(5);
+		for(int i = 0; i < cacheA.getCapacity(); i++) {
+			cacheA.add(i, i);
+		}
+		Cache<Integer> cacheB = new Cache<Integer>(5);
+		for(int i = 0; i < cacheB.getCapacity(); i++) {
+			cacheB.add(i, i);
+		}
+		assertEquals(cacheA.toString(), cacheB.toString());
 	}
 }
