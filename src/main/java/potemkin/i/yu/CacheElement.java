@@ -7,6 +7,10 @@ package potemkin.i.yu;
  * @param <T>
  */
 public class CacheElement<T> {
+	public CacheElement() {
+		super();
+	}
+
 	public T cacheElement;
 	private int index;
 

@@ -1,5 +1,6 @@
 package potemkin.i.yu;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -29,5 +30,17 @@ public class CacheTest {
 		cache.add(124, 2);
 		int result = cache.getNextItem();
 		assertEquals(standard, result);
+	}
+	
+	@Test
+	public void deleteElementTestReturnFalse() {
+		Cache<Integer> cache = new Cache<Integer>(5);
+		for(int i = 0; i < cache.getCapacity(); i++) {
+			cache.add(i, i);
+		}
+		assertEquals(cache.getCapacity(), cache.getNextItem());
+		cache.delete(1);
+		boolean t = cache.getCapacity() == (cache.getNextItem());
+		assertFalse(t);
 	}
 }
