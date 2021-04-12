@@ -4,17 +4,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-@RunWith(MockitoJUnitRunner.class)
 public class CacheTest {
-	@Mock
-	public CacheElement cacheElement;
-	@InjectMocks
-	public Cache cache;
 	@Test
 	public void checkIsPresentReturnTrue() {
 		Cache<Integer> cache = new Cache<Integer>(10);

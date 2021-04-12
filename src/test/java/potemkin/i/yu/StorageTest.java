@@ -1,5 +1,6 @@
 package potemkin.i.yu;
 
+import static org.junit.Assert.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.Test;
@@ -36,5 +37,18 @@ public class StorageTest {
 		storage.add("3");
 		String result = storage.get(1);
 		assertEquals(expected, result);
+	}
+	
+	@Test
+	public void testGetElementTrowException() throws MyIndexOutOfBoundException {
+		Exception exception = assertThrows(MyIndexOutOfBoundException.class, () -> {
+		String expected = "2";
+		Storage <String> storage = new Storage<String>();
+		storage.add("1");
+		storage.add("2");
+		storage.add("3");
+		String result = storage.get(12);
+		assertEquals(expected, result);
+		});
 	}
 }
