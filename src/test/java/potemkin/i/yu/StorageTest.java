@@ -7,9 +7,18 @@ import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 public class StorageTest {
+	Storage<String> storageC = new Storage<String>();
+	
+	@BeforeEach
+	public void createStorage() {
+	storageC.add("A");
+	storageC.add("B");
+	}
+	
 	@Test
 	public void testSerchNextItem() {
 		int expected = 3;
@@ -122,5 +131,13 @@ public class StorageTest {
 		storage.add("3");
 		String result = storage.get(1);
 		assertFalse(expected.equals(result));
+	}
+	
+	@Test
+	public void compareStorages() {
+		Storage<String> storage = new Storage<String>();
+		storage.add("A");
+		storage.add("B");
+		assertEquals(storage.toString(), storageC.toString());
 	}
 }

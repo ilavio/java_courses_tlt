@@ -1,6 +1,7 @@
 package potemkin.i.yu;
 
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -30,5 +31,17 @@ public class CacheElementTest {
 		CacheElement<String> cachElement = new CacheElement<String>(1, "T");
 		when(cachEl2.getCacheElement()).thenReturn("V");
 		assertFalse(cachElement.getCacheElement().equals(cachEl2.getCacheElement()));
+	}
+	
+	@Test
+	public void checkedEqlesReturnTrue() {
+		CacheElement<String> cachElement = new CacheElement<String>(1, "T");
+		assertEquals(cachElement, cachEl);
+	}
+	
+	@Test
+	public void checkedIndexReturnTrue() {
+		CacheElement<String> cachElement = new CacheElement<String>(1, "T");
+		assertTrue(cachEl.getIndex() == cachElement.getIndex());
 	}
 }
