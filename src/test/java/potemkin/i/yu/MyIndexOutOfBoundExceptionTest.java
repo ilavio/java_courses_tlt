@@ -18,5 +18,18 @@ public class MyIndexOutOfBoundExceptionTest {
 			});
 		}
 	}
-
+	
+	@Test
+	public void notCallMyIndexOutOfBoundException() {
+		int[] integer = new int[] { 1, 2, 3 };
+		try {
+			for (int i = 0; i < integer.length; i++) {
+				int x = integer[i];
+			}
+		} catch (Exception e) {
+			Exception exception = assertThrows(MyIndexOutOfBoundException.class, () -> {
+				throw new MyIndexOutOfBoundException();
+			});
+		}
+	}
 }

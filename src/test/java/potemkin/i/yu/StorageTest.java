@@ -92,4 +92,24 @@ public class StorageTest {
 		storageB.add("3");
 		assertEquals(storageA.toString(), storageB.toString());
 	}
+	
+	@Test
+	public void getLastTestReturnFalse() {
+		String expected = "4";
+		Storage<String> storage = new Storage<String>();
+		storage.add("1");
+		storage.add("2");
+		storage.add("3");
+		String result = storage.getLast();
+		assertFalse(expected == result);
+	}
+	
+	@Test
+	public void testGetElementReturnNull() {
+		Storage<String> storage = new Storage<String>();
+		storage.add("1");
+		storage.add("2");
+		storage.add("3");
+		assertNull(storage.get(9));
+	}
 }
