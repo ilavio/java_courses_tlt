@@ -1,5 +1,6 @@
 package potemkin.i.yu;
 
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThrows;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -19,5 +20,10 @@ public class CallChekedExceptionTest {
 		Exception exception = assertThrows(NoSuchFieldException.class, () -> {
 			callChekedException.fieldCache();
 		});
+	}
+	
+	@Test
+	public void fieldCacheNotNull() {
+		assertNotNull(cache.getNextItem());
 	}
 }

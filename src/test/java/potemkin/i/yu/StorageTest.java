@@ -112,4 +112,15 @@ public class StorageTest {
 		storage.add("3");
 		assertNull(storage.get(9));
 	}
+	
+	@Test
+	public void testGetElementReturnFalse() {
+		String expected = "5";
+		Storage<String> storage = new Storage<String>();
+		storage.add("1");
+		storage.add("2");
+		storage.add("3");
+		String result = storage.get(1);
+		assertFalse(expected.equals(result));
+	}
 }
