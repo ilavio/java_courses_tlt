@@ -2,6 +2,7 @@ package potemkin.i.yu;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
@@ -9,8 +10,6 @@ import static org.mockito.Mockito.when;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import org.mockito.Mock;
 
 public class CacheElementTest {
 	public CacheElement<String> cachEl;
@@ -54,5 +53,17 @@ public class CacheElementTest {
 	@Test
 	public void checkedElement() {
 		assertNotNull(cachEl.getCacheElement());
+	}
+	
+	@Test
+	public void checkedHashCode() {
+		CacheElement<String> cachElement = new CacheElement<String>(1, "T");
+		assertEquals(cachEl.hashCode(), cachElement.hashCode());
+	}
+	
+	@Test
+	public void checkedDefaultConstructorReturnNull() {
+		CacheElement<String> cachElement = new CacheElement<String>();
+		assertNull(cachElement.getCacheElement());
 	}
 }

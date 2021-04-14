@@ -98,14 +98,14 @@ public class CacheTest {
 		}
 		assertFalse(cache.isPresent(7));
 	}
-	
+
 	@Test
 	public void getElementFromCacheFalse() {
 		Cache<Integer> cache = new Cache<Integer>(10);
 		cache.add(123, 1);
 		assertFalse(12 == cache.get(1));
 	}
-	
+
 	@Test
 	public void countAddReturnFalse() {
 		int standard = 4;
@@ -114,5 +114,13 @@ public class CacheTest {
 		cache.add(124, 2);
 		int result = cache.getNextItem();
 		assertFalse(standard == result);
+	}
+
+	@Test
+	public void checkGetReturnElement() {
+		Cache<String> cache = new Cache<String>(10);
+		cache.add("S", 1);
+		String s = "S";
+		assertEquals(s, cache.get(s));
 	}
 }

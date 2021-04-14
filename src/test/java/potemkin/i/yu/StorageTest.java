@@ -12,13 +12,13 @@ import org.junit.jupiter.api.Test;
 
 public class StorageTest {
 	Storage<String> storageC = new Storage<String>();
-	
+
 	@BeforeEach
 	public void createStorage() {
-	storageC.add("A");
-	storageC.add("B");
+		storageC.add("A");
+		storageC.add("B");
 	}
-	
+
 	@Test
 	public void testSerchNextItem() {
 		int expected = 3;
@@ -77,7 +77,7 @@ public class StorageTest {
 		int b = storage.serchNextItem();
 		assertTrue(a == b);
 	}
-	
+
 	@Test
 	public void clearReturnNull() {
 		Storage<String> storage = new Storage<String>();
@@ -88,7 +88,7 @@ public class StorageTest {
 		storage.clear();
 		assertNull(storage.getStorage());
 	}
-	
+
 	@Test
 	public void compareToString() {
 		Storage<String> storageA = new Storage<String>();
@@ -101,7 +101,7 @@ public class StorageTest {
 		storageB.add("3");
 		assertEquals(storageA.toString(), storageB.toString());
 	}
-	
+
 	@Test
 	public void getLastTestReturnFalse() {
 		String expected = "4";
@@ -112,7 +112,7 @@ public class StorageTest {
 		String result = storage.getLast();
 		assertFalse(expected == result);
 	}
-	
+
 	@Test
 	public void testGetElementReturnNull() {
 		Storage<String> storage = new Storage<String>();
@@ -121,7 +121,7 @@ public class StorageTest {
 		storage.add("3");
 		assertNull(storage.get(9));
 	}
-	
+
 	@Test
 	public void testGetElementReturnFalse() {
 		String expected = "5";
@@ -132,12 +132,28 @@ public class StorageTest {
 		String result = storage.get(1);
 		assertFalse(expected.equals(result));
 	}
-	
+
 	@Test
 	public void compareStorages() {
 		Storage<String> storage = new Storage<String>();
 		storage.add("A");
 		storage.add("B");
 		assertEquals(storage.toString(), storageC.toString());
+	}
+
+	@Test
+	public void limitCheckConstructor() {
+		String[] str = new String[] { "A", "B", "C", "D", "E", "F", "G", "I", "R", "T", "S" };
+		Storage<String> storage = new Storage<String>(str);
+		assertNotNull(storage.getLast());
+	}
+
+	@Test
+	public void limitCheck() {
+		Storage<String> storage = new Storage<String>();
+		for (int i = 0; i < 12; i++) {
+			storage.add(Integer.toString(i));
+		}
+		assertNotNull(storage.getLast());
 	}
 }
