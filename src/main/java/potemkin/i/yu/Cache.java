@@ -158,6 +158,10 @@ public class Cache<T> {
 	public int getCapacity() {
 		return capacity;
 	}
+	
+	public int getNextItem() {
+		return nextItem;
+	} 
 
 	@Override
 	public String toString() {
