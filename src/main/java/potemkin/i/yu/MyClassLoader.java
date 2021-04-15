@@ -15,7 +15,7 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 public class MyClassLoader extends ClassLoader {
-	public String pathClass;
+	private String pathClass;
 
 	/**
 	 * Метод загрузки класса
@@ -39,10 +39,39 @@ public class MyClassLoader extends ClassLoader {
 			e.printStackTrace();
 			return super.findClass(name);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
+			log.info("Ошибка в методе findClass 2");
 			e.printStackTrace();
 		}
 		return newClassMy;
 	}
 
+	public void setPathClass(String pathClass) {
+		this.pathClass = pathClass;
+	}
+
+	/**
+	 * Метод извлечения имени класса без рассширения и абсолютного пути
+	 * 
+	 * @param file - класса
+	 * @return - имя класса
+	 */
+	public String setNameSetPathClass(File file) {
+		int pointIndex = file.getName().lastIndexOf(".");
+		String name = file.getName().substring(0, pointIndex);
+		setPathClass(file.getAbsolutePath());
+		log.info(pathClass);
+		log.info(name);
+		return name;
+	}
+
+	/**
+	 * Метод вызова loadClass
+	 * 
+	 * @param file - класса
+	 * @return - Class
+	 * @throws ClassNotFoundException
+	 */
+	public Class<?> customloadClass(File file) throws ClassNotFoundException {
+		return loadClass(setNameSetPathClass(file));
+	}
 }
