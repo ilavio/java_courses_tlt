@@ -6,13 +6,14 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
-public class MyClassLoader extends ClassLoader {
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
+public class MyClassLoader extends ClassLoader {
+	public String pathClass;
 	@Override
-	protected Class<?> findClass(String path) throws ClassNotFoundException {
-		File file = new File(path + ".class");
-		int pointIndex = file.getName().lastIndexOf(".");
-        String name = file.getName().substring(0, pointIndex);
+	protected Class<?> findClass(String name) throws ClassNotFoundException {
+		File file = new File(pathClass);
 		Class newClassMy = null;
 		if(!file.isFile()) {
 			throw new ClassNotFoundException("Класс не найден(не существует)!");
@@ -22,7 +23,7 @@ public class MyClassLoader extends ClassLoader {
 			buf2.read(bytemas);
 			return  defineClass(name, bytemas, 0, bytemas.length);
 		} catch (FileNotFoundException e) {
-			System.out.println("Ошибка в методе findClass 1");
+			log.info("Ошибка в методе findClass 1");
 			e.printStackTrace();
 			return super.findClass(name);
 		} catch (IOException e) {

@@ -4,6 +4,9 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 public class Main {
 	public static void main(String[]args) {
 		String path = "C:\\myClasses";
@@ -13,18 +16,27 @@ public class Main {
 			File [] file = sorce.listFiles();
 			for(int i = 0; i < file.length; i++) {
 				try {
-					String [] pathClass = file[i].getAbsolutePath().split(".class");
-					System.out.println(pathClass[0]);
-					System.out.println(file[i].getName());
-					Class example = loaderMyClass.loadClass(pathClass[0]);
-					System.out.println(example);
+					int pointIndex = file[i].getName().lastIndexOf(".");
+			        String name = file[i].getName().substring(0, pointIndex);
+			        String pathClass = file[i].getAbsolutePath();
+					log.info(name);
+					log.info(pathClass);
+					loaderMyClass.pathClass = pathClass;
+					Class example = loaderMyClass.loadClass(name);
+					Object obj = example.newInstance();  
+					System.out.println(obj); 
 				} catch (ClassNotFoundException e) {
-					System.err.println("Ошибка");
+					log.info("Ошибка");
+					e.printStackTrace();
+				} catch (InstantiationException e) {
+					e.printStackTrace();
+				} catch (IllegalAccessException e) {
 					e.printStackTrace();
 				}
 			}
 		}
 		stackOverError();
+		memoryError();
 	}
 	
 	public static void stackOverError() {
