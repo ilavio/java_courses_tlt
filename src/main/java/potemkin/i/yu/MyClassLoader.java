@@ -8,20 +8,32 @@ import java.io.IOException;
 
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * Класс переапределенный загрузчик классов MyClassLoader
+ * 
+ * @author Илья Пот
+ */
 @Slf4j
 public class MyClassLoader extends ClassLoader {
 	public String pathClass;
+
+	/**
+	 * Метод загрузки класса
+	 * 
+	 * @param name - имя класса
+	 * @return Class<?>
+	 */
 	@Override
 	protected Class<?> findClass(String name) throws ClassNotFoundException {
 		File file = new File(pathClass);
 		Class newClassMy = null;
-		if(!file.isFile()) {
+		if (!file.isFile()) {
 			throw new ClassNotFoundException("Класс не найден(не существует)!");
 		}
-		try(BufferedInputStream buf2 = new BufferedInputStream(new FileInputStream(file))){
+		try (BufferedInputStream buf2 = new BufferedInputStream(new FileInputStream(file))) {
 			byte[] bytemas = new byte[(int) file.length()];
 			buf2.read(bytemas);
-			return  defineClass(name, bytemas, 0, bytemas.length);
+			return defineClass(name, bytemas, 0, bytemas.length);
 		} catch (FileNotFoundException e) {
 			log.info("Ошибка в методе findClass 1");
 			e.printStackTrace();
@@ -32,5 +44,5 @@ public class MyClassLoader extends ClassLoader {
 		}
 		return newClassMy;
 	}
-	
+
 }
