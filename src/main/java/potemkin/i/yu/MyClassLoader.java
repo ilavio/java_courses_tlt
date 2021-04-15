@@ -36,11 +36,9 @@ public class MyClassLoader extends ClassLoader {
 			return defineClass(name, bytemas, 0, bytemas.length);
 		} catch (FileNotFoundException e) {
 			log.info("Ошибка в методе findClass 1");
-			e.printStackTrace();
 			return super.findClass(name);
 		} catch (IOException e) {
 			log.info("Ошибка в методе findClass 2");
-			e.printStackTrace();
 		}
 		return newClassMy;
 	}

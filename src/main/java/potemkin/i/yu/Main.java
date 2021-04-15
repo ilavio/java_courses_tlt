@@ -30,25 +30,18 @@ public class Main {
 					System.out.println(obj);
 				} catch (ClassNotFoundException e) {
 					log.debug("Ошибка ClassNotFoundException");
-					e.printStackTrace();
 				} catch (InstantiationException e) {
 					log.debug("Ошибка InstantiationException");
-					e.printStackTrace();
 				} catch (IllegalAccessException e) {
 					log.debug("Ошибка IllegalAccessException");
-					e.printStackTrace();
 				} catch (IllegalArgumentException e) {
 					log.debug("Ошибка IllegalArgumentException");
-					e.printStackTrace();
 				} catch (InvocationTargetException e) {
 					log.debug("Ошибка InvocationTargetException");
-					e.printStackTrace();
 				} catch (NoSuchMethodException e) {
 					log.debug("Ошибка NoSuchMethodException");
-					e.printStackTrace();
 				} catch (SecurityException e) {
 					log.debug("Ошибка SecurityException");
-					e.printStackTrace();
 				}
 			}
 		}
