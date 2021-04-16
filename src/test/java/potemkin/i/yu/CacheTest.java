@@ -4,6 +4,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
@@ -42,8 +43,7 @@ public class CacheTest {
 		}
 		assertEquals(cache.getCapacity(), cache.getNextItem());
 		cache.delete(1);
-		boolean t = cache.getCapacity() == (cache.getNextItem());
-		assertFalse(t);
+		assertNotEquals(cache.getCapacity(), cache.getNextItem());
 	}
 
 	@Test
@@ -103,7 +103,7 @@ public class CacheTest {
 	public void getElementFromCacheFalse() {
 		Cache<Integer> cache = new Cache<Integer>(10);
 		cache.add(123, 1);
-		assertFalse(12 == cache.get(1));
+		assertNotEquals(12, cache.get(1));
 	}
 
 	@Test
@@ -113,7 +113,7 @@ public class CacheTest {
 		cache.add(123, 1);
 		cache.add(124, 2);
 		int result = cache.getNextItem();
-		assertFalse(standard == result);
+		assertNotEquals(standard, result);
 	}
 
 	@Test

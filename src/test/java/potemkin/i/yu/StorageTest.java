@@ -6,6 +6,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -75,7 +76,7 @@ public class StorageTest {
 		storage.delete();
 		storage.delete();
 		int b = storage.serchNextItem();
-		assertTrue(a == b);
+		assertEquals(a, b);
 	}
 
 	@Test
@@ -110,7 +111,7 @@ public class StorageTest {
 		storage.add("2");
 		storage.add("3");
 		String result = storage.getLast();
-		assertFalse(expected == result);
+		assertNotEquals(expected, result);
 	}
 
 	@Test
@@ -130,7 +131,7 @@ public class StorageTest {
 		storage.add("2");
 		storage.add("3");
 		String result = storage.get(1);
-		assertFalse(expected.equals(result));
+		assertNotEquals(expected, result);
 	}
 
 	@Test

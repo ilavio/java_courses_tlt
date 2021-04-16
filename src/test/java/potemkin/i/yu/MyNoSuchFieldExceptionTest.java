@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 
 public class MyNoSuchFieldExceptionTest {
 	@Test
-	public void ArrayWithException() throws MyNoSuchFieldException {
+	public void arrayWithException() throws MyNoSuchFieldException {
 		String[] mass = new String[] { "G", "S", "S" };
 		for (int i = 0; i < 4; i++) {
 			if (i > mass.length) {
@@ -19,7 +19,7 @@ public class MyNoSuchFieldExceptionTest {
 	}
 
 	@Test
-	public void ArrayWithExceptionAndMessageAndE() throws MyNoSuchFieldException {
+	public void arrayWithExceptionAndMessageAndE() throws MyNoSuchFieldException {
 		String[] mass = new String[] { "G", "S", "S" };
 		final String message = "GSS";
 		for (int i = 0; i < 4; i++) {
@@ -50,7 +50,7 @@ public class MyNoSuchFieldExceptionTest {
 	}
 
 	@Test
-	public void ArrayWithExceptionAndMessage() throws MyNoSuchFieldException {
+	public void arrayWithExceptionAndMessage() throws MyNoSuchFieldException {
 		String[] mass = new String[] { "G", "S", "S" };
 		for (int i = 0; i < 4; i++) {
 			if (i > mass.length) {
@@ -62,7 +62,7 @@ public class MyNoSuchFieldExceptionTest {
 	}
 
 	@Test
-	public void ArrayWithExceptionAndE() throws MyNoSuchFieldException {
+	public void arrayWithExceptionAndE() throws MyNoSuchFieldException {
 		try {
 			String[] mass = new String[] { "G", "S", "S" };
 			for (int i = 0; i < 4; i++) {
