@@ -1,18 +1,28 @@
+/*
+ * Все права защищены.
+ * Регулируется лицензией Epam.
+ * 
+ */
 package potemkin.i.yu;
 
 /**
- * Параметрорезированный Класс CacheElement
+ * Параметрорезированный Класс CacheElement обертывает значение из Cache <T>
+ * типа. Кроме того, этот класс переопределяет методы: toString(), hashCode(),
+ * equals().
  * 
  * @author Илья Пот
  * @param <T>
+ * @since 1.0
  */
 public class CacheElement<T> {
-	public CacheElement() {
-		super();
-	}
-
 	public T cacheElement;
 	private int index;
+	
+	/**
+	 * Дефолтный конструктор Класс CacheElement типа T
+	 */
+	public CacheElement() {
+	}
 
 	/**
 	 * Конструктор с параметром index и объектом вложения

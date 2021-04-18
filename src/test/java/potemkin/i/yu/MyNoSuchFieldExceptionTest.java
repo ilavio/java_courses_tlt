@@ -5,6 +5,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.Test;
 
+import potemkin.i.yu.exception.MyNoSuchFieldException;
+
 public class MyNoSuchFieldExceptionTest {
 	@Test
 	public void arrayWithException() throws MyNoSuchFieldException {

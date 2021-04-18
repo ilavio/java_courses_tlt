@@ -11,6 +11,8 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import potemkin.i.yu.exception.MyIndexOutOfBoundException;
+
 public class StorageTest {
 	Storage<String> storageC = new Storage<String>();
 

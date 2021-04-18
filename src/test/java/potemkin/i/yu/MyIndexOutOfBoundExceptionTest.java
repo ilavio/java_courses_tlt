@@ -4,6 +4,8 @@ import static org.junit.Assert.assertThrows;
 
 import org.junit.jupiter.api.Test;
 
+import potemkin.i.yu.exception.MyIndexOutOfBoundException;
+
 public class MyIndexOutOfBoundExceptionTest {
 	@Test
 	public void callMyIndexOutOfBoundException() throws MyIndexOutOfBoundException {

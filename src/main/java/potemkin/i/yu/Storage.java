@@ -1,25 +1,46 @@
+/*
+ * Все права защищены.
+ * Регулируется лицензией Epam.
+ * 
+ */
 package potemkin.i.yu;
 
 import java.util.Arrays;
 
 import lombok.extern.slf4j.Slf4j;
+import potemkin.i.yu.exception.MyIndexOutOfBoundException;
 
 /**
- * Параметрорезированный Класс Storage
+ * Параметрорезированный Класс Storage максимальная емкость расширяется по мере
+ * заполнения массива в 1.5 раза. Время выполнения операций линейное. Массив
+ * используется для хранения элементов списка, он всекда не меньше размера
+ * списка. При заполненнии емкости списка, при дольнейшей вставке происходит
+ * увелечение емкости массива в 1.5 раза от первоначальной емкости. Емкость
+ * списка может быть увеличина в размере путем добавления элементов. Данный
+ * класс не синхронизирован.
  * 
  * @author Илья Пот
+ * @param <T> тип элементов в этом списке
+ * @since 1
  */
 @Slf4j
 public class Storage<T> {
+	/**
+	 * Массив в котором хронятся элементы класса Cache
+	 */
 	private Object[] storage;
 	private Cache<T> cache;
-	private int capacity;
 
 	/**
-	 * Дефолтный конструктор с внутренним размером массивов
+	 * Первоначальный размер массива. Ипользуется для создания первоначального
+	 * размера массива storage.
+	 */
+	private int capacity = 10;
+
+	/**
+	 * Дефолтный конструктор с начальной длиной массива (10 элементов)
 	 */
 	public Storage() {
-		capacity = 10;
 		this.storage = new Object[capacity];
 		this.cache = new Cache<T>(capacity);
 	}
@@ -30,7 +51,6 @@ public class Storage<T> {
 	 * @param storage - массив объектов
 	 */
 	public Storage(T[] storage) {
-		capacity = 10;
 		if (capacity < storage.length) {
 			capacity = (int) ((double) capacity * 1.5);
 			this.storage = new Object[capacity];
@@ -129,7 +149,7 @@ public class Storage<T> {
 	 * Метод возврата из массива innerCashe, если нет, то из массива storage
 	 * 
 	 * @param index - индекс позиции елемента которого надо вернуть
-	 * @return возвращает элемент по индексу, если индекс привышает пределы то
+	 * @return возвращает элемент по индексу, если индекс привышает длину списка то
 	 *         возвращает null
 	 * @throws MyIndexOutOfBoundException - если выходим за пределы массива
 	 */
