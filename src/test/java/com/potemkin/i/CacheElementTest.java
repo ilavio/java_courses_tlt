@@ -1,4 +1,4 @@
-package potemkin.i.yu;
+package com.potemkin.i;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;

@@ -3,20 +3,21 @@
  * Регулируется лицензией Epam.
  * 
  */
-package potemkin.i.yu;
+package com.potemkin.i;
 
 import java.util.Arrays;
 
+import com.potemkin.i.exception.MyIndexOutOfBoundException;
+
 import lombok.extern.slf4j.Slf4j;
-import potemkin.i.yu.exception.MyIndexOutOfBoundException;
 
 /**
  * Параметрорезированный Класс Storage максимальная емкость расширяется по мере
  * заполнения массива в 1.5 раза. Время выполнения операций линейное. Массив
- * используется для хранения элементов списка, он всекда не меньше размера
- * списка. При заполненнии емкости списка, при дольнейшей вставке происходит
- * увелечение емкости массива в 1.5 раза от первоначальной емкости. Емкость
- * списка может быть увеличина в размере путем добавления элементов. Данный
+ * используется для хранения элементов списка, он всегда не меньше размера
+ * списка. При заполнении емкости списка, при дальнейшей вставке происходит
+ * увеличение емкости массива в 1.5 раза от первоначальной емкости. Емкость
+ * списка может быть увеличена в размере путем добавления элементов. Данный
  * класс не синхронизирован.
  * 
  * @author Илья Пот
@@ -32,17 +33,11 @@ public class Storage<T> {
 	private Cache<T> cache;
 
 	/**
-	 * Первоначальный размер массива. Ипользуется для создания первоначального
-	 * размера массива storage.
-	 */
-	private int capacity = 10;
-
-	/**
 	 * Дефолтный конструктор с начальной длиной массива (10 элементов)
 	 */
 	public Storage() {
-		this.storage = new Object[capacity];
-		this.cache = new Cache<T>(capacity);
+		this.storage = new Object[10];
+		this.cache = new Cache<T>(10);
 	}
 
 	/**
@@ -51,6 +46,7 @@ public class Storage<T> {
 	 * @param storage - массив объектов
 	 */
 	public Storage(T[] storage) {
+	    int capacity = 10;
 		if (capacity < storage.length) {
 			capacity = (int) ((double) capacity * 1.5);
 			this.storage = new Object[capacity];
@@ -68,6 +64,7 @@ public class Storage<T> {
 	 * @param element - елемент добавления
 	 */
 	public void add(T element) {
+	    int capacity = storage.length;
 		if (serchNextItem() == storage.length) {
 			Object[] storageCopy = new Object[storage.length];
 			System.arraycopy(storage, 0, storageCopy, 0, storage.length);
@@ -131,7 +128,6 @@ public class Storage<T> {
 			storage[i] = null;
 		}
 		storage = null;
-		capacity = 0;
 		cache.clear();
 	}
 

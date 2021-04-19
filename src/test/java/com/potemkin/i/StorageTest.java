@@ -1,17 +1,15 @@
-package potemkin.i.yu;
+package com.potemkin.i;
 
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThrows;
-import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import potemkin.i.yu.exception.MyIndexOutOfBoundException;
+import com.potemkin.i.exception.MyIndexOutOfBoundException;
 
 public class StorageTest {
 	Storage<String> storageC = new Storage<String>();
