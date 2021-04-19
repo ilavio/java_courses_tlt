@@ -1,4 +1,4 @@
-package potemkin.i.yu;
+package com.potemkin.i;
 
 public class MainTest {
 
