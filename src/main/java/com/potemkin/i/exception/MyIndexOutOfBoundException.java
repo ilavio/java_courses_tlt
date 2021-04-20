@@ -1,8 +1,3 @@
-/*
- * Все права защищены.
- * Регулируется лицензией Epam.
- * 
- */
 package com.potemkin.i.exception;
 
 /**

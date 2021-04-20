@@ -15,26 +15,26 @@ public class Main {
         log.info("{}{}{}", cachE1.equals(cachE2), ", ", cachE1);
         Cache<String> cashe = new Cache<String>(10);
         Random random = new Random();
-        System.out.println(cashe);
+        log.info("Вывод: {}", cashe);
         for (int i = 0; i < 10; i++) {
             cashe.add(Character.toString(random.nextInt(25) + 'a'), i);
         }
-        log.info(cashe.toString());
+        log.info("Вывод: {}", cashe);
         char charTest = (char) (random.nextInt(25) + 'a');
         cashe.add(Character.toString(charTest), 10);
         cashe.add(Character.toString('a'), 21);
         log.info("Получение Cache элемента через get: {}", cashe.get(Character.toString(charTest)));
-        log.info("Содержимое cache: {}", cashe.toString());
+        log.info("Содержимое cache: {}", cashe);
         cashe.delete(Character.toString(charTest));
         log.info("После удаления элемента:{} :{}", charTest, cashe);
         cashe.clear();
         log.info("После очистки clear:{}{}", cashe, "\n");
         Storage<Integer> stor = new Storage<Integer>();
-        log.info("Создали пустой (Стандартный) Storage:{}. Наполняем:", stor.toString());
+        log.info("Создали пустой (Стандартный) Storage:{}. Наполняем:", stor);
         for (int x = 0; x < 20; x++) {
             stor.add(random.nextInt(30));
         }
-        log.info(stor.toString());
+        log.info("Вывод: {}", stor);
         for (int i = 20; i >= -2; i -= 1) {
             try {
                 stor.get(i);
@@ -44,11 +44,11 @@ public class Main {
         }
         stor.delete();
         stor.delete();
-        log.info("Проверка логики удаления delete:{}", stor.toString());
+        log.info("Проверка логики удаления delete:{}", stor);
         stor.delete();
-        log.info("Вызов последнего элемента getLast(): {}" + stor.getLast());
+        log.info("Вызов последнего элемента getLast(): {}", stor.getLast());
         stor.clear();
-        log.info("После очистки clear:{}",stor.toString());
+        log.info("После очистки clear:{}", stor);
         CallChekedException cheked = new CallChekedException(cashe);
         try {
             cheked.fieldCache();
