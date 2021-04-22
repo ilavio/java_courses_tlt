@@ -1,11 +1,18 @@
 package com.potemkin.i;
 
+import com.potemkin.i.annotations.Entity;
 import com.potemkin.i.annotations.Value;
 
+/**
+ * Класс POJO Student
+ * 
+ * @author Илья Пот
+ */
+@Entity
 public class Student {
+    @Value(referenceToValue = 2)
     private int age;
-    
-    @Value
+
     private String name;
 
     public int getAge() {
@@ -20,7 +27,7 @@ public class Student {
         return name;
     }
 
-    public void setName(String name) {
+    public void setName(@Value String name) {
         this.name = name;
     }
 }

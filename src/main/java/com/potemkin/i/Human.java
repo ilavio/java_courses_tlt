@@ -3,6 +3,11 @@ package com.potemkin.i;
 import com.potemkin.i.annotations.Entity;
 import com.potemkin.i.annotations.Value;
 
+/**
+ * Класс POJO Human
+ * 
+ * @author Илья Пот
+ */
 @Entity
 public class Human {
     @Value(age = 18)

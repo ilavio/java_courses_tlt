@@ -1,19 +1,21 @@
 package com.potemkin.i;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.potemkin.i.annotations.ClassAnalyzer;
 
 public class Main {
-    public static void main(String []args) {
+    static final Logger logRoot = LogManager.getRootLogger();
+
+    public static void main(String[] args) {
         Human human = new Human();
         Student student = new Student();
-        ClassAnalyzer.annotationHandlerValueField(human);
-        System.out.println(human.getAge() + "; " + human.getName());
-        ClassAnalyzer.annotationHandlerValueHumanParametr(human);
-        System.out.println(human.getAge() + "; " + human.getName());
-        ClassAnalyzer.annotationHandlerValueField(student);
-        System.out.println(student.getAge() + "; " + student.getName());
-        System.out.println(ClassAnalyzer.initializationEntity(human));
+        logRoot.info("Запуск Human <----------------------------------------------------->");
         ClassAnalyzer.start(human);
-        System.out.println(human.getAge() + "; " + human.getName());
+        logRoot.info("Human age:{} , Name: {}", human.getAge(), human.getName());
+        logRoot.info("Запуск Student <----------------------------------------------------->");
+        ClassAnalyzer.start(student);
+        logRoot.info("Student age:{} , Name: {}", student.getAge(), student.getName());
     }
 }
