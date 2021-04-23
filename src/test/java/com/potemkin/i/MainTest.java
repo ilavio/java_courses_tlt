@@ -1,5 +1,4 @@
 package com.potemkin.i;
 
-public class MainTest {
-
+public class MainTest {    
 }
