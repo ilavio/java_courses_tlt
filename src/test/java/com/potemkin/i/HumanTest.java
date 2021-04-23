@@ -5,14 +5,19 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.Test;
 
+/**
+ * HumanTest
+ * 
+ * @author Илья Пот
+ */
 public class HumanTest {
-    
+
     @Test
     public void testCreateHuman() {
         Human human = new Human();
         assertNotNull(human);
     }
-    
+
     @Test
     public void testSetHuman() {
         int age = 11;

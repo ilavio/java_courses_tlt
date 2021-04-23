@@ -9,13 +9,19 @@ import org.junit.jupiter.api.Test;
 import com.potemkin.i.annotations.ClassAnalyzer;
 import com.potemkin.i.exception.NoValueAnnotationException;
 
+/**
+ * ClassAnalyzerTest
+ * 
+ * @author Илья Пот
+ */
 public class ClassAnalyzerTest {
     Student student = new Student();
     Human human = new Human();
+    ClassAnalyzer classAnalyzer = new ClassAnalyzer();
 
     @BeforeEach
     public void castToSingleValue() {
-        ClassAnalyzer.start(human);
+        classAnalyzer.start(human);
         student.setAge(human.getAge());
         student.setName(human.getName());
     }
@@ -24,18 +30,18 @@ public class ClassAnalyzerTest {
     public void comparingObjects() {
         assertEquals(student.getName(), human.getName());
     }
-    
+
     @Test
-    public void checkingException() throws NoValueAnnotationException{
+    public void checkingException() throws NoValueAnnotationException {
         Exception exception = assertThrows(NoValueAnnotationException.class, () -> {
-            ClassAnalyzer.start(student);
+            classAnalyzer.start(student);
             throw new NoValueAnnotationException();
         });
     }
-    
+
     @Test
     public void checkingDefaultAnnotationValue() {
-        ClassAnalyzer.start(student);
+        classAnalyzer.start(student);
         String string = "no name";
         assertEquals(student.getName(), string);
     }

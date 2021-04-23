@@ -10,25 +10,27 @@ import com.potemkin.i.annotations.Value;
  */
 @Entity
 public class Human {
-    @Value(age = 18)
+    @Value(value = "18")
     private int age;
 
-    @Value(name = "ggg")
+    @Value(value = "ggg")
     private String name;
 
     public int getAge() {
         return age;
     }
-
-    public void setAge(@Value(age = 34) int age) {
+    
+    @Value(value = "34")
+    public void setAge(int age) {
         this.age = age;
     }
 
     public String getName() {
         return name;
     }
-
-    public void setName(@Value(name = "Foma") String name) {
+    
+    @Value(value = "Foma") 
+    public void setName(String name) {
         this.name = name;
     }
 }

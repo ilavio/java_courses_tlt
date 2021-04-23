@@ -9,7 +9,6 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
-import java.util.Arrays;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -25,22 +24,21 @@ import com.potemkin.i.exception.NoValueAnnotationException;
  */
 public class ClassAnalyzer {
     static final Logger log = LogManager.getLogger(ClassAnalyzer.class);
-    private static String path = "src/main/resources/file.txt";
+    private String path = "src/main/resources/file.txt";
 
     /**
      * Метод запуска анализа объекта
      * 
      * @param object
      */
-    public static void start(Object object) {
+    public void start(Object object) {
         if (initializationEntity(object)) {
+            annotationHandlerValueMethod(object);
             try {
                 annotationHandlerValueField(object);
             } catch (NoValueAnnotationException e) {
-                annotationHandlerValueParametr(object);
-                log.debug("Ошибка: ", e);
+                log.debug("Ошибка в annotationHandlerValueField : ", e);
             }
-            annotationHandlerValueParametr(object);
         }
     }
 
@@ -49,8 +47,8 @@ public class ClassAnalyzer {
      * 
      * @param path
      */
-    public static void setPath(String path) {
-        ClassAnalyzer.path = path;
+    public void setPath(String path) {
+        this.path = path;
     }
 
     /**
@@ -59,7 +57,7 @@ public class ClassAnalyzer {
      * @param object
      * @return если анотирован вернет true иначе false
      */
-    private static boolean initializationEntity(Object object) {
+    private boolean initializationEntity(Object object) {
         return object.getClass().isAnnotationPresent(Entity.class);
     }
 
@@ -68,25 +66,26 @@ public class ClassAnalyzer {
      * 
      * @param object - принимаемый объект
      * @throws NoValueAnnotationException в случае отсутствия аннотированного поля
+     *                                    объекта
      */
-    private static void annotationHandlerValueField(Object object) throws NoValueAnnotationException {
+    private void annotationHandlerValueField(Object object) throws NoValueAnnotationException {
         Class<?> clazz = object.getClass();
         Field[] fields = clazz.getDeclaredFields();
         for (Field field : fields) {
+            field.setAccessible(true);
             if (field.isAnnotationPresent(Value.class)) {
                 Value valueannotation = field.getAnnotation(Value.class);
-                field.setAccessible(true);
-                String valueStr = (String) valueannotation.name();
-                int valueInt = (int) valueannotation.age();
-                int referenceToValue = (int) valueannotation.referenceToValue();
-                log.info("Значение полей: {}{}{}{}{}{}{}", valueStr, ", ", valueInt, "; это анотировано: ",
-                        field.isAnnotationPresent(Value.class), " ссылка значения: ", referenceToValue);
-                if (referenceToValue == 0) {
-                    assignmentOfValuesFields(field, valueStr, valueInt, object);
-                }
-                if (referenceToValue > 0) {
-                    assignmentOfValuesFields(field, valueStr, valueInt, object, splittingFileIntoValues(loadFileTxt()),
-                            referenceToValue);
+                String referenceToValue = valueannotation.referenceToValue();
+                log.info("annotationHandlerValueField внедряемое значение: {} ; referenceToValue - {}",
+                        valueannotation.value(), referenceToValue);
+                if (referenceToValue.equals("no reference")) {
+                    try {
+                        field.set(object, transformationValue(field, valueannotation.value()));
+                    } catch (IllegalArgumentException | IllegalAccessException e) {
+                        log.debug("Ошибка в annotationHandlerValueField : ", e);
+                    }
+                } else {
+                    assignmentOfValuesFields(field, object, splittingFileIntoValues(loadFileTxt()), referenceToValue);
                 }
             } else {
                 throw new NoValueAnnotationException();
@@ -95,41 +94,24 @@ public class ClassAnalyzer {
     }
 
     /**
-     * метод анализа параметра (аргумента) метода объекта
+     * метод анализа метода объекта
      * 
-     * @param object - принимаемый объект
+     * @param object
      */
-    private static void annotationHandlerValueParametr(Object object) {
+    private void annotationHandlerValueMethod(Object object) {
         Class<?> clazz = object.getClass();
         Method[] methods = clazz.getDeclaredMethods();
         for (Method method : methods) {
             method.setAccessible(true);
-            Parameter[] parameters = method.getParameters();
-            for (Parameter parameter : parameters) {
-                if (parameter.isAnnotationPresent(Value.class)) {
-                    Value valueannotation = parameter.getAnnotation(Value.class);
-                    String valueStr = (String) valueannotation.name();
-                    int valueInt = (int) valueannotation.age();
-                    log.info("Значение параметров метода: {}{}{}{}", valueStr, ", ", valueInt, " ;");
-                    if (!valueStr.equals("") && parameter.getName().equals("arg0")) {
-                        try {
-                            method.invoke(object, valueStr);
-                        } catch (IllegalArgumentException | IllegalAccessException e) {
-                            log.debug("Ошибка: ", e);
-                        } catch (InvocationTargetException e) {
-                            log.debug("Ошибка: ", e);
-                        }
-                    }
-                    if (valueInt != 0) {
-                        try {
-                            method.invoke(object, (Integer) valueInt);
-                        } catch (IllegalArgumentException e) {
-                            log.debug("Ошибка: ", e);
-                        } catch (IllegalAccessException e) {
-                            log.debug("Ошибка: ", e);
-                        } catch (InvocationTargetException e) {
-                            log.debug("Ошибка: ", e);
-                        }
+            if (method.isAnnotationPresent(Value.class)) {
+                Parameter[] parameters = method.getParameters();
+                for (Parameter parameter : parameters) {
+                    Value valueannotation = method.getAnnotation(Value.class);
+                    log.info("annotationHandlerValueMethod внедряемое значение: {}", valueannotation.value());
+                    try {
+                        method.invoke(object, transformationValue(parameter, valueannotation.value()));
+                    } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+                        log.debug("Ошибка в annotationHandlerValueMethod : ", e);
                     }
                 }
             }
@@ -141,7 +123,7 @@ public class ClassAnalyzer {
      * 
      * @return - StringBuffer
      */
-    private static StringBuffer loadFileTxt() {
+    private StringBuffer loadFileTxt() {
         StringBuffer stringBuf = new StringBuffer();
         if (!path.equals(null) && !path.equals("")) {
             File file = new File(path);
@@ -170,57 +152,19 @@ public class ClassAnalyzer {
      * @param stringBuf - принимает для разделения на отдельные значения
      * @return - Map<Integer, String[]> с ключом для ссылки к значениям
      */
-    private static Map<Integer, String[]> splittingFileIntoValues(StringBuffer stringBuf) {
-        Map<Integer, String[]> treeMapVailues = new TreeMap<Integer, String[]>();
+    private Map<String, String> splittingFileIntoValues(StringBuffer stringBuf) {
+        Map<String, String> treeMapVailues = new TreeMap<String, String>();
         String[] splitString = stringBuf.toString().split("(\\{)|(\\}\\W+)|(\\})");
         for (int i = 1; i < splitString.length; i++) {
-            String[] splitStringValues = new String[2];
-            String[] masString1 = splitString[i].split("\r|\n");
-            for (int x = 0; x < masString1.length; x++) {
-                String[] masString2 = masString1[x].split("=");
-                if (masString2[0].equals("age")) {
-                    splitStringValues[0] = masString2[1];
-                }
-                if (masString2[0].equals("name")) {
-                    splitStringValues[1] = masString2[1];
-                }
-                masString2 = null;
-            }
+            String[] masString1 = splitString[i].split("=");
+            treeMapVailues.put(masString1[0], masString1[1]);
             masString1 = null;
-            treeMapVailues.put(i, splitStringValues);
         }
         log.info("Получаем список значений:");
-        for (Map.Entry<Integer, String[]> entry : treeMapVailues.entrySet()) {
-            log.info("{}) Значения {};", entry.getKey(), Arrays.toString(entry.getValue()));
+        for (Map.Entry<String, String> entry : treeMapVailues.entrySet()) {
+            log.info("Ключ -> {} Значение -> {};", entry.getKey(), entry.getValue());
         }
         return treeMapVailues;
-    }
-
-    /**
-     * метод непостредственного внедрения значений в объект через значение аннотаций
-     * 
-     * @param field    - поле внедрения
-     * @param valueStr - строка для name
-     * @param valueInt - строка для age
-     * @param object   - объект для внедрения
-     */
-    private static void assignmentOfValuesFields(Field field, String valueStr, int valueInt, Object object) {
-        if (!valueStr.equals("") && field.getName().equals("name")) {
-            try {
-                field.set(object, valueStr);
-            } catch (IllegalArgumentException | IllegalAccessException e) {
-                e.printStackTrace();
-            }
-        }
-        if (valueInt != 0 && field.getName().equals("age")) {
-            try {
-                field.setInt(object, valueInt);
-            } catch (IllegalArgumentException e) {
-                log.debug("Ошибка: ", e);
-            } catch (IllegalAccessException e) {
-                log.debug("Ошибка: ", e);
-            }
-        }
     }
 
     /**
@@ -228,37 +172,62 @@ public class ClassAnalyzer {
      * файла
      * 
      * @param field            - поле внедрения
-     * @param valueStr         - строка для name
-     * @param valueInt         - строка для age
      * @param object           - объект для внедрения
      * @param treeMapVailues   - для ссылки к значениям
      * @param referenceToValue - (ключ) ссылка
      */
-    private static void assignmentOfValuesFields(Field field, String valueStr, int valueInt, Object object,
-            Map<Integer, String[]> treeMapVailues, int referenceToValue) {
-        if (referenceToValue <= treeMapVailues.size()) {
-            if (!treeMapVailues.get((Integer) referenceToValue)[0].equals(null)) {
-                valueInt = Integer.parseInt(treeMapVailues.get(referenceToValue)[0]);
-            }
-            if (!treeMapVailues.get((Integer) referenceToValue)[1].equals(null)) {
-                valueStr = treeMapVailues.get(referenceToValue)[1];
-            }
-            if (!valueStr.equals("") && field.getName().equals("name")) {
+    private void assignmentOfValuesFields(Field field, Object object, Map<String, String> treeMapVailues,
+            String referenceToValue) {
+        for (Map.Entry<String, String> entry : treeMapVailues.entrySet()) {
+            if (referenceToValue.equals(entry.getKey())) {
                 try {
-                    field.set(object, valueStr);
+                    field.set(object, transformationValue(field, entry.getValue()));
                 } catch (IllegalArgumentException | IllegalAccessException e) {
-                    log.debug("Ошибка: ", e);
-                }
-            }
-            if (valueInt != 0 && field.getName().equals("age")) {
-                try {
-                    field.setInt(object, valueInt);
-                } catch (IllegalArgumentException e) {
-                    log.debug("Ошибка: ", e);
-                } catch (IllegalAccessException e) {
-                    log.debug("Ошибка: ", e);
+                    log.debug("Ошибка в assignmentOfValuesFields : {}", e);
                 }
             }
         }
+    }
+
+    /**
+     * Метод преоброзования в тип в зависимости какой принемает поле анализируемого
+     * объекта
+     * 
+     * @param field
+     * @param value
+     * @return
+     */
+    private Object transformationValue(Field field, String value) {
+        Class<?> fieldType = field.getType();
+        log.info("field: {}{}{}", fieldType.getSimpleName(), "; ", field.getType());
+        if (fieldType.getSimpleName().equals("int")) {
+            return Integer.parseInt(value);
+        } else if (fieldType.getSimpleName().equals("String")) {
+            return value;
+        } else if (fieldType.getSimpleName().equals("Boolean")) {
+            return Boolean.valueOf(value);
+        }
+        return Double.parseDouble(value);
+    }
+
+    /**
+     * Метод преоброзования в тип в зависимости какой принемает метод анализируемого
+     * объекта
+     * 
+     * @param parameter
+     * @param value
+     * @return
+     */
+    private Object transformationValue(Parameter parameter, String value) {
+        Class<?> fieldType = parameter.getType();
+        log.info("parameter: {}{}{}", fieldType.getSimpleName(), "; ", parameter.getType());
+        if (fieldType.getSimpleName().equals("int")) {
+            return Integer.parseInt(value);
+        } else if (fieldType.getSimpleName().equals("String")) {
+            return value;
+        } else if (fieldType.getSimpleName().equals("Boolean")) {
+            return Boolean.valueOf(value);
+        }
+        return Double.parseDouble(value);
     }
 }

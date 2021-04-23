@@ -7,18 +7,16 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Указывает, что объявление поля класса и аргумента метода предназначено для
- * внедрения значений
+ * Указывает, что объявление поля класса или метода предназначено для
+ * внедрения значения
  * 
  * @author Илья Пот
  */
 @Inherited
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.FIELD, ElementType.PARAMETER })
+@Target({ ElementType.FIELD, ElementType.METHOD })
 public @interface Value {
-    int age() default 0;
+    String value() default "no name";
 
-    String name() default "no name";
-
-    int referenceToValue() default 0;
+    String referenceToValue() default "no reference";
 }

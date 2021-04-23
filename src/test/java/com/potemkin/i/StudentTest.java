@@ -5,6 +5,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.Test;
 
+/**
+ * StudentTest
+ * 
+ * @author Илья Пот
+ */
 public class StudentTest {
     @Test
     public void testCreateStudent() {
