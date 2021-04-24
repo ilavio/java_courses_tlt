@@ -3,7 +3,6 @@ package com.potemkin.i.annotations;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -61,7 +60,7 @@ public class ClassAnalyzer {
     /**
      * Метод проверки аннотирования объекта
      * 
-     * @param object
+     * @param object - принимаемый объект
      * @return если анотирован вернет true иначе false
      */
     private boolean initializationEntity(Object object) {
@@ -105,7 +104,7 @@ public class ClassAnalyzer {
      * 
      * @param object - принимаемый объект
      * @throws IllegalStateException в случае отсутствия аннотированного поля
-     *                                    объекта
+     *                               объекта
      */
     private void annotationHandlerValueFieldIllegal(Object object) throws IllegalStateException {
         Class<?> clazz = object.getClass();
@@ -175,7 +174,7 @@ public class ClassAnalyzer {
                     }
                 } catch (IOException e) {
                     log.error("Ошибка loadFileTxt(): ", e);
-                } 
+                }
                 log.info("Получили файл: {}", stringBuf);
                 return stringBuf;
             }
@@ -191,7 +190,7 @@ public class ClassAnalyzer {
      */
     private Map<String, String> splittingFileIntoValues(StringBuffer stringBuf) {
         Map<String, String> treeMapVailues = new TreeMap<String, String>();
-        String[] splitString = stringBuf.toString().split("(\s)|(\n\r)|(\r\n)");
+        String[] splitString = stringBuf.toString().split("(\\r\\n)|(\\n\\r)|(\\s)");
         for (int i = 1; i < splitString.length; i++) {
             String[] masString1 = splitString[i].split("=");
             treeMapVailues.put(masString1[0], masString1[1]);
@@ -258,7 +257,7 @@ public class ClassAnalyzer {
         }
         return "no name";
     }
-
+    
     /**
      * Метод преоброзования в тип в зависимости какой принемает метод анализируемого
      * объекта
