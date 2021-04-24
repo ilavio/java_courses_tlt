@@ -1,0 +1,7 @@
+age1=234
+name1=ГУЛИВЕР
+age2=100
+name2=БУМЕР
+age3=150
+decimal1=180.1
+itisMonkey=true
