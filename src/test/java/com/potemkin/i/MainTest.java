@@ -5,7 +5,7 @@ import static org.junit.Assert.assertNotNull;
 import org.junit.jupiter.api.Test;
 
 /**
- * MainTest
+ * Тестирование запуска класса MainTest
  * 
  * @author Илья Пот
  */

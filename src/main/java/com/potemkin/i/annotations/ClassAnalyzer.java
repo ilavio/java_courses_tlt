@@ -29,7 +29,7 @@ public class ClassAnalyzer {
     /**
      * Метод запуска анализа объекта
      * 
-     * @param object
+     * @param object - принимаемый объект
      */
     public void start(Object object) {
         if (initializationEntity(object)) {
@@ -37,22 +37,29 @@ public class ClassAnalyzer {
             try {
                 annotationHandlerValueField(object);
             } catch (NoValueAnnotationException e) {
-                log.debug("Ошибка в annotationHandlerValueField : ", e);
+                log.error("Ошибка в annotationHandlerValueField() : ", e);
+            }
+        } else {
+            annotationHandlerValueMethod(object);
+            try {
+                annotationHandlerValueFieldIllegal(object);
+            } catch (IllegalStateException e) {
+                log.error("Ошибка в annotationHandlerValueField() : ", e);
             }
         }
     }
 
     /**
-     * метод смены пути до файла со значениями
+     * Метод смены пути до файла со значениями
      * 
-     * @param path
+     * @param path - путь до файла
      */
     public void setPath(String path) {
         this.path = path;
     }
 
     /**
-     * метод проверки аннотирования объекта
+     * Метод проверки аннотирования объекта
      * 
      * @param object
      * @return если анотирован вернет true иначе false
@@ -62,7 +69,7 @@ public class ClassAnalyzer {
     }
 
     /**
-     * метод анализа полей объекта
+     * Метод анализа полей объекта
      * 
      * @param object - принимаемый объект
      * @throws NoValueAnnotationException в случае отсутствия аннотированного поля
@@ -76,13 +83,13 @@ public class ClassAnalyzer {
             if (field.isAnnotationPresent(Value.class)) {
                 Value valueannotation = field.getAnnotation(Value.class);
                 String referenceToValue = valueannotation.referenceToValue();
-                log.info("annotationHandlerValueField внедряемое значение: {} ; referenceToValue - {}",
+                log.info("annotationHandlerValueField() внедряемое значение: {} ; referenceToValue - {}",
                         valueannotation.value(), referenceToValue);
-                if (referenceToValue.equals("no reference")) {
+                if (referenceToValue.equals("no reference") && !valueannotation.value().equals("no reference")) {
                     try {
                         field.set(object, transformationValue(field, valueannotation.value()));
                     } catch (IllegalArgumentException | IllegalAccessException e) {
-                        log.debug("Ошибка в annotationHandlerValueField : ", e);
+                        log.error("Ошибка в annotationHandlerValueField() : ", e);
                     }
                 } else {
                     assignmentOfValuesFields(field, object, splittingFileIntoValues(loadFileTxt()), referenceToValue);
@@ -94,9 +101,41 @@ public class ClassAnalyzer {
     }
 
     /**
-     * метод анализа метода объекта
+     * Метод анализа полей объекта без @Entity
      * 
-     * @param object
+     * @param object - принимаемый объект
+     * @throws IllegalStateException в случае отсутствия аннотированного поля
+     *                                    объекта
+     */
+    private void annotationHandlerValueFieldIllegal(Object object) throws IllegalStateException {
+        Class<?> clazz = object.getClass();
+        Field[] fields = clazz.getDeclaredFields();
+        for (Field field : fields) {
+            field.setAccessible(true);
+            if (field.isAnnotationPresent(Value.class)) {
+                Value valueannotation = field.getAnnotation(Value.class);
+                String referenceToValue = valueannotation.referenceToValue();
+                log.info("annotationHandlerValueField() внедряемое значение: {} ; referenceToValue - {}",
+                        valueannotation.value(), referenceToValue);
+                if (referenceToValue.equals("no reference") && !valueannotation.value().equals("no reference")) {
+                    try {
+                        field.set(object, transformationValue(field, valueannotation.value()));
+                    } catch (IllegalArgumentException | IllegalAccessException e) {
+                        log.error("Ошибка в annotationHandlerValueField() : ", e);
+                    }
+                } else {
+                    assignmentOfValuesFields(field, object, splittingFileIntoValues(loadFileTxt()), referenceToValue);
+                }
+            } else {
+                throw new IllegalStateException();
+            }
+        }
+    }
+
+    /**
+     * Метод анализа метода объекта
+     * 
+     * @param object - принимаемый объект
      */
     private void annotationHandlerValueMethod(Object object) {
         Class<?> clazz = object.getClass();
@@ -107,11 +146,11 @@ public class ClassAnalyzer {
                 Parameter[] parameters = method.getParameters();
                 for (Parameter parameter : parameters) {
                     Value valueannotation = method.getAnnotation(Value.class);
-                    log.info("annotationHandlerValueMethod внедряемое значение: {}", valueannotation.value());
+                    log.info("annotationHandlerValueMethod() внедряемое значение: {}", valueannotation.value());
                     try {
                         method.invoke(object, transformationValue(parameter, valueannotation.value()));
                     } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-                        log.debug("Ошибка в annotationHandlerValueMethod : ", e);
+                        log.error("Ошибка в annotationHandlerValueMethod : ", e);
                     }
                 }
             }
@@ -119,7 +158,7 @@ public class ClassAnalyzer {
     }
 
     /**
-     * метод загрузки файла со списком значений для дольнейшего внедрения в объект
+     * Метод загрузки файла со списком значений для дольнейшего внедрения в объект
      * 
      * @return - StringBuffer
      */
@@ -134,11 +173,9 @@ public class ClassAnalyzer {
                         bytemas = buf2.readAllBytes();
                         stringBuf.append(new String(bytemas));
                     }
-                } catch (FileNotFoundException e) {
-                    log.debug("Ошибка: ", e);
                 } catch (IOException e) {
-                    log.debug("Ошибка: ", e);
-                }
+                    log.error("Ошибка loadFileTxt(): ", e);
+                } 
                 log.info("Получили файл: {}", stringBuf);
                 return stringBuf;
             }
@@ -147,14 +184,14 @@ public class ClassAnalyzer {
     }
 
     /**
-     * метод разделения файла на значения
+     * Mетод разделения файла на значения
      * 
      * @param stringBuf - принимает для разделения на отдельные значения
      * @return - Map<Integer, String[]> с ключом для ссылки к значениям
      */
     private Map<String, String> splittingFileIntoValues(StringBuffer stringBuf) {
         Map<String, String> treeMapVailues = new TreeMap<String, String>();
-        String[] splitString = stringBuf.toString().split("(\\{)|(\\}\\W+)|(\\})");
+        String[] splitString = stringBuf.toString().split("(\s)|(\n\r)|(\r\n)");
         for (int i = 1; i < splitString.length; i++) {
             String[] masString1 = splitString[i].split("=");
             treeMapVailues.put(masString1[0], masString1[1]);
@@ -168,7 +205,7 @@ public class ClassAnalyzer {
     }
 
     /**
-     * метод непостредственного внедрения значений в объект через ссылку (ключ) из
+     * Mетод непостредственного внедрения значений в объект через ссылку (ключ) из
      * файла
      * 
      * @param field            - поле внедрения
@@ -183,7 +220,7 @@ public class ClassAnalyzer {
                 try {
                     field.set(object, transformationValue(field, entry.getValue()));
                 } catch (IllegalArgumentException | IllegalAccessException e) {
-                    log.debug("Ошибка в assignmentOfValuesFields : {}", e);
+                    log.error("Ошибка в assignmentOfValuesFields() : {}", e);
                 }
             }
         }
@@ -193,41 +230,65 @@ public class ClassAnalyzer {
      * Метод преоброзования в тип в зависимости какой принемает поле анализируемого
      * объекта
      * 
-     * @param field
-     * @param value
-     * @return
+     * @param field - поле внедрения
+     * @param value - внедряемое значение
+     * @return - преобразованный объект
      */
     private Object transformationValue(Field field, String value) {
         Class<?> fieldType = field.getType();
-        log.info("field: {}{}{}", fieldType.getSimpleName(), "; ", field.getType());
+        log.info("transformationValue() field: {}{}{}", fieldType.getSimpleName(), "; ", field.getType());
         if (fieldType.getSimpleName().equals("int")) {
-            return Integer.parseInt(value);
+            if (!value.equals("no name")) {
+                return Integer.parseInt(value);
+            }
         } else if (fieldType.getSimpleName().equals("String")) {
             return value;
-        } else if (fieldType.getSimpleName().equals("Boolean")) {
-            return Boolean.valueOf(value);
+        } else if (fieldType.getSimpleName().equals("boolean")) {
+            if (!value.equals("no name")) {
+                return Boolean.valueOf(value);
+            }
+        } else if (fieldType.getSimpleName().equals("Integer")) {
+            if (!value.equals("no name")) {
+                return Integer.valueOf(value);
+            }
+        } else if (fieldType.getSimpleName().equals("double")) {
+            if (!value.equals("no name")) {
+                return Double.parseDouble(value);
+            }
         }
-        return Double.parseDouble(value);
+        return "no name";
     }
 
     /**
      * Метод преоброзования в тип в зависимости какой принемает метод анализируемого
      * объекта
      * 
-     * @param parameter
-     * @param value
-     * @return
+     * @param parameter - параметр внедрения
+     * @param value     - внедряемое значение
+     * @return - преобразованный объект
      */
     private Object transformationValue(Parameter parameter, String value) {
         Class<?> fieldType = parameter.getType();
-        log.info("parameter: {}{}{}", fieldType.getSimpleName(), "; ", parameter.getType());
+        log.info("transformationValue() parameter: {}{}{}", fieldType.getSimpleName(), "; ", parameter.getType());
         if (fieldType.getSimpleName().equals("int")) {
-            return Integer.parseInt(value);
+            if (!value.equals("no name")) {
+                return Integer.parseInt(value);
+            }
         } else if (fieldType.getSimpleName().equals("String")) {
             return value;
-        } else if (fieldType.getSimpleName().equals("Boolean")) {
-            return Boolean.valueOf(value);
+        } else if (fieldType.getSimpleName().equals("boolean")) {
+            if (!value.equals("no name")) {
+                return Boolean.valueOf(value);
+            }
+        } else if (fieldType.getSimpleName().equals("Integer")) {
+            if (!value.equals("no name")) {
+                return Integer.valueOf(value);
+            }
+        } else if (fieldType.getSimpleName().equals("double")) {
+            if (!value.equals("no name")) {
+                return Double.parseDouble(value);
+            }
         }
-        return Double.parseDouble(value);
+        return "no name";
     }
 }

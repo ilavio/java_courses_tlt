@@ -8,10 +8,15 @@ import com.potemkin.i.annotations.Value;
  * 
  * @author Илья Пот
  */
-@Entity
 public class Student {
     @Value(referenceToValue = "age3")
     private int age;
+    
+    @Value("true")
+    private boolean itIsHuman;
+    
+    @Value("2345")
+    private Integer integer;
 
     private String name;
 
@@ -19,7 +24,7 @@ public class Student {
         return age;
     }
 
-    @Value(value = "34")
+    @Value("34")
     public void setAge(int age) {
         this.age = age;
     }
@@ -32,4 +37,21 @@ public class Student {
     public void setName(String name) {
         this.name = name;
     }
+
+    public boolean getItIsHuman() {
+        return itIsHuman;
+    }
+
+    public void setItIsHuman(boolean itIsHuman) {
+        this.itIsHuman = itIsHuman;
+    }
+
+    public Integer getInteger() {
+        return integer;
+    }
+
+    public void setInteger(Integer integer) {
+        this.integer = integer;
+    }
+    
 }

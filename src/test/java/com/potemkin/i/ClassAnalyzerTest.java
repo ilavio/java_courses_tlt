@@ -10,7 +10,7 @@ import com.potemkin.i.annotations.ClassAnalyzer;
 import com.potemkin.i.exception.NoValueAnnotationException;
 
 /**
- * ClassAnalyzerTest
+ * Проверка работы ClassAnalyzerTest 
  * 
  * @author Илья Пот
  */
