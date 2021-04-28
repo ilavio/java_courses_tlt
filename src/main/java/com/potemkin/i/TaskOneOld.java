@@ -14,16 +14,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Класс TaskOneOld генерации UUID и поиска конца света
  * 
  * @author Илья Пот
  */
+@Slf4j
 public class TaskOneOld {
-    private static final Logger log = LoggerFactory.getLogger(TaskOneOld.class);
     private Path path = Paths.get("textUUID.txt");
 
     /**
@@ -103,7 +102,7 @@ public class TaskOneOld {
                 list.add(bufferedReader.readLine());
             }
             for (int i = 0; i < list.size(); i++) {
-                if (CheckingNumber(list.get(i))) {
+                if (checkingNumber(list.get(i))) {
                     listFilter.add(list.get(i));
                 }
             }
@@ -129,7 +128,7 @@ public class TaskOneOld {
      * @param element - String
      * @return если больше true иначе false
      */
-    private boolean CheckingNumber(String element) {
+    private boolean checkingNumber(String element) {
         String[] mas = element.split("[^0-9]()|()");
         int i = 0;
         for (String str : mas) {

@@ -1,10 +1,13 @@
 package com.potemkin.i;
 
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * Класс POJO Sausage для обработки и внедрения значений из file.txt
  * 
  * @author Илья Пот
  */
+@Slf4j
 public class Sausage {
     private String type;
 

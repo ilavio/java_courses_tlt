@@ -16,16 +16,15 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Класс TaskOneNew генерации UUID и поиска конца света
  * 
  * @author Илья Пот
  */
+@Slf4j
 public class TaskOneNew {
-    private static final Logger log = LoggerFactory.getLogger(TaskOneNew.class);
     private Path path = Paths.get("textUUIDNew.txt");
 
     /**
@@ -59,7 +58,7 @@ public class TaskOneNew {
     private List<UUID> createUuidList() {
         log.trace("createUuidList(): ");
         List<UUID> list = Stream.generate(() -> UUID.randomUUID()).limit(10000)
-                .collect(Collectors.toCollection(ArrayList<UUID>::new));
+                .collect(Collectors.toList());
         for (UUID element : list) {
             log.trace(element.toString());
         }
@@ -72,13 +71,6 @@ public class TaskOneNew {
      * @param uuid - элемент типа String
      */
     private void writeFile(String uuid) {
-        if (Files.exists(path)) {
-            try {
-                Files.delete(path);
-            } catch (IOException e) {
-                log.error("Ошибка writeFile(): ", e);
-            }
-        }
         if (!Files.exists(path)) {
             try {
                 Files.createFile(path);
@@ -103,9 +95,7 @@ public class TaskOneNew {
     private List<String> readFile() {
         List<String> list = null;
         try (Stream<String> lineStream = Files.lines(path)) {
-            list = lineStream.parallel().filter(element -> {
-                return CheckingNumber(element);
-            }).collect(Collectors.toCollection(ArrayList<String>::new));
+            list = lineStream.parallel().filter(element -> checkingNumber(element)).collect(Collectors.toList());
         } catch (IOException e) {
             log.error("Ошибка readFile(): ", e);
         }
@@ -135,7 +125,7 @@ public class TaskOneNew {
      * @param element
      * @return если больше true иначе false
      */
-    private boolean CheckingNumber(String element) {
+    private boolean checkingNumber(String element) {
         String[] mas = element.split("[^0-9]()|()");
         int i = 0;
         for (String str : mas) {

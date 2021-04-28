@@ -5,38 +5,33 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Класс SausageProcessor обработки колбасс
  * 
  * @author Илья Пот
  */
+@Slf4j
 public class SausageProcessor {
-    private static final Logger log = LoggerFactory.getLogger(SausageProcessor.class);
     private Path path = Paths.get("src/main/resources/file.txt");
 
     /**
      * Метод чтения из файла и создания листа с объектами Sausage
      */
     public void readFileCreateSausage() {
-        log.info("\nreadFileCreateSausage():");
+        log.info("readFileCreateSausage():");
         try (Stream<String> lineStream = Files.lines(path)) {
-            List<Sausage> list = lineStream.map(element -> {
-                return decoding(element);
-            }).map(element -> {
-                return transformation(element);
-            }).collect(Collectors.toCollection(ArrayList<Sausage>::new));
+            List<Sausage> list = lineStream.map(element -> decoding(element)).map(element -> transformation(element))
+                    .collect(Collectors.toList());
             printSausage(list);
         } catch (IOException e) {
-           log.error("Ошибка readFileCreateSausage(): {}", e);
+            log.error("Ошибка readFileCreateSausage(): {}", e);
         }
     }
 
@@ -68,6 +63,6 @@ public class SausageProcessor {
      * @param list - выводимый список
      */
     private void printSausage(List<Sausage> list) {
-        list.stream().forEach(el -> log.info("printSausage(): {}", el));
+        log.info("printSausage(): {}", list);
     }
 }
