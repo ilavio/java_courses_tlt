@@ -1,9 +1,5 @@
 package com.potemkin.i.chat;
 
-import java.util.Random;
-import java.util.concurrent.Exchanger;
-import java.util.concurrent.TimeUnit;
-
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -14,35 +10,26 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 public class MReaderThread implements Runnable {
-    private String massege = "";
+    private Message massege;
     private int time;
-    private Exchanger<String> exchanger;
 
     /**
      * Конструктор класса MReaderThread
      * 
-     * @param exchanger - принимаемый объект для синхронизации передачи данных
+     * @param massege - принимаемый объект для синхронизации передачи данных
+     * @param time    - время задержки
      */
-    public MReaderThread(Exchanger<String> exchanger) {
-        Random random = new Random(20);
-        this.time = 6;
-        random.nextInt(60);
-        this.exchanger = exchanger;
+    public MReaderThread(Message massege, int time) {
+        this.time = time;
+        this.massege = massege;
     }
 
     @Override
     public void run() {
-        try {
-            while (!Thread.currentThread().isInterrupted()) {
-                massege = exchanger.exchange(massege);
-                log.info("MReaderThread Получил сообщение: {}", massege);
-                log.info("MReaderThread Ожидайте {}{}", time, "с");
-                TimeUnit.SECONDS.sleep(time);
-            }
-        } catch (InterruptedException e) {
-            log.error("Ошибка run(): {}", e);
+        if (!Thread.currentThread().isInterrupted()) {
+            log.info("MReaderThread Получил сообщение: {}", massege.getMassege());
+            log.info("MReaderThread Следующее чтение через {}{}", time, "с");
         }
-
     }
 
 }

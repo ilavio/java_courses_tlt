@@ -2,8 +2,6 @@ package com.potemkin.i.chat;
 
 import java.util.List;
 import java.util.Random;
-import java.util.concurrent.Exchanger;
-import java.util.concurrent.TimeUnit;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -15,33 +13,27 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 public class KUpdaterThread implements Runnable {
-    private List<String> massegeList;
     private int time;
-    private Exchanger<List<String>> exchanger;
+    private Random random;
+    private Message message;
 
     /**
      * Конструктор класса KUpdaterThread
      * 
-     * @param exchanger - принимаемый объект для синхронизации передачи данных
+     * @param message - принимаемый объект для синхронизации передачи данных
+     * @param time    - время задержки
      */
-    public KUpdaterThread(Exchanger<List<String>> exchanger) {
-        Random ran = new Random();
-        this.exchanger = exchanger;
-        this.time = ran.nextInt(20);
+    public KUpdaterThread(Message message, int time) {
+        random = new Random();
+        this.time = time;
     }
 
     @Override
     public void run() {
-        while (!Thread.currentThread().isInterrupted()) {
-            try {
-                massegeList = exchanger.exchange(massegeList);
-                log.info("Изменненое сообщение: {}", transformation(massegeList));
-                TimeUnit.SECONDS.sleep(time);
-                log.info("KUpdaterThread Ожидайте {}{}", time, "с");
-            } catch (InterruptedException e) {
-                log.error("Ошибка run(): {}", e);
-            }
-        }
+        log.info(message.getMassege());
+        String updateSms = transformation(message.getListMassage());
+        log.info("Изменненое сообщение: {}", updateSms);
+        log.info("KUpdaterThread Следующее изменение через {}{}", time, "с");
     }
 
     /**
@@ -51,9 +43,9 @@ public class KUpdaterThread implements Runnable {
      * @return Сообщение измененное типа String
      */
     private String transformation(List<String> massegeList) {
-        Random random = new Random();
         StringBuffer strBuf = new StringBuffer();
         int masIndex = random.nextInt(massegeList.size());
+        log.info("transformation() Выбранное сообщение: {}, {}", masIndex, massegeList.get(masIndex));
         String[] masWorld = massegeList.get(masIndex).split(" ");
         int xWorld = random.nextInt(masWorld.length);
         for (int i = 0; i < masWorld.length; i++) {
