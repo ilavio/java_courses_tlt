@@ -25,11 +25,16 @@ public class SausageProcessor {
      * Метод чтения из файла и создания листа с объектами Sausage
      */
     public void readFileCreateSausage() {
+        StringBuffer buffer = new StringBuffer();
         log.info("readFileCreateSausage():");
         try (Stream<String> lineStream = Files.lines(path)) {
             List<Sausage> list = lineStream.map(element -> decoding(element)).map(element -> transformation(element))
                     .collect(Collectors.toList());
-            printSausage(list);
+            for(Sausage element : list) {
+                buffer.append(element.toString());
+                buffer.append("\n");
+            }
+            log.info("{}", buffer);
         } catch (IOException e) {
             log.error("Ошибка readFileCreateSausage(): {}", e);
         }
@@ -55,14 +60,5 @@ public class SausageProcessor {
     private Sausage transformation(String element) {
         String[] blank = element.split("[a-z]+=|[^А-Яа-я0-9]+");
         return new Sausage(blank[2], Integer.parseInt(blank[3]), Long.parseLong(blank[4]));
-    }
-
-    /**
-     * Метод вывода в консоль
-     * 
-     * @param list - выводимый список
-     */
-    private void printSausage(List<Sausage> list) {
-        log.info("printSausage(): {}", list);
     }
 }
