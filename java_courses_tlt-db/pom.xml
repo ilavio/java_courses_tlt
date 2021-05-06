@@ -5,11 +5,11 @@
     <url>http://maven.apache.org</url>
     <packaging>jar</packaging>
     <parent>
-        <groupId>com.potemkin.i</groupId>
-        <artifactId>java_courses_tlt</artifactId>
+        <groupId>com.potemkin</groupId>
+        <artifactId>i</artifactId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
-    <artifactId>java_courses_tlt-db</artifactId>
+    <artifactId>i-db</artifactId>
     <name>java_courses_tlt-db</name>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -17,6 +17,7 @@
         <maven.compiler.target>11</maven.compiler.target>
         <failOnMissingWebXml>false</failOnMissingWebXml>
     </properties>
+    
     <dependencies>
         <!-- https://mvnrepository.com/artifact/org.junit.platform/junit-platform-runner -->
         <dependency>
@@ -60,6 +61,7 @@
             <artifactId>logback-classic</artifactId>
         </dependency>
     </dependencies>
+    
     <build>
         <finalName>java_courses_tlt-db</finalName>
     </build>

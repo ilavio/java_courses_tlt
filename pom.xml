@@ -2,8 +2,8 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>com.potemkin.i</groupId>
-    <artifactId>java_courses_tlt</artifactId>
+    <groupId>com.potemkin</groupId>
+    <artifactId>i</artifactId>
     <packaging>pom</packaging>
     <version>0.0.1-SNAPSHOT</version>
     <modules>
@@ -28,6 +28,7 @@
         <jacoco-maven-plugin.version>0.8.5</jacoco-maven-plugin.version>
         <maven-surefire-plugin.version>2.19.1</maven-surefire-plugin.version>
     </properties>
+    
     <dependencyManagement>
         <dependencies>
             <!-- https://mvnrepository.com/artifact/org.junit.platform/junit-platform-runner -->
@@ -81,6 +82,7 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
+    
     <build>
         <finalName>java_courses_tlt</finalName>
         <plugins>
