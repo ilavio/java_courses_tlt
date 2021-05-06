@@ -11,7 +11,7 @@ public class ThreadWithSynch implements Runnable {
 
     @Override
     public void run() {
-        for (int i = 0; SourceForThread.getSynchCount() < 1000; i++) {
+        for (var i = 0; SourceForThread.getSynchCount() < 1000; i++) {
             SourceForThread.countThreadsynchronized(1);
             strBuf.append(SourceForThread.getSynchCount() + "; ");
         }

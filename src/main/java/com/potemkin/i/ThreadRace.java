@@ -11,7 +11,7 @@ public class ThreadRace implements Runnable {
 
     @Override
     public void run() {
-        for (int i = 0; SourceForThread.getCount() < 1000; i++) {
+        for (var i = 0; SourceForThread.getCount() < 1000; i++) {
             SourceForThread.setCount(1);
             strBuf.append(SourceForThread.getCount() + "; ");
         }

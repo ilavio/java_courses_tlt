@@ -2,6 +2,7 @@ package com.potemkin.i.chat;
 
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -26,12 +27,12 @@ public class KUpdaterThread implements Runnable {
     public KUpdaterThread(Message message, int time) {
         random = new Random();
         this.time = time;
+        this.message = message;
     }
 
     @Override
     public void run() {
-        log.info(message.getMassege());
-        String updateSms = transformation(message.getListMassage());
+        var updateSms = transformation(message.getListMassage());
         log.info("Изменненое сообщение: {}", updateSms);
         log.info("KUpdaterThread Следующее изменение через {}{}", time, "с");
     }

@@ -20,16 +20,7 @@ public class Message {
         this.massege = massege;
     }
 
-    public List<String> getListMassage() {
+    public synchronized List<String> getListMassage() {
         return listMassage;
-    }
-
-    /**
-     * Метод добавления сообщения в список
-     * 
-     * @param sms - добавляемое сообщение
-     */
-    public void addListMassage(String sms) {
-        this.listMassage.add(sms);
     }
 }

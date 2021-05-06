@@ -37,7 +37,7 @@ public class SourceForThread {
      * @param count - число, шаг суммирования
      * @return - сумма чисел
      */
-    public synchronized static int countThreadsynchronized(int count) {
+    public static synchronized int countThreadsynchronized(int count) {
         SourceForThread.synchCount += count;
         strBufMainSynch.append(SourceForThread.synchCount + "; ");
         return SourceForThread.synchCount;

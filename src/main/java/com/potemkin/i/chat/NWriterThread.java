@@ -1,5 +1,7 @@
 package com.potemkin.i.chat;
 
+import java.util.concurrent.TimeUnit;
+
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -35,9 +37,16 @@ public class NWriterThread implements Runnable {
 
     @Override
     public void run() {
-        message.setMassege(sms);
-        message.addListMassage(sms);
-        log.info("NWriterThread Отправка: {}", sms);
-        log.info("NWriterThread Следующее сообщение через {}{}", time, "с");
+        while (!Thread.currentThread().isInterrupted()) {
+            message.setMassege(sms);
+            message.getListMassage().add(sms);
+            log.info("NWriterThread Отправка: {}", sms);
+            log.info("NWriterThread Следующее сообщение через {}{}", time, "с");
+            try {
+                TimeUnit.SECONDS.sleep(time);
+            } catch (InterruptedException e) {
+                log.error("NWriterThread Ошибка run(): ", e);
+            }
+        }
     }
 }

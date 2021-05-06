@@ -9,22 +9,27 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 public class Main {
-    private static ThreadRace race1 = new ThreadRace();
-    private static ThreadRace race2 = new ThreadRace();
-    private static ThreadRace race3 = new ThreadRace();
-    private static ThreadWithSynch threadSynch1 = new ThreadWithSynch();
-    private static ThreadWithSynch threadSynch2 = new ThreadWithSynch();
-    private static ThreadWithSynch threadSynch3 = new ThreadWithSynch();
-    private static ThreadDeadOne deadOne = new ThreadDeadOne();
-    private static ThreadDeadTwo deadTwo = new ThreadDeadTwo();
     public static final Object DEADLOCKONE = new Object();
     public static final Object DEADLOCKTWO = new Object();
 
     public static void main(String[] args) {
+        startWithoutSynchronization();
+        synchronizedStart();
+        captureOfObjects();
+        mutualCaptureOfObjects();
+    }
+
+    /**
+     * Метод запуска потоков для не синхронизированного подсчета
+     */
+    public static void startWithoutSynchronization() {
+        var race1 = new ThreadRace();
+        var race2 = new ThreadRace();
+        var race3 = new ThreadRace();
         log.trace("Пуск потоков для не синхронизированного подсчета (Race): ");
-        Thread myThread1 = new Thread(race1, "myThread1");
-        Thread myThread2 = new Thread(race2, "myThread2");
-        Thread myThread3 = new Thread(race3, "myThread3");
+        var myThread1 = new Thread(race1, "myThread1");
+        var myThread2 = new Thread(race2, "myThread2");
+        var myThread3 = new Thread(race3, "myThread3");
         myThread1.start();
         myThread2.start();
         myThread3.start();
@@ -39,10 +44,19 @@ public class Main {
         log.info("{}{}{}", myThread2.getName(), ": ", race2.getStrBuf().toString());
         log.info("{}{}{}", myThread3.getName(), ": ", race3.getStrBuf().toString());
         log.info("Без синхронизации итог: " + SourceForThread.getStrBufMain().toString());
+    }
+
+    /**
+     * Метод запуска потоков с синхронизацией
+     */
+    public static void synchronizedStart() {
+        var threadSynch1 = new ThreadWithSynch();
+        var threadSynch2 = new ThreadWithSynch();
+        var threadSynch3 = new ThreadWithSynch();
         log.trace("Пуск потоков для синхронизированного подсчета: ");
-        Thread myThreadSynch1 = new Thread(threadSynch1, "threadSynch1");
-        Thread myThreadSynch2 = new Thread(threadSynch2, "threadSynch2");
-        Thread myThreadSynch3 = new Thread(threadSynch3, "threadSynch3");
+        var myThreadSynch1 = new Thread(threadSynch1, "threadSynch1");
+        var myThreadSynch2 = new Thread(threadSynch2, "threadSynch2");
+        var myThreadSynch3 = new Thread(threadSynch3, "threadSynch3");
         myThreadSynch1.start();
         myThreadSynch2.start();
         myThreadSynch3.start();
@@ -57,11 +71,31 @@ public class Main {
         log.info("{}{}{}", myThreadSynch2.getName(), ": ", threadSynch2.getStrBuf().toString());
         log.info("{}{}{}", myThreadSynch3.getName(), ": ", threadSynch3.getStrBuf().toString());
         log.info("C синхронизацией итог: {}", SourceForThread.getStrBufMainSynch().toString());
+    }
+
+    /**
+     * Метод взаимного захвата объекта для Deadlock
+     */
+    public static void mutualCaptureOfObjects() {
+        var deadOne = new ThreadDeadOne();
+        var deadTwo = new ThreadDeadTwo();
         log.trace("Пуск потоков для взаимного захвата объектов (Deadlock)");
-        Thread myThreadDeadOne = new Thread(deadOne);
-        Thread myThreadDeadTwo = new Thread(deadTwo);
+        var myThreadDeadOne = new Thread(deadOne);
+        var myThreadDeadTwo = new Thread(deadTwo);
         myThreadDeadOne.start();
         myThreadDeadTwo.start();
     }
-
+    
+    /**
+     * Метод захвата объектов по очереди без Deadlock
+     */
+    public static void captureOfObjects() {
+        var withoutDeadlock = new ThreadWithoutDeadOne();
+        var deadTwo = new ThreadDeadTwo();
+        log.trace("Пуск потоков очередного захвата объектов (без Deadlock)");
+        var myThreadDeadOne = new Thread(withoutDeadlock);
+        var myThreadDeadTwo = new Thread(deadTwo);
+        myThreadDeadOne.start();
+        myThreadDeadTwo.start();
+    }
 }

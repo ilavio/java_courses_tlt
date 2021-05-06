@@ -1,5 +1,8 @@
 package com.potemkin.i.chat;
 
+import java.util.List;
+import java.util.Random;
+
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -12,6 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 public class MReaderThread implements Runnable {
     private Message massege;
     private int time;
+    private Random random = new Random();
 
     /**
      * Конструктор класса MReaderThread
@@ -27,9 +31,20 @@ public class MReaderThread implements Runnable {
     @Override
     public void run() {
         if (!Thread.currentThread().isInterrupted()) {
-            log.info("MReaderThread Получил сообщение: {}", massege.getMassege());
+            log.info("MReaderThread Получил сообщение: {}", read(massege.getListMassage()));
             log.info("MReaderThread Следующее чтение через {}{}", time, "с");
         }
+    }
+
+    /**
+     * Метод чтения сообщений
+     * 
+     * @param massegeList - список не прочитанных сообщений
+     * @return прочитанное сообщение типа String
+     */
+    public String read(List<String> massegeList) {
+        var masIndex = random.nextInt(massegeList.size());
+        return massegeList.remove(masIndex);
     }
 
 }
