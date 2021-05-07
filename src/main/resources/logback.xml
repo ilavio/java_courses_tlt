@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration debug="true">
+    <appender name="Con-Storage"
+        class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern> [%thread] %-5level %logger{20} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="ThreadRace"
+        class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>logThreadRace.log</file>
+        <rollingPolicy
+            class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- daily rollover -->
+            <fileNamePattern> logThreadRace.%d{yyyy-MM-dd}.log
+            </fileNamePattern>
+
+            <!-- Храним файлы логов 5 дней -->
+            <maxHistory>5</maxHistory>
+
+            <!-- Максимальный размер файлов лога -->
+            <totalSizeCap>2MB</totalSizeCap>
+
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d{dd.MM.yyyy HH:mm} %-5level %logger{20} - %msg%n
+            </pattern>
+        </encoder>
+    </appender>
+
+    <appender name="Chat"
+        class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>logChat.log</file>
+        <rollingPolicy
+            class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- daily rollover -->
+            <fileNamePattern> logChat.%d{yyyy-MM-dd}.log
+            </fileNamePattern>
+
+            <!-- Храним файлы логов 5 дней -->
+            <maxHistory>5</maxHistory>
+
+            <!-- Максимальный размер файлов лога -->
+            <totalSizeCap>2MB</totalSizeCap>
+
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d{dd.MM.yyyy HH:mm} %-5level %logger{20} - %msg%n
+            </pattern>
+        </encoder>
+    </appender>
+
+    <logger name="com.potemkin.i" level="trace"
+        additivity="false">
+        <appender-ref ref="ThreadRace" />
+        <appender-ref ref="Con-Storage" />
+    </logger>
+
+    <logger name="com.potemkin.i.chat" level="trace"
+        additivity="false">
+        <appender-ref ref="Chat" />
+        <appender-ref ref="Con-Storage" />
+    </logger>
+
+    <root level="debug">
+        <appender-ref ref="Con-Storage" />
+    </root>
+</configuration>
