@@ -29,6 +29,7 @@
         <maven-surefire-plugin.version>2.19.1</maven-surefire-plugin.version>
         <liquibase-core.version>4.3.5</liquibase-core.version>
         <postgresql.version>42.2.20</postgresql.version>
+        <hibernate.version>5.4.31.Final</hibernate.version>
     </properties>
 
     <dependencyManagement>
@@ -93,6 +94,18 @@
                 <groupId>org.liquibase</groupId>
                 <artifactId>liquibase-core</artifactId>
                 <version>${liquibase-core.version}</version>
+            </dependency>
+            <!-- https://mvnrepository.com/artifact/org.hibernate/hibernate-core -->
+            <dependency>
+                <groupId>org.hibernate</groupId>
+                <artifactId>hibernate-core</artifactId>
+                <version>${hibernate.version}</version>
+            </dependency>
+            <!-- https://mvnrepository.com/artifact/org.hibernate/hibernate-entitymanager -->
+            <dependency>
+                <groupId>org.hibernate</groupId>
+                <artifactId>hibernate-entitymanager</artifactId>
+                <version>${hibernate.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
