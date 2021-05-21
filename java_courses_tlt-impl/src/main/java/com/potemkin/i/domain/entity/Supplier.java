@@ -15,24 +15,24 @@ import javax.persistence.Table;
 import lombok.Data;
 
 /**
- * POJO класс Customer для создание сущности
+ * POJO класс Supplier для создание сущности
  * 
  * @author Илья Пот
  */
 @Entity
-@Table(name = "Customers", schema = "potemkin")
+@Table(name = "Supplier", schema = "potemkin")
 @Data
-public class Customer {
+public class Supplier {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int customerId;
-
+    private int supplierId;
+    
     @Column(nullable = false)
-    private String customerName;
-
+    private String companyName;
+    
     @Column
     private String phone;
     
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "customer")
-    private List <Order> orders = new ArrayList<Order>();
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "supplier")
+    private List <Product> products = new ArrayList<Product>();
 }
