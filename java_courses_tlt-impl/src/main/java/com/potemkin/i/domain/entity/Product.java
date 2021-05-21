@@ -26,21 +26,22 @@ import lombok.Data;
 public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "product_id")
     private int productId;
-    
-    @Column(nullable = false)
+
+    @Column(nullable = false, name = "product_name")
     private String productName;
-    
+
     @ManyToOne
-    @JoinColumn(name = "supplierId")
+    @JoinColumn(name = "supplier_id")
     private Supplier supplier;
-    
-    @Column(nullable = false, columnDefinition = "NUMERIC(12,2)")
+
+    @Column(nullable = false, columnDefinition = "NUMERIC(12,2)", name = "unit_price")
     private double unitPrice;
-    
-    @Column(nullable = false)
+
+    @Column(nullable = false, name = "is_discontinued")
     private boolean isDiscontinued;
-    
+
     @ManyToMany(mappedBy = "product")
     private List<Order> order = new ArrayList<Order>();
 }

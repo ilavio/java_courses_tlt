@@ -5,7 +5,6 @@ import java.util.Date;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
-import javax.persistence.Persistence;
 import javax.persistence.TypedQuery;
 import javax.transaction.Transaction;
 
@@ -23,7 +22,11 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 public class CrudMyFirst {
-    private EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("JPA-First");
+    private EntityManagerFactory entityManagerFactory;
+    
+public CrudMyFirst(EntityManagerFactory entityManagerFactory) {
+        this.entityManagerFactory = entityManagerFactory;
+    }
 
     public void closed() {
         entityManagerFactory.close();
@@ -36,15 +39,15 @@ public class CrudMyFirst {
      * @param phone        - типа String
      */
     public void addCustomer(String customerName, String phone) {
-        var entity = entityManagerFactory.createEntityManager();
+        var entityManager = entityManagerFactory.createEntityManager();
         EntityTransaction transaction = null;
         try {
-            transaction = entity.getTransaction();
+            transaction = entityManager.getTransaction();
             transaction.begin();
             var cust = new Customer();
             cust.setCustomerName(customerName);
             cust.setPhone(phone);
-            entity.persist(cust);
+            entityManager.persist(cust);
             transaction.commit();
         } catch (Exception e) {
             if (transaction != null) {
@@ -52,7 +55,7 @@ public class CrudMyFirst {
             }
             log.error("Ошибка CrudMyFirst addCustomer(): {}", e);
         } finally {
-            entity.close();
+            entityManager.close();
         }
     }
 
@@ -63,9 +66,9 @@ public class CrudMyFirst {
      * @return - объектов Customer
      */
     public Customer getCustomer(String customerName) {
-        var entity = entityManagerFactory.createEntityManager();
+        var entityManager = entityManagerFactory.createEntityManager();
         String query = "SELECT cust FROM Customer cust WHERE cust.customerName = ?1";
-        TypedQuery<Customer> custQuery = entity.createQuery(query, Customer.class);
+        TypedQuery<Customer> custQuery = entityManager.createQuery(query, Customer.class);
         Customer cust = null;
         try {
             cust = custQuery.setParameter(1, customerName).getSingleResult();
@@ -73,7 +76,7 @@ public class CrudMyFirst {
         } catch (Exception e) {
             log.error("Ошибка CrudMyFirst getCustomer() {}", e);
         } finally {
-            entity.close();
+            entityManager.close();
         }
         return cust;
     }
@@ -87,11 +90,11 @@ public class CrudMyFirst {
      * @param totalAmount  - типа double
      */
     public void addOrder(String customerName, String orderNumber, Date orderDate, double totalAmount) {
-        var entity = entityManagerFactory.createEntityManager();
+        var entityManager = entityManagerFactory.createEntityManager();
         EntityTransaction transaction = null;
         Customer cust = getCustomer(customerName);
         try {
-            transaction = entity.getTransaction();
+            transaction = entityManager.getTransaction();
             transaction.begin();
             var order = new Order();
             order.setOrderNumber(orderNumber);
@@ -100,7 +103,7 @@ public class CrudMyFirst {
             if (cust != null) {
                 order.setCustomer(cust);
             }
-            entity.persist(order);
+            entityManager.persist(order);
             transaction.commit();
         } catch (Exception e) {
             if (transaction != null) {
@@ -108,7 +111,7 @@ public class CrudMyFirst {
             }
             log.error("Ошибка CrudMyFirst addOrder(): {}", e);
         } finally {
-            entity.close();
+            entityManager.close();
         }
     }
 
@@ -119,15 +122,15 @@ public class CrudMyFirst {
      * @param phone       - типа String
      */
     public void addSupplier(String companyName, String phone) {
-        var entity = entityManagerFactory.createEntityManager();
+        var entityManager = entityManagerFactory.createEntityManager();
         EntityTransaction transaction = null;
         try {
-            transaction = entity.getTransaction();
+            transaction = entityManager.getTransaction();
             transaction.begin();
             var sup = new Supplier();
             sup.setCompanyName(companyName);
             sup.setPhone(phone);
-            entity.persist(sup);
+            entityManager.persist(sup);
             transaction.commit();
         } catch (Exception e) {
             if (transaction != null) {
@@ -135,7 +138,7 @@ public class CrudMyFirst {
             }
             log.error("Ошибка CrudMyFirst addSupplier(): {}", e);
         } finally {
-            entity.close();
+            entityManager.close();
         }
     }
 
@@ -146,9 +149,9 @@ public class CrudMyFirst {
      * @return - объект типа Supplier
      */
     public Supplier getSupplier(String companyName) {
-        var entity = entityManagerFactory.createEntityManager();
+        var entityManager = entityManagerFactory.createEntityManager();
         String query = "SELECT sup FROM Supplier sup WHERE sup.companyName = ?1";
-        TypedQuery<Supplier> supQuery = entity.createQuery(query, Supplier.class);
+        TypedQuery<Supplier> supQuery = entityManager.createQuery(query, Supplier.class);
         Supplier sup = null;
         try {
             sup = supQuery.setParameter(1, companyName).getSingleResult();
@@ -156,7 +159,7 @@ public class CrudMyFirst {
         } catch (Exception e) {
             log.error("Ошибка CrudMyFirst getSupplier() {}", e);
         } finally {
-            entity.close();
+            entityManager.close();
         }
         return sup;
     }
@@ -170,11 +173,11 @@ public class CrudMyFirst {
      * @param isDiscontinued - типа boolean
      */
     public void addProduct(String companyName, String productName, double unitPrice, boolean isDiscontinued) {
-        var entity = entityManagerFactory.createEntityManager();
+        var entityManager = entityManagerFactory.createEntityManager();
         EntityTransaction transaction = null;
         Supplier sup = getSupplier(companyName);
         try {
-            transaction = entity.getTransaction();
+            transaction = entityManager.getTransaction();
             transaction.begin();
             var product = new Product();
             product.setProductName(productName);
@@ -183,7 +186,7 @@ public class CrudMyFirst {
             if (product != null) {
                 product.setSupplier(sup);
             }
-            entity.persist(product);
+            entityManager.persist(product);
             transaction.commit();
         } catch (Exception e) {
             if (transaction != null) {
@@ -191,7 +194,7 @@ public class CrudMyFirst {
             }
             log.error("Ошибка CrudMyFirst addProduct(): {}", e);
         } finally {
-            entity.close();
+            entityManager.close();
         }
     }
 
@@ -202,9 +205,9 @@ public class CrudMyFirst {
      * @return - типа Order
      */
     public Order getOrder(String orderNumber) {
-        var entity = entityManagerFactory.createEntityManager();
+        var entityManager = entityManagerFactory.createEntityManager();
         String query = "SELECT order FROM Order order WHERE order.orderNumber = ?1";
-        TypedQuery<Order> oQuery = entity.createQuery(query, Order.class);
+        TypedQuery<Order> oQuery = entityManager.createQuery(query, Order.class);
         Order order = null;
         try {
             order = oQuery.setParameter(1, orderNumber).getSingleResult();
@@ -212,7 +215,7 @@ public class CrudMyFirst {
         } catch (Exception e) {
             log.error("Ошибка CrudMyFirst getOrder() {}", e);
         } finally {
-            entity.close();
+            entityManager.close();
         }
         return order;
     }
@@ -224,9 +227,9 @@ public class CrudMyFirst {
      * @return - типа Product
      */
     public Product getProduct(String productName) {
-        var entity = entityManagerFactory.createEntityManager();
+        var entityManager = entityManagerFactory.createEntityManager();
         String query = "SELECT prod FROM Product prod WHERE prod.productName = ?1";
-        TypedQuery<Product> oQuery = entity.createQuery(query, Product.class);
+        TypedQuery<Product> oQuery = entityManager.createQuery(query, Product.class);
         Product prod = null;
         try {
             prod = oQuery.setParameter(1, productName).getSingleResult();
@@ -234,7 +237,7 @@ public class CrudMyFirst {
         } catch (Exception e) {
             log.error("Ошибка CrudMyFirst getProduct() {}", e);
         } finally {
-            entity.close();
+            entityManager.close();
         }
         return prod;
     }
@@ -246,19 +249,19 @@ public class CrudMyFirst {
      * @param product - типа Product
      */
     public void mergeOrderProduct(Order order, Product product) {
-        var entity = entityManagerFactory.createEntityManager();
+        var entityManager = entityManagerFactory.createEntityManager();
         EntityTransaction transaction = null;
         Order or = null;
         Product prod = null;
         try {
-            transaction = entity.getTransaction();
+            transaction = entityManager.getTransaction();
             transaction.begin();
-            or = entity.find(Order.class, order.getOrderId());
-            prod = entity.find(Product.class, product.getProductId());
+            or = entityManager.find(Order.class, order.getOrderId());
+            prod = entityManager.find(Product.class, product.getProductId());
             or.getProduct().add(prod);
             prod.getOrder().add(or);
-            entity.persist(or);
-            entity.refresh(prod);
+            entityManager.persist(or);
+            entityManager.refresh(prod);
             transaction.commit();
         } catch (Exception e) {
             if (transaction != null) {
@@ -266,7 +269,7 @@ public class CrudMyFirst {
             }
             log.error("Ошибка CrudMyFirst mergeOrderProduct(): {}", e);
         } finally {
-            entity.close();
+            entityManager.close();
         }
     }
 }

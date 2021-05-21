@@ -25,9 +25,10 @@ import lombok.Data;
 public class Supplier {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "supplier_id")
     private int supplierId;
     
-    @Column(nullable = false)
+    @Column(nullable = false, name = "company_name")
     private String companyName;
     
     @Column

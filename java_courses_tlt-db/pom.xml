@@ -16,9 +16,9 @@
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
         <failOnMissingWebXml>false</failOnMissingWebXml>
-        <liquibase.pas>pas</liquibase.pas>
+        <liquibase.pas>pass</liquibase.pas>
         <liquibase.username>usr</liquibase.username>
-        <liquibase.changeLogFile>./src/main/resources/db/changelogv1/db-changelog.xml</liquibase.changeLogFile>
+        <liquibase.changeLogFile>./src/main/resources/db/changelog/db-changelog.xml</liquibase.changeLogFile>
     </properties>
 
     <dependencies>
@@ -86,7 +86,7 @@
                 <configuration>
                     <changeLogFile>${liquibase.changeLogFile}</changeLogFile>
                     <driver>org.postgresql.Driver</driver>
-                    <url>jdbc:postgresql://localhost:5432/epamcourses?potemkin</url>
+                    <url>jdbc:postgresql://localhost:5432/epamcourses?currentSchema=potemkin</url>
                     <username>${liquibase.username}</username>
                     <password>${liquibase.pas}</password>
                     <promptOnNonLocalDatabase>false</promptOnNonLocalDatabase>

@@ -2,13 +2,16 @@ package com.potemkin.i;
 
 import java.util.Date;
 
+import javax.persistence.Persistence;
+
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class MainImpl {
     public static void main(String[] args) {
+        
         log.info("Пуск соединения с базой данных");
-        CrudMyFirst crud = new CrudMyFirst();
+        CrudMyFirst crud = new CrudMyFirst(Persistence.createEntityManagerFactory("JPA-First"));
         log.info("Добавляем Customer:");
         crud.addCustomer("MMM", "123456");
         crud.addCustomer("GGG", "123");

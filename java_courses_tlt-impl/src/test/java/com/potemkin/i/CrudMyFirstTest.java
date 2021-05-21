@@ -4,6 +4,10 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -14,6 +18,7 @@ import com.potemkin.i.domain.entity.Supplier;
 
 import org.mockito.Mockito;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.mock;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
@@ -52,7 +57,8 @@ public class CrudMyFirstTest {
         order.setOrderNumber("111");
         order.setTotalAmount(12.02);
         orders.add(order);
-        crud = Mockito.mock(CrudMyFirst.class);
+        EntityManagerFactory manager = Persistence.createEntityManagerFactory("JPA-First");
+        crud = new CrudMyFirst(Mockito.mock(manager.getClass()));
     }
 
     @Test

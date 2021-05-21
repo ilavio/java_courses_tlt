@@ -30,22 +30,24 @@ import lombok.Data;
 public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "order_id")
     private int orderId;
 
-    @Column
+    @Column(name = "order_number")
     private String orderNumber;
 
-    @Column(nullable = false)
+    @Column(nullable = false, name = "order_date")
     private Date orderDate;
 
-    @Column(nullable = false, columnDefinition = "NUMERIC(12,2)")
+    @Column(nullable = false, columnDefinition = "NUMERIC(12,2)", name = "total_amount")
     private double totalAmount;
 
     @ManyToOne
-    @JoinColumn(name = "customerId")
+    @JoinColumn(name = "customer_id")
     private Customer customer;
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinTable(name = "orderproduct", joinColumns = @JoinColumn(name = "orderId", referencedColumnName = "orderId"), inverseJoinColumns = @JoinColumn(name = "productId", referencedColumnName = "productId"))
+    @JoinTable(name = "order_product", joinColumns = @JoinColumn(name = "order_id", referencedColumnName = "order_id"), 
+    inverseJoinColumns = @JoinColumn(name = "product_id", referencedColumnName = "product_id"))
     private List<Product> product = new ArrayList<Product>();
 }

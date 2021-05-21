@@ -25,9 +25,10 @@ import lombok.Data;
 public class Customer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "customer_id")
     private int customerId;
 
-    @Column(nullable = false)
+    @Column(nullable = false, name = "customer_name")
     private String customerName;
 
     @Column
