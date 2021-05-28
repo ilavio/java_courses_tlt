@@ -15,8 +15,15 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import org.springframework.context.annotation.Profile;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
+
 import lombok.Data;
 
+@Profile("!local")
+@Component("order")
+@Scope("prototype")
 @Entity
 @Table(name = "Orders", schema = "potemkin")
 @Data

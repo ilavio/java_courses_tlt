@@ -12,17 +12,26 @@ import javax.persistence.TypedQuery;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.Profile;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 
 import com.potemkin.i.domain.entity.Customer;
 import com.potemkin.i.domain.entity.Order;
 
 import lombok.extern.slf4j.Slf4j;
 
+@Profile("!local")
 @Slf4j
+@Scope("singleton")
+@Component("crudhandler")
 public class CrudHandler {
     private EntityManagerFactory managerFactory;
-
-    public CrudHandler(EntityManagerFactory managerFactory) {
+    
+    @Autowired
+    public CrudHandler(@Qualifier("entityManagerFactory") EntityManagerFactory managerFactory) {
         this.managerFactory = managerFactory;
     }
 
@@ -65,7 +74,6 @@ public class CrudHandler {
             transaction.begin();
             Customer cust = entityManager.find(Customer.class, customerId);
             order.setCustomer(cust);
-            // cust.getOrders().add(order);
             entityManager.persist(order);
             transaction.commit();
         } catch (Exception e) {
@@ -137,7 +145,7 @@ public class CrudHandler {
             order = custQuery.setParameter(1, orderId).getSingleResult();
             log.trace("Покупатель: {}", order);
         } catch (Exception e) {
-            log.error("Ошибка CrudMyFirst getCustomer() {}", e);
+            log.error("Ошибка CrudMyFirst getOrder() {}", e);
         } finally {
             entityManager.close();
         }

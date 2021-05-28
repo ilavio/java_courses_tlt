@@ -1,29 +1,31 @@
 package com.potemkin.i;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.TypedQuery;
 
-import org.json.JSONException;
 import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Profile;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 
-import com.potemkin.i.domain.entity.Customer;
-import com.potemkin.i.domain.entity.Order;
 import com.potemkin.i.domain.entity.Product;
 import com.potemkin.i.domain.entity.Supplier;
 
 import lombok.extern.slf4j.Slf4j;
 
+@Profile("!local")
 @Slf4j
+@Component("crudHandlerSupAndProduct")
+@Scope("singleton")
 public class CrudHandlerSupAndProduct {
     private EntityManagerFactory managerFactory;
-
+    
+    @Autowired
     public CrudHandlerSupAndProduct(EntityManagerFactory managerFactory) {
         this.managerFactory = managerFactory;
     }

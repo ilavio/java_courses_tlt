@@ -8,7 +8,7 @@ public class SinglEntityManager {
     
     private SinglEntityManager(){}
     
-    public static EntityManagerFactory getEntityManagerFactory(){ // #3
+    public static EntityManagerFactory getEntityManagerFactory(){
     if(entityManagerFactory == null){
         entityManagerFactory = Persistence.createEntityManagerFactory("JPA-First");
     }

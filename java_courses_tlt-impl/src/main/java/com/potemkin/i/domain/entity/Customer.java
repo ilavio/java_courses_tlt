@@ -14,8 +14,16 @@ import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Profile;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
+
 import lombok.Data;
 
+@Profile("!local")
+@Component("customer")
+@Scope("prototype")
 @Entity
 @Table(name = "Customers", schema = "potemkin")
 @Data
@@ -25,14 +33,16 @@ public class Customer {
     @Column(name = "customer_id")
     private int customerId;
 
+    @Value("${customer.customerName}")
     @Column(nullable = false, name = "customer_name")
     private String customerName;
 
+    @Value("${customer.phone}")
     @Column
     private String phone;
-    
+
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "customer", fetch = FetchType.EAGER)
-    private List <Order> orders = new ArrayList<>();
+    private List<Order> orders = new ArrayList<>();
 
     public String getOrders() {
         return orders.toString();

@@ -13,8 +13,15 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import org.springframework.context.annotation.Profile;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
+
 import lombok.Data;
 
+@Profile("!local")
+@Component("supplier")
+@Scope("prototype")
 @Table(name = "Supplier", schema = "potemkin")
 @Data
 @Entity
