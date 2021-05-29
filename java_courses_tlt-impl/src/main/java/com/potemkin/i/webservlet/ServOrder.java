@@ -16,6 +16,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import com.potemkin.i.CrudHandler;
+import com.potemkin.i.CrudHandlerSupAndProduct;
 import com.potemkin.i.SinglEntityManager;
 import com.potemkin.i.domain.entity.Order;
 
@@ -31,7 +32,9 @@ public class ServOrder extends HttpServlet {
     private static final long serialVersionUID = 1L;
     private final String TYPE = "application/json";
     private final String CHARACTER = "UTF-8";
-    CrudHandler crud = new CrudHandler(SinglEntityManager.getEntityManagerFactory());
+    private CrudHandlerSupAndProduct crudProd = new CrudHandlerSupAndProduct(
+            SinglEntityManager.getEntityManagerFactory());
+    private CrudHandler crud = new CrudHandler(SinglEntityManager.getEntityManagerFactory());
 
     /**
      * Метод установки кодирования исходящего потока
@@ -81,12 +84,12 @@ public class ServOrder extends HttpServlet {
         if (request.getParameterMap().containsKey("customerId")) {
             int id = Integer.parseInt(request.getParameter("customerId"));
             var jsonArray = new JSONArray(new ArrayList<Order>(crud.getOrders(id)));
-            out.println(jsonArray.toString());
+            out.println(jsonArray);
         } else if (request.getParameterMap().containsKey("id")) {
             int id = Integer.parseInt(request.getParameter("id"));
             var order = crud.getOredr(id);
             var json = new JSONObject(order);
-            out.println(json.toString());
+            out.println(json);
         }
         out.close();
     }
@@ -103,7 +106,11 @@ public class ServOrder extends HttpServlet {
         var stringBuf = gettingValues(request);
         var json = new JSONObject(stringBuf.toString());
         int id = json.getInt("customerId");
-        crud.addEntity(crud.parseForOrder(json), id);
+        var ordId = crud.addEntity(crud.parseForOrder(json), id);
+        crud.mergeOrderProduct(crud.getOredr(ordId), crudProd.getProduct(json.getInt("productId")));
+        var out = setDefaultEncoding(response);
+        out.println(response.SC_OK);
+        out.close();
     }
 
     /**

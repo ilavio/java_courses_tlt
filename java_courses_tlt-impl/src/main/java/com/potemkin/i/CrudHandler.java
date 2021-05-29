@@ -15,6 +15,7 @@ import org.json.JSONObject;
 
 import com.potemkin.i.domain.entity.Customer;
 import com.potemkin.i.domain.entity.Order;
+import com.potemkin.i.domain.entity.Product;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -57,9 +58,10 @@ public class CrudHandler {
      * @param order
      * @param customerId
      */
-    public void addEntity(Order order, int customerId) {
+    public int addEntity(Order order, int customerId) {
         var entityManager = managerFactory.createEntityManager();
         EntityTransaction transaction = null;
+        var id = 0;
         try {
             transaction = entityManager.getTransaction();
             transaction.begin();
@@ -68,6 +70,7 @@ public class CrudHandler {
             // cust.getOrders().add(order);
             entityManager.persist(order);
             transaction.commit();
+            id = order.getOrderId();
         } catch (Exception e) {
             if (transaction != null) {
                 transaction.rollback();
@@ -76,6 +79,7 @@ public class CrudHandler {
         } finally {
             entityManager.close();
         }
+        return id;
     }
 
     /**
@@ -304,6 +308,37 @@ public class CrudHandler {
             entityManager.persist(entity);
         } catch (Exception e) {
             log.error("Ошибка CrudHandler deleteCust() {}", e);
+        } finally {
+            entityManager.close();
+        }
+    }
+    
+    /**
+     * Метод объединения Order с Product
+     * 
+     * @param order   - типа Order
+     * @param product - типа Product
+     */
+    public void mergeOrderProduct(Order order, Product product) {
+        var entityManager = managerFactory.createEntityManager();
+        EntityTransaction transaction = null;
+        Order or = null;
+        Product prod = null;
+        try {
+            transaction = entityManager.getTransaction();
+            transaction.begin();
+            or = entityManager.find(Order.class, order.getOrderId());
+            prod = entityManager.find(Product.class, product.getProductId());
+            or.getProduct().add(prod);
+            prod.getOrder().add(or);
+            entityManager.persist(or);
+            entityManager.persist(prod);
+            transaction.commit();
+        } catch (Exception e) {
+            if (transaction != null) {
+                transaction.rollback();
+            }
+            log.error("Ошибка CrudMyFirst mergeOrderProduct(): {}", e);
         } finally {
             entityManager.close();
         }
