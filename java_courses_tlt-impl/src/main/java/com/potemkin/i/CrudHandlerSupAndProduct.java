@@ -18,6 +18,12 @@ import com.potemkin.i.domain.entity.Supplier;
 
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * Класс обработчик сущностей Supplier и Product
+ * 
+ * @author Илья Пот
+ *
+ */
 @Profile("!local")
 @Slf4j
 @Component("crudHandlerSupAndProduct")

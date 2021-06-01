@@ -21,6 +21,12 @@ import org.springframework.stereotype.Component;
 
 import lombok.Data;
 
+/**
+ * Сущность Order
+ * 
+ * @author Илья Пот
+ *
+ */
 @Profile("!local")
 @Component("order")
 @Scope("prototype")
@@ -43,7 +49,7 @@ public class Order {
     @Column(nullable = false, columnDefinition = "NUMERIC(12,2)", name = "total_amount")
     private double totalAmount;
 
-    @ManyToOne(cascade=CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "customer_id")
     private Customer customer;
 

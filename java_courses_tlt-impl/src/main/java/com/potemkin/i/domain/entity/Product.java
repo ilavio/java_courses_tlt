@@ -16,6 +16,12 @@ import org.springframework.stereotype.Component;
 
 import lombok.Data;
 
+/**
+ * Сущность Product
+ * 
+ * @author Илья Пот
+ *
+ */
 @Profile("!local")
 @Component("product")
 @Scope("prototype")

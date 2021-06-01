@@ -23,13 +23,17 @@ import com.potemkin.i.domain.entity.Order;
 
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * Класс CrudHandler обработчик сущностей Customer и Order
+ * 
+ */
 @Profile("!local")
 @Slf4j
 @Scope("singleton")
 @Component("crudhandler")
 public class CrudHandler {
     private EntityManagerFactory managerFactory;
-    
+
     @Autowired
     public CrudHandler(@Qualifier("entityManagerFactory") EntityManagerFactory managerFactory) {
         this.managerFactory = managerFactory;

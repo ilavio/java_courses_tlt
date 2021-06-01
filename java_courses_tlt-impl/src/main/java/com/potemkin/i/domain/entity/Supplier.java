@@ -19,6 +19,12 @@ import org.springframework.stereotype.Component;
 
 import lombok.Data;
 
+/**
+ * Сущность Supplier
+ * 
+ * @author Илья Пот
+ *
+ */
 @Profile("!local")
 @Component("supplier")
 @Scope("prototype")
@@ -30,16 +36,16 @@ public class Supplier {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "supplier_id")
     private int supplierId;
-    
+
     @Column(nullable = false, name = "company_name")
     private String companyName;
-    
+
     @Column
     private String phone;
-    
+
     @OneToMany(cascade = CascadeType.MERGE, mappedBy = "supplier", fetch = FetchType.EAGER)
-    private List <Product> products = new ArrayList<>();
-    
+    private List<Product> products = new ArrayList<>();
+
     public String getProducts() {
         return products.toString();
     }

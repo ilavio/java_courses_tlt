@@ -10,15 +10,12 @@ import javax.persistence.EntityTransaction;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.runner.RunWith;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import com.potemkin.i.config.SpringConfigLocal;
 import com.potemkin.i.config.SpringConfigMy;
-import com.potemkin.i.service.ServiceCrud;
 import com.potemkin.i.service.ServiceLocal;
 import com.potemkin.i.service.Starter;
 
@@ -27,13 +24,9 @@ import com.potemkin.i.service.Starter;
 @ActiveProfiles("local")
 public class ServiceCrudTest {
     private AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext();
-    private ServiceCrud serviceCrud = new ServiceCrud();
     private EntityManagerFactory entityManagerFactoryMock;
     private EntityManager entityManagerMock;
     private EntityTransaction entityTransactionMock;
-    private SpringConfigLocal springConfigLocal = new SpringConfigLocal();
-    private CrudHandlerSupAndProduct crudSupAndProd;
-    private CrudHandler crudCustAndOrd;
 
     @BeforeEach
     public void maskingObjects() {
@@ -48,9 +41,6 @@ public class ServiceCrudTest {
         when(entityManagerFactoryMock.createEntityManager()).thenReturn(entityManagerMock);
         when(entityManagerMock.getTransaction()).thenReturn(entityTransactionMock);
         when(configMy.entityManagerFactory()).thenReturn(entityManagerFactoryMock);
-
-        crudSupAndProd = new CrudHandlerSupAndProduct(entityManagerFactoryMock);
-        crudCustAndOrd = new CrudHandler(entityManagerFactoryMock);
     }
 
     @Test
