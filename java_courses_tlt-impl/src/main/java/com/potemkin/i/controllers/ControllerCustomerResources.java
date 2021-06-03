@@ -15,10 +15,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.potemkin.i.service.CustomerService;
+import com.potemkin.i.controllers.ControllerCustResources;
 
 @Controller()
 @RequestMapping("/Customers")
-public class ControllerCustomerResources  { //implements ControllerCustResources
+public class ControllerCustomerResources implements ControllerCustResources { //
     
     @Autowired
     private CustomerService customerService;

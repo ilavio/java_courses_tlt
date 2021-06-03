@@ -17,7 +17,7 @@ import com.potemkin.i.repository.ProductRepository;
  */
 @Service
 @Transactional
-public class ProductService  { //implements ServiceInt
+public class ProductService implements ServiceInt { //
 
     @Autowired
     private ProductRepository repository;

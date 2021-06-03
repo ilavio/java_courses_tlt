@@ -15,10 +15,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.potemkin.i.service.ProductService;
+import com.potemkin.i.controllers.ControllerProdResources;
 
 @Controller()
 @RequestMapping("/Product")
-public class ControllerProductResources { //implements ControllerProdResources
+public class ControllerProductResources implements ControllerProdResources { //
 
     @Autowired
     private ProductService service;

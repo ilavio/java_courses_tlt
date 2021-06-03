@@ -133,8 +133,10 @@
             <scope>test</scope>
         </dependency>
         <!-- Мои зависимости -->
-        <!-- <dependency> <groupId>com.potemkin</groupId> <artifactId>i-api</artifactId> 
-            </dependency> -->
+        <dependency>
+            <groupId>com.potemkin</groupId>
+            <artifactId>i-api</artifactId>
+        </dependency>
     </dependencies>
 
     <build>
@@ -144,7 +146,11 @@
                 <groupId>org.apache.tomcat.maven</groupId>
                 <artifactId>tomcat7-maven-plugin</artifactId>
                 <version>2.2</version>
-            </plugin>
+                <configuration>
+                    <port>8080</port>
+                    <path>/java_courses_tlt-impl</path>
+                </configuration>
+            </plugin>  
         </plugins>
     </build>
 </project>

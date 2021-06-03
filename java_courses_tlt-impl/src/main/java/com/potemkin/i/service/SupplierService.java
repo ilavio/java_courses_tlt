@@ -17,7 +17,7 @@ import com.potemkin.i.repository.SupplierRepository;
  */
 @Service
 @Transactional
-public class SupplierService  { //implements ServiceInt
+public class SupplierService implements ServiceInt { //
 
     @Autowired
     private SupplierRepository repository;

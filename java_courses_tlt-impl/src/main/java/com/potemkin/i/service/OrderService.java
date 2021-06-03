@@ -25,7 +25,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Service
 @Transactional
-public class OrderService { //implements ServiceInt
+public class OrderService implements ServiceInt { //
 
     @Autowired
     private OrderRepository repository;
@@ -63,7 +63,7 @@ public class OrderService { //implements ServiceInt
      * @return JSONArray
      */
     public JSONArray getOrders(int id) {
-        var jsonArray = new JSONArray(repository.findAll());
+        var jsonArray = new JSONArray(repository.findByCustomerCustomerId(id));
         return jsonArray;
     }
 

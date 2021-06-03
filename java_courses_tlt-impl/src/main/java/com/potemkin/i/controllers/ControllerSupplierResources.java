@@ -15,10 +15,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.potemkin.i.service.SupplierService;
+import com.potemkin.i.controllers.ControllerSupResources;
 
 @Controller()
 @RequestMapping("/Supplier")
-public class ControllerSupplierResources { //implements ControllerSupResources
+public class ControllerSupplierResources implements ControllerSupResources { //
     
     @Autowired
     private SupplierService service;

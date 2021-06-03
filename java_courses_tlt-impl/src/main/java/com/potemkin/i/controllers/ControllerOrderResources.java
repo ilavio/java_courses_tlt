@@ -15,10 +15,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.potemkin.i.service.OrderService;
+import com.potemkin.i.controllers.ControllerOrdResources;
 
 @Controller()
 @RequestMapping("/Orders")
-public class ControllerOrderResources { //implements ControllerOrdResources
+public class ControllerOrderResources implements ControllerOrdResources { //
     
     @Autowired
     private OrderService service;
@@ -32,7 +33,7 @@ public class ControllerOrderResources { //implements ControllerOrdResources
     
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public String getOrders(@RequestParam(name = "id") int customerId) {
+    public String getOrders(@RequestParam(name = "customerId") int customerId) {
         var jsonArray = service.getOrders(customerId);
         return jsonArray.toString();
     }
