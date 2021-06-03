@@ -14,48 +14,48 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.potemkin.i.service.CustomerService;
+import com.potemkin.i.service.OrderService;
 
 @Controller()
-@RequestMapping("/Customers")
-public class ControllerCustomerResources  { //implements ControllerCustResources
+@RequestMapping("/Orders")
+public class ControllerOrderResources { //implements ControllerOrdResources
     
     @Autowired
-    private CustomerService customerService;
+    private OrderService service;
     
     @GetMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public String getCustomer(@PathVariable("id") int id) {
-       var json = customerService.getCustomerJson(id);
+    public String getOrder(@PathVariable("id") int id) {
+       var json = service.getOrderJson(id);
        return json.toString();
     }
     
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public String getCustomers() {
-        var jsonArray = customerService.getCustomers();
+    public String getOrders(@RequestParam(name = "id") int customerId) {
+        var jsonArray = service.getOrders(customerId);
         return jsonArray.toString();
     }
     
     @PostMapping(consumes = "application/json", produces = "application/json")
     @ResponseBody
-    public String addCustomer(@RequestBody String strCust) {
-        var json = new JSONObject(strCust);
-        return customerService.addCustomer(json).toString();
+    public String addOrder(@RequestBody String strOrd) {
+        var json = new JSONObject(strOrd);
+        return service.addOrder(json).toString();
     }
     
     @PutMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public String changeCustomer(@RequestBody String strCust, @RequestParam(name = "id") int id) {
-        var json = new JSONObject(strCust);
-        var jsonResponse = customerService.changeEntity(json, id);
+    public String changeOrder(@RequestBody String strOrd, @RequestParam(name = "id") int id) {
+        var json = new JSONObject(strOrd);
+        var jsonResponse = service.changeEntity(json, id);
         return jsonResponse.toString();
     }
     
     @DeleteMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public String deleteById(@RequestParam(name = "id") int id) {
-        var ex = customerService.deleteById(id);
+        var ex = service.deleteById(id);
         return ex.toString();
     }
 }

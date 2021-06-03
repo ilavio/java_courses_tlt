@@ -14,48 +14,48 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.potemkin.i.service.CustomerService;
+import com.potemkin.i.service.SupplierService;
 
 @Controller()
-@RequestMapping("/Customers")
-public class ControllerCustomerResources  { //implements ControllerCustResources
+@RequestMapping("/Supplier")
+public class ControllerSupplierResources { //implements ControllerSupResources
     
     @Autowired
-    private CustomerService customerService;
+    private SupplierService service;
     
     @GetMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public String getCustomer(@PathVariable("id") int id) {
-       var json = customerService.getCustomerJson(id);
+    public String getSupplier(@PathVariable("id") int id) {
+       var json = service.getSupplierJson(id);
        return json.toString();
     }
     
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public String getCustomers() {
-        var jsonArray = customerService.getCustomers();
+    public String getSuppliers() {
+        var jsonArray = service.getSuppliers();
         return jsonArray.toString();
     }
     
     @PostMapping(consumes = "application/json", produces = "application/json")
     @ResponseBody
-    public String addCustomer(@RequestBody String strCust) {
-        var json = new JSONObject(strCust);
-        return customerService.addCustomer(json).toString();
+    public String addSupplier(@RequestBody String strSup) {
+        var json = new JSONObject(strSup);
+        return service.addSupplier(json).toString();
     }
     
     @PutMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public String changeCustomer(@RequestBody String strCust, @RequestParam(name = "id") int id) {
-        var json = new JSONObject(strCust);
-        var jsonResponse = customerService.changeEntity(json, id);
+    public String changeSupplier(@RequestBody String strSup, @RequestParam(name = "id") int id) {
+        var json = new JSONObject(strSup);
+        var jsonResponse = service.changeEntity(json, id);
         return jsonResponse.toString();
     }
     
     @DeleteMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public String deleteById(@RequestParam(name = "id") int id) {
-        var ex = customerService.deleteById(id);
+        var ex = service.deleteById(id);
         return ex.toString();
     }
 }
