@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 @Component("starter")
 public class Starter {
     @Autowired
-    ServiceInt service;
+    ServiceCrud service;
     
     public void serviceStart(AnnotationConfigApplicationContext context) {
         service.start(context);

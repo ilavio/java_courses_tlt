@@ -5,30 +5,38 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 
 import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
-import com.potemkin.i.CrudHandler;
-import com.potemkin.i.CrudHandlerSupAndProduct;
 import com.potemkin.i.domain.entity.Customer;
+import com.potemkin.i.repository.interf.CustomerR;
+import com.potemkin.i.repository.interf.OrderR;
+import com.potemkin.i.repository.interf.ProductR;
+import com.potemkin.i.repository.interf.SupplierR;
 
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-@Component("servicecrud")
-@Profile("!local")
-public class ServiceCrud implements ServiceInt {
+@Component()
+public class ServiceCrud {
+    @Autowired
+    CustomerR repoCust;
+    @Autowired
+    OrderR repoOrd;
+    @Autowired
+    SupplierR repoSup;
+    @Autowired
+    ProductR repoProd;
     
-    @Override
     public void start(AnnotationConfigApplicationContext context) {
-        var crudCustAndOrd = context.getBean("crudhandler", CrudHandler.class);
-        var crudSupAndProd = context.getBean("crudHandlerSupAndProduct", CrudHandlerSupAndProduct.class);
         log.info("MainImpl");
 
         log.info("Добавление Customer");
-        var cust = context.getBean("customer", Customer.class);
-        crudCustAndOrd.addEntity(cust);
+        var cust = new Customer();
+        cust.setCustomerName("Maks-1");
+        cust.setPhone("78451256");
+        repoCust.addCustomer(cust);
 
         log.info("Добавление Order");
         try {
@@ -41,7 +49,7 @@ public class ServiceCrud implements ServiceInt {
             log.info(strbuf.toString());
             JSONObject json = new JSONObject(strbuf.toString());
             int id = json.getInt("customerId");
-            crudCustAndOrd.addEntity(crudCustAndOrd.parseForOrder(json), id);
+            repoOrd.addOrder(repoOrd.parseForOrder(json), id);
             reader.close();
         } catch (IOException e) {
             log.error("MainImpl main() {}", e);
@@ -57,7 +65,7 @@ public class ServiceCrud implements ServiceInt {
             }
             log.info(strbuf.toString());
             JSONObject json = new JSONObject(strbuf.toString());
-            crudSupAndProd.addEntity(crudSupAndProd.parseForSupplier(json));
+            repoSup.addSupplier(repoSup.parseForSupplier(json));
             reader.close();
         } catch (IOException e) {
             log.error("MainImpl main() {}", e);
@@ -74,7 +82,7 @@ public class ServiceCrud implements ServiceInt {
             log.info(strbuf.toString());
             JSONObject json = new JSONObject(strbuf.toString());
             int id = json.getInt("supplierId");
-            crudSupAndProd.addEntity(crudSupAndProd.parseForProduct(json), id);
+            repoProd.addProduct(repoProd.parseForProduct(json), id);
             reader.close();
         } catch (IOException e) {
             log.error("MainImpl main() {}", e);

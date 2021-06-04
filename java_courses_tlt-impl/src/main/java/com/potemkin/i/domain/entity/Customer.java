@@ -27,9 +27,6 @@ import lombok.Data;
  * @author Илья Пот
  *
  */
-@Profile("!local")
-@Component("customer")
-@Scope("prototype")
 @Entity
 @Table(name = "Customers", schema = "potemkin")
 @Data
@@ -39,11 +36,9 @@ public class Customer {
     @Column(name = "customer_id")
     private int customerId;
 
-    @Value("${customer.customerName}")
     @Column(nullable = false, name = "customer_name")
     private String customerName;
 
-    @Value("${customer.phone}")
     @Column
     private String phone;
 

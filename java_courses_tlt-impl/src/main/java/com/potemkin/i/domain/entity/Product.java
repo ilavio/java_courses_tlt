@@ -22,9 +22,6 @@ import lombok.Data;
  * @author Илья Пот
  *
  */
-@Profile("!local")
-@Component("product")
-@Scope("prototype")
 @Table(name = "Product", schema = "potemkin")
 @Data
 @Entity

@@ -15,7 +15,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import com.potemkin.i.config.SpringConfigMy;
+import com.potemkin.i.config.EntityManagerConfig;
 import com.potemkin.i.service.ServiceLocal;
 import com.potemkin.i.service.Starter;
 
@@ -36,7 +36,7 @@ public class ServiceCrudTest {
         entityManagerFactoryMock = mock(EntityManagerFactory.class);
         entityManagerMock = mock(EntityManager.class);
         entityTransactionMock = mock(EntityTransaction.class);
-        SpringConfigMy configMy = mock(SpringConfigMy.class);
+        EntityManagerConfig configMy = mock(EntityManagerConfig.class);
 
         when(entityManagerFactoryMock.createEntityManager()).thenReturn(entityManagerMock);
         when(entityManagerMock.getTransaction()).thenReturn(entityTransactionMock);

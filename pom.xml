@@ -196,6 +196,10 @@
                         <exclude>**/ServOrder.class</exclude>
                         <exclude>**/ServProduct.class</exclude>
                         <exclude>**/ServSupplier.class</exclude>
+                        <exclude>**/CustomerR.class</exclude>
+                        <exclude>**/OrderR.class</exclude>
+                        <exclude>**/ProductR.class</exclude>
+                        <exclude>**/SupplierR.class</exclude>
                     </excludes>
                 </configuration>
                 <executions>

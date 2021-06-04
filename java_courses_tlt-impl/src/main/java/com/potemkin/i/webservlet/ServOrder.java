@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import javax.persistence.Persistence;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -14,9 +15,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import com.potemkin.i.CrudHandler;
-import com.potemkin.i.SinglEntityManager;
 import com.potemkin.i.domain.entity.Order;
+import com.potemkin.i.repository.OrderRepository;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -27,7 +27,7 @@ import lombok.extern.slf4j.Slf4j;
 @WebServlet("/Orders")
 public class ServOrder extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	CrudHandler crud = new CrudHandler(SinglEntityManager.getEntityManagerFactory());
+	OrderRepository crud = new OrderRepository(Persistence.createEntityManagerFactory("JPA-First"));
 
 	/**
 	 * Метод запроса сущности через get запрос по id
@@ -71,7 +71,7 @@ public class ServOrder extends HttpServlet {
         }
 	    JSONObject json = new JSONObject(stringBuf.toString());
 	    int id = json.getInt("customerId");
-	    crud.addEntity(crud.parseForOrder(json), id);
+	    crud.addOrder(crud.parseForOrder(json), id);
 	}
 
 	/**

@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.Persistence;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -15,9 +16,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import com.potemkin.i.CrudHandlerSupAndProduct;
-import com.potemkin.i.SinglEntityManager;
 import com.potemkin.i.domain.entity.Supplier;
+import com.potemkin.i.repository.SupplierRepository;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -28,7 +28,7 @@ import lombok.extern.slf4j.Slf4j;
 @WebServlet("/Supplier")
 public class ServSupplier extends HttpServlet {
     private static final long serialVersionUID = 1L;
-    CrudHandlerSupAndProduct crud = new CrudHandlerSupAndProduct(SinglEntityManager.getEntityManagerFactory());
+    SupplierRepository crud = new SupplierRepository(Persistence.createEntityManagerFactory("JPA-First"));
 
     /**
      * @see HttpServlet#HttpServlet()
@@ -87,7 +87,7 @@ public class ServSupplier extends HttpServlet {
         JSONObject json = new JSONObject(stringBuf.toString());
         log.info("+2---->{}", json);
         out.println(json.toString());
-        crud.addEntity(crud.parseForSupplier(json));
+        crud.addSupplier(crud.parseForSupplier(json));
         out.close();
     }
 

@@ -1,4 +1,4 @@
-package com.potemkin.i;
+package com.potemkin.i.repository;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -15,63 +15,39 @@ import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Profile;
-import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import com.potemkin.i.domain.entity.Customer;
 import com.potemkin.i.domain.entity.Order;
+import com.potemkin.i.repository.interf.OrderR;
 
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * Класс CrudHandler обработчик сущностей Customer и Order
+ * Класс OrderRepository обработчик сущности Order
  * 
+ * @author Илья Пот
+ *
  */
 @Profile("!local")
 @Slf4j
-@Scope("singleton")
-@Component("crudhandler")
-public class CrudHandler {
-    private EntityManagerFactory managerFactory;
+@Component()
+public class OrderRepository implements OrderR {
+    private final EntityManagerFactory MANAGER_FACTORY;
 
     @Autowired
-    public CrudHandler(@Qualifier("entityManagerFactory") EntityManagerFactory managerFactory) {
-        this.managerFactory = managerFactory;
-    }
-
-    public CrudHandler() {
+    public OrderRepository(@Qualifier("entityManagerFactory") EntityManagerFactory managerFactory) {
+        this.MANAGER_FACTORY = managerFactory;
     }
 
     /**
-     * Метод добавления сущности Customer
-     * 
-     * @param customer
-     */
-    public void addEntity(Customer customer) {
-        var entityManager = managerFactory.createEntityManager();
-        EntityTransaction transaction = null;
-        try {
-            transaction = entityManager.getTransaction();
-            transaction.begin();
-            entityManager.persist(customer);
-            transaction.commit();
-        } catch (Exception e) {
-            if (transaction != null) {
-                transaction.rollback();
-            }
-            log.error("Ошибка CrudMyFirst addCustomer(): {}", e);
-        } finally {
-            entityManager.close();
-        }
-    }
-
-    /**
+     * Метод добавления Order
      * 
      * @param order
      * @param customerId
      */
-    public void addEntity(Order order, int customerId) {
-        var entityManager = managerFactory.createEntityManager();
+    public void addOrder(Order order, int customerId) {
+        var entityManager = MANAGER_FACTORY.createEntityManager();
         EntityTransaction transaction = null;
         try {
             transaction = entityManager.getTransaction();
@@ -91,35 +67,13 @@ public class CrudHandler {
     }
 
     /**
-     * Метод изъятия из баззы данных объектa типа Customer по Id
-     * 
-     * @param customerName - тип String
-     * @return - объектов Customer
-     */
-    public Customer getCustomer(int customerId) {
-        var entityManager = managerFactory.createEntityManager();
-        String query = "SELECT cust FROM Customer cust WHERE cust.customerId = ?1";
-        TypedQuery<Customer> custQuery = entityManager.createQuery(query, Customer.class);
-        Customer cust = null;
-        try {
-            cust = custQuery.setParameter(1, customerId).getSingleResult();
-            log.trace("Покупатель: {}", cust);
-        } catch (Exception e) {
-            log.error("Ошибка CrudMyFirst getCustomer() {}", e);
-        } finally {
-            entityManager.close();
-        }
-        return cust;
-    }
-
-    /**
      * Метод изъятия из баззы данных объектов типа Order по customerId
      * 
      * @param customerId - тип int
      * @return - объектов List<Order>
      */
     public List<Order> getOrders(int customerId) {
-        var entityManager = managerFactory.createEntityManager();
+        var entityManager = MANAGER_FACTORY.createEntityManager();
         String query = "SELECT order FROM Order order WHERE order.customer.customerId = ?1";
         TypedQuery<Order> custQuery = entityManager.createQuery(query, Order.class);
         List<Order> orders = null;
@@ -141,7 +95,7 @@ public class CrudHandler {
      * @return - объект Order
      */
     public Order getOredr(int orderId) {
-        var entityManager = managerFactory.createEntityManager();
+        var entityManager = MANAGER_FACTORY.createEntityManager();
         String query = "SELECT order FROM Order order WHERE order.orderId = ?1";
         TypedQuery<Order> custQuery = entityManager.createQuery(query, Order.class);
         Order order = null;
@@ -154,42 +108,6 @@ public class CrudHandler {
             entityManager.close();
         }
         return order;
-    }
-
-    /**
-     * Метод изъятия из баззы данных всех объектов типа Customer
-     * 
-     * @return - список Customer
-     */
-    public List<Customer> getCustomerAll() {
-        var entityManager = managerFactory.createEntityManager();
-        String query = "SELECT cust FROM Customer cust";
-        TypedQuery<Customer> custQuery = entityManager.createQuery(query, Customer.class);
-        List<Customer> custs = null;
-        try {
-            custs = custQuery.getResultList();
-            log.trace("Покупатель: {}", custs);
-        } catch (Exception e) {
-            log.error("Ошибка CrudHandler getCustomerAll() {}", e);
-        } finally {
-            entityManager.close();
-        }
-        return custs;
-    }
-
-    /**
-     * Метод разбора JSONObject для создания Customer
-     * 
-     * @param json
-     * @return
-     */
-    public Customer parseForCustomer(JSONObject json) {
-        Customer cust = new Customer();
-        if (json != null) {
-            cust.setCustomerName(json.getString("customerName"));
-            cust.setPhone(json.getString("phone"));
-        }
-        return cust;
     }
 
     /**
@@ -215,33 +133,6 @@ public class CrudHandler {
     }
 
     /**
-     * Метод замена значений в Customer
-     * 
-     * @param json
-     * @param customerId
-     * @return Customer
-     */
-    public Customer changeEntity(JSONObject json, int customerId) {
-        var entityManager = managerFactory.createEntityManager();
-        Customer entity = entityManager.find(Customer.class, customerId);
-        EntityTransaction transaction = null;
-        try {
-            transaction = entityManager.getTransaction();
-            transaction.begin();
-            entity.setCustomerName(json.getString("customerName"));
-            entity.setPhone(json.getString("phone"));
-            log.trace("Покупатель: {}", entity);
-            entityManager.persist(entity);
-            transaction.commit();
-        } catch (Exception e) {
-            log.error("Ошибка CrudHandler changeEntity() {}", e);
-        } finally {
-            entityManager.close();
-        }
-        return entity;
-    }
-
-    /**
      * Метод замены значений в Order
      * 
      * @param json
@@ -249,7 +140,7 @@ public class CrudHandler {
      * @return Customer
      */
     public Order changeOrder(JSONObject json, int orderId) {
-        var entityManager = managerFactory.createEntityManager();
+        var entityManager = MANAGER_FACTORY.createEntityManager();
         Order entity = entityManager.find(Order.class, orderId);
         EntityTransaction transaction = null;
         try {
@@ -276,35 +167,12 @@ public class CrudHandler {
     }
 
     /**
-     * Удаление Customer из базы по id
-     * 
-     * @param customerId
-     */
-    public void deleteCust(int customerId) {
-        var entityManager = managerFactory.createEntityManager();
-        EntityTransaction transaction = null;
-        Customer entity = entityManager.find(Customer.class, customerId);
-        try {
-            transaction = entityManager.getTransaction();
-            transaction.begin();
-            entityManager.remove(entity);
-            transaction.commit();
-            log.trace("Покупатель: {}", entity);
-            entityManager.persist(entity);
-        } catch (Exception e) {
-            log.error("Ошибка CrudHandler deleteCust() {}", e);
-        } finally {
-            entityManager.close();
-        }
-    }
-
-    /**
      * Удаление Order из базы по id
      * 
      * @param orderId
      */
     public void deleteOrder(int orderId) {
-        var entityManager = managerFactory.createEntityManager();
+        var entityManager = MANAGER_FACTORY.createEntityManager();
         EntityTransaction transaction = null;
         Order entity = entityManager.find(Order.class, orderId);
         try {

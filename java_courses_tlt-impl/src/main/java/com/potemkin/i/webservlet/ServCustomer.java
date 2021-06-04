@@ -16,9 +16,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import com.potemkin.i.CrudHandler;
-import com.potemkin.i.SinglEntityManager;
 import com.potemkin.i.domain.entity.Customer;
+import com.potemkin.i.repository.CustomerRepository;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -26,7 +25,7 @@ import lombok.extern.slf4j.Slf4j;
 @WebServlet("/Customers")
 public class ServCustomer extends HttpServlet {
     private static final long serialVersionUID = 1L;
-    CrudHandler crud = new CrudHandler(SinglEntityManager.getEntityManagerFactory());
+    CustomerRepository crud = new CustomerRepository(Persistence.createEntityManagerFactory("JPA-First"));
 
     public ServCustomer() {
     }
@@ -83,7 +82,7 @@ public class ServCustomer extends HttpServlet {
         JSONObject json = new JSONObject(stringBuf.toString());
         log.info("+2---->{}", json);
         out.println(json.toString());
-        crud.addEntity(crud.parseForCustomer(json));
+        crud.addCustomer(crud.parseForCustomer(json));
         out.close();
     }
 
