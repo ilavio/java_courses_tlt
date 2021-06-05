@@ -12,15 +12,14 @@ import javax.persistence.TypedQuery;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 import com.potemkin.i.domain.entity.Customer;
 import com.potemkin.i.domain.entity.Order;
-import com.potemkin.i.repository.interf.OrderR;
+import com.potemkin.i.repository.interf.OrderRepository;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -31,14 +30,10 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Profile("!local")
 @Slf4j
-@Component()
-public class OrderRepository implements OrderR {
-    private final EntityManagerFactory MANAGER_FACTORY;
-
-    @Autowired
-    public OrderRepository(@Qualifier("entityManagerFactory") EntityManagerFactory managerFactory) {
-        this.MANAGER_FACTORY = managerFactory;
-    }
+@RequiredArgsConstructor
+@Component
+public class OrderRepositoryImpl implements OrderRepository {
+    private final EntityManagerFactory managerFactory;
 
     /**
      * Метод добавления Order
@@ -46,8 +41,8 @@ public class OrderRepository implements OrderR {
      * @param order
      * @param customerId
      */
-    public void addOrder(Order order, int customerId) {
-        var entityManager = MANAGER_FACTORY.createEntityManager();
+    public Order addOrder(Order order, int customerId) {
+        var entityManager = managerFactory.createEntityManager();
         EntityTransaction transaction = null;
         try {
             transaction = entityManager.getTransaction();
@@ -56,6 +51,7 @@ public class OrderRepository implements OrderR {
             order.setCustomer(cust);
             entityManager.persist(order);
             transaction.commit();
+            return order;
         } catch (Exception e) {
             if (transaction != null) {
                 transaction.rollback();
@@ -64,6 +60,7 @@ public class OrderRepository implements OrderR {
         } finally {
             entityManager.close();
         }
+        return order;
     }
 
     /**
@@ -73,7 +70,7 @@ public class OrderRepository implements OrderR {
      * @return - объектов List<Order>
      */
     public List<Order> getOrders(int customerId) {
-        var entityManager = MANAGER_FACTORY.createEntityManager();
+        var entityManager = managerFactory.createEntityManager();
         String query = "SELECT order FROM Order order WHERE order.customer.customerId = ?1";
         TypedQuery<Order> custQuery = entityManager.createQuery(query, Order.class);
         List<Order> orders = null;
@@ -95,7 +92,7 @@ public class OrderRepository implements OrderR {
      * @return - объект Order
      */
     public Order getOredr(int orderId) {
-        var entityManager = MANAGER_FACTORY.createEntityManager();
+        var entityManager = managerFactory.createEntityManager();
         String query = "SELECT order FROM Order order WHERE order.orderId = ?1";
         TypedQuery<Order> custQuery = entityManager.createQuery(query, Order.class);
         Order order = null;
@@ -140,7 +137,7 @@ public class OrderRepository implements OrderR {
      * @return Customer
      */
     public Order changeOrder(JSONObject json, int orderId) {
-        var entityManager = MANAGER_FACTORY.createEntityManager();
+        var entityManager = managerFactory.createEntityManager();
         Order entity = entityManager.find(Order.class, orderId);
         EntityTransaction transaction = null;
         try {
@@ -171,8 +168,8 @@ public class OrderRepository implements OrderR {
      * 
      * @param orderId
      */
-    public void deleteOrder(int orderId) {
-        var entityManager = MANAGER_FACTORY.createEntityManager();
+    public boolean deleteOrder(int orderId) {
+        var entityManager = managerFactory.createEntityManager();
         EntityTransaction transaction = null;
         Order entity = entityManager.find(Order.class, orderId);
         try {
@@ -182,10 +179,12 @@ public class OrderRepository implements OrderR {
             transaction.commit();
             log.trace("Покупатель: {}", entity);
             entityManager.persist(entity);
+            return true;
         } catch (Exception e) {
             log.error("Ошибка CrudHandler deleteCust() {}", e);
         } finally {
             entityManager.close();
         }
+        return false;
     }
 }

@@ -16,7 +16,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import com.potemkin.i.domain.entity.Order;
-import com.potemkin.i.repository.OrderRepository;
+import com.potemkin.i.repository.OrderRepositoryImpl;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -27,7 +27,7 @@ import lombok.extern.slf4j.Slf4j;
 @WebServlet("/Orders")
 public class ServOrder extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	OrderRepository crud = new OrderRepository(Persistence.createEntityManagerFactory("JPA-First"));
+	OrderRepositoryImpl crud = new OrderRepositoryImpl(Persistence.createEntityManagerFactory("JPA-First"));
 
 	/**
 	 * Метод запроса сущности через get запрос по id

@@ -17,7 +17,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import com.potemkin.i.domain.entity.Customer;
-import com.potemkin.i.repository.CustomerRepository;
+import com.potemkin.i.repository.CustomerRepositoryImpl;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -25,7 +25,7 @@ import lombok.extern.slf4j.Slf4j;
 @WebServlet("/Customers")
 public class ServCustomer extends HttpServlet {
     private static final long serialVersionUID = 1L;
-    CustomerRepository crud = new CustomerRepository(Persistence.createEntityManagerFactory("JPA-First"));
+    CustomerRepositoryImpl crud = new CustomerRepositoryImpl(Persistence.createEntityManagerFactory("JPA-First"));
 
     public ServCustomer() {
     }

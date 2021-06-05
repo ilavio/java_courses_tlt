@@ -5,14 +5,14 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 import com.potemkin.i.domain.entity.Product;
-import com.potemkin.i.repository.interf.ProductR;
+import com.potemkin.i.repository.interf.ProductRepository;
 
 import lombok.extern.slf4j.Slf4j;
 
 @Profile("local")
 @Slf4j
-@Component()
-public class ProdRepHard implements ProductR {
+@Component
+public class ProductRepositoryHard implements ProductRepository {
     private Product prod = new Product();
 
     

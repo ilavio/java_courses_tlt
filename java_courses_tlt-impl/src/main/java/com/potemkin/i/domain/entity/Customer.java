@@ -20,6 +20,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import lombok.Data;
+import lombok.ToString;
 
 /**
  * Сущность Customer
@@ -30,6 +31,7 @@ import lombok.Data;
 @Entity
 @Table(name = "Customers", schema = "potemkin")
 @Data
+@ToString(exclude = "orders")
 public class Customer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -51,10 +53,5 @@ public class Customer {
 
     public void setOrders(List<Order> orders) {
         this.orders = orders;
-    }
-
-    @Override
-    public String toString() {
-        return "Customer [customerId=" + customerId + ", customerName=" + customerName + ", phone=" + phone + "]";
     }
 }

@@ -4,22 +4,23 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 import com.potemkin.i.domain.entity.Customer;
-import com.potemkin.i.repository.interf.CustomerR;
+import com.potemkin.i.repository.interf.CustomerRepository;
 
 import lombok.extern.slf4j.Slf4j;
 
 @Profile("local")
 @Slf4j
 @Component()
-public class CustRepHard implements CustomerR {
+public class CustomerRepositoryHard implements CustomerRepository {
     private Customer cust;
 
-    public void addCustomer(Customer customer) {
+    public Customer addCustomer(Customer customer) {
         cust = new Customer();
         cust.setCustomerId(0);
         cust.setCustomerName("Maks");
         cust.setPhone("888");
         log.info("Добавление Customer: {}", cust);
+        return cust;
     }
 
     public Customer getCustomer(int customerId) {
@@ -27,10 +28,11 @@ public class CustRepHard implements CustomerR {
         return cust;
     }
 
-    public void deleteCust(int customerId) {
+    public boolean deleteCust(int customerId) {
         cust.setCustomerId(0);
         cust.setCustomerName("");
         cust.setPhone("");
         log.info("Удаление Customer: {}", cust);
+        return true;
     }
 }

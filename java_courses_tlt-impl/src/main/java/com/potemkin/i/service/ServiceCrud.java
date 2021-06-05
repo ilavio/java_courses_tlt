@@ -5,29 +5,26 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 
 import org.json.JSONObject;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.stereotype.Component;
 
 import com.potemkin.i.domain.entity.Customer;
-import com.potemkin.i.repository.interf.CustomerR;
-import com.potemkin.i.repository.interf.OrderR;
-import com.potemkin.i.repository.interf.ProductR;
-import com.potemkin.i.repository.interf.SupplierR;
+import com.potemkin.i.repository.interf.CustomerRepository;
+import com.potemkin.i.repository.interf.OrderRepository;
+import com.potemkin.i.repository.interf.ProductRepository;
+import com.potemkin.i.repository.interf.SupplierRepository;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-@Component()
+@RequiredArgsConstructor
+@Component
 public class ServiceCrud {
-    @Autowired
-    CustomerR repoCust;
-    @Autowired
-    OrderR repoOrd;
-    @Autowired
-    SupplierR repoSup;
-    @Autowired
-    ProductR repoProd;
+    private final CustomerRepository repoCust;
+    private final OrderRepository repoOrd;
+    private final SupplierRepository repoSup;
+    private final ProductRepository repoProd;
     
     public void start(AnnotationConfigApplicationContext context) {
         log.info("MainImpl");

@@ -8,27 +8,23 @@ import javax.persistence.EntityTransaction;
 import javax.persistence.TypedQuery;
 
 import org.json.JSONObject;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 import com.potemkin.i.domain.entity.Product;
 import com.potemkin.i.domain.entity.Supplier;
-import com.potemkin.i.repository.interf.ProductR;
+import com.potemkin.i.repository.interf.ProductRepository;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Profile("!local")
 @Slf4j
-@Component()
-public class ProductRepository implements ProductR {
-    
-private final EntityManagerFactory MANAGER_FACTORY;
-    
-    @Autowired
-    public ProductRepository(EntityManagerFactory managerFactory) {
-        this.MANAGER_FACTORY = managerFactory;
-    }
+@RequiredArgsConstructor
+@Component
+public class ProductRepositoryImpl implements ProductRepository {
+
+    private final EntityManagerFactory managerFactory;
 
     /**
      * Метод добавления Product в базу данных
@@ -37,7 +33,7 @@ private final EntityManagerFactory MANAGER_FACTORY;
      * @param customerId
      */
     public void addProduct(Product prod, int supplierId) {
-        var entityManager = MANAGER_FACTORY.createEntityManager();
+        var entityManager = managerFactory.createEntityManager();
         EntityTransaction transaction = null;
         try {
             transaction = entityManager.getTransaction();
@@ -55,7 +51,7 @@ private final EntityManagerFactory MANAGER_FACTORY;
             entityManager.close();
         }
     }
-    
+
     /**
      * Метод разбора JSONObject для создания Product
      * 
@@ -71,7 +67,7 @@ private final EntityManagerFactory MANAGER_FACTORY;
         }
         return prod;
     }
-    
+
     /**
      * Метод получения Product из базы данных
      * 
@@ -79,7 +75,7 @@ private final EntityManagerFactory MANAGER_FACTORY;
      * @return Product
      */
     public Product getProduct(int productId) {
-        var entityManager = MANAGER_FACTORY.createEntityManager();
+        var entityManager = managerFactory.createEntityManager();
         String query = "SELECT prod FROM Product prod WHERE prod.productId = ?1";
         TypedQuery<Product> custQuery = entityManager.createQuery(query, Product.class);
         Product prod = null;
@@ -93,14 +89,14 @@ private final EntityManagerFactory MANAGER_FACTORY;
         }
         return prod;
     }
-    
+
     /**
      * Метод выборки всего списка Product
      * 
      * @return List<Product>
      */
     public List<Product> getProductAll() {
-        var entityManager = MANAGER_FACTORY.createEntityManager();
+        var entityManager = managerFactory.createEntityManager();
         String query = "SELECT prod FROM Product prod";
         TypedQuery<Product> custQuery = entityManager.createQuery(query, Product.class);
         List<Product> prods = null;
@@ -114,16 +110,16 @@ private final EntityManagerFactory MANAGER_FACTORY;
         }
         return prods;
     }
-    
+
     /**
-     * Метод изменения Product  базе данных
+     * Метод изменения Product базе данных
      * 
      * @param json
      * @param productId
      * @return Product
      */
     public Product changeProduct(JSONObject json, int productId) {
-        var entityManager = MANAGER_FACTORY.createEntityManager();
+        var entityManager = managerFactory.createEntityManager();
         Product entity = entityManager.find(Product.class, productId);
         EntityTransaction transaction = null;
         try {
@@ -142,14 +138,14 @@ private final EntityManagerFactory MANAGER_FACTORY;
         }
         return entity;
     }
-    
+
     /**
      * Метод удаления Product по id
      * 
      * @param orderId
      */
     public void deleteProduct(int productId) {
-        var entityManager = MANAGER_FACTORY.createEntityManager();
+        var entityManager = managerFactory.createEntityManager();
         EntityTransaction transaction = null;
         Product entity = entityManager.find(Product.class, productId);
         try {

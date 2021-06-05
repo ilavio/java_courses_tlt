@@ -4,13 +4,19 @@ import org.json.JSONObject;
 
 import com.potemkin.i.domain.entity.Order;
 
-public interface OrderR {
+/**
+ * Интерфейс OrderRepository
+ * 
+ * @author Илья Пот
+ *
+ */
+public interface OrderRepository {
     
-    public void addOrder(Order order, int customerId);
+    public Order addOrder(Order order, int customerId);
     
     public Order getOredr(int orderId);
     
-    public void deleteOrder(int orderId);
+    public boolean deleteOrder(int orderId);
     
     public Order parseForOrder(JSONObject json);
 }

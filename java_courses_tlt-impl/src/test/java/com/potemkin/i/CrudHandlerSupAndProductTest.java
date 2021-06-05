@@ -22,10 +22,10 @@ import org.junit.jupiter.api.Test;
 import com.potemkin.i.config.EntityManagerConfigLocal;
 import com.potemkin.i.domain.entity.Product;
 import com.potemkin.i.domain.entity.Supplier;
-import com.potemkin.i.repository.ProductRepository;
-import com.potemkin.i.repository.SupplierRepository;
-import com.potemkin.i.repository.hard.ProdRepHard;
-import com.potemkin.i.repository.hard.SupRepHard;
+import com.potemkin.i.repository.ProductRepositoryImpl;
+import com.potemkin.i.repository.SupplierRepositoryImpl;
+import com.potemkin.i.repository.hard.ProductRepositoryHard;
+import com.potemkin.i.repository.hard.SupplierRepositoryHard;
 
 /**
  * Класс тестирования CrudHandlerSupAndProductTest для репозиториев
@@ -39,10 +39,10 @@ public class CrudHandlerSupAndProductTest {
     private EntityManager entityManagerMock;
     private EntityTransaction entityTransactionMock;
     private EntityManagerConfigLocal springConfigLocal = new EntityManagerConfigLocal();
-    private SupplierRepository repoSup;
-    private ProductRepository repoProd;
-    private SupRepHard supHard = new SupRepHard();
-    private ProdRepHard prodHard = new ProdRepHard();
+    private SupplierRepositoryImpl repoSup;
+    private ProductRepositoryImpl repoProd;
+    private SupplierRepositoryHard supHard = new SupplierRepositoryHard();
+    private ProductRepositoryHard prodHard = new ProductRepositoryHard();
 
     @BeforeEach
     public void maskingObjects() {
@@ -52,8 +52,8 @@ public class CrudHandlerSupAndProductTest {
 
         when(entityManagerFactoryMock.createEntityManager()).thenReturn(entityManagerMock);
         when(entityManagerMock.getTransaction()).thenReturn(entityTransactionMock);
-        repoSup = new SupplierRepository(entityManagerFactoryMock);
-        repoProd = new ProductRepository(entityManagerFactoryMock);
+        repoSup = new SupplierRepositoryImpl(entityManagerFactoryMock);
+        repoProd = new ProductRepositoryImpl(entityManagerFactoryMock);
         supHard.addSupplier(new Supplier());
         prodHard.addProduct(new Product(), 0);
     }

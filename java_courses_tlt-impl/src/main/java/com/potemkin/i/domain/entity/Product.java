@@ -44,9 +44,9 @@ public class Product {
     @Column(nullable = false, name = "is_discontinued")
     private boolean isDiscontinued;
 
-    @Override
-    public String toString() {
-        return "Product [productId=" + productId + ", productName=" + productName + ", unitPrice=" + unitPrice
-                + ", isDiscontinued=" + isDiscontinued + ", = supplier" + supplier + "]";
-    }
+//    @Override
+//    public String toString() {
+//        return "Product [productId=" + productId + ", productName=" + productName + ", unitPrice=" + unitPrice
+//                + ", isDiscontinued=" + isDiscontinued + ", = supplier" + supplier + "]";
+//    }
 }

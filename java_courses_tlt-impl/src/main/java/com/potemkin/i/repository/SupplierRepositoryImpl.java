@@ -7,13 +7,13 @@ import javax.persistence.EntityTransaction;
 import javax.persistence.TypedQuery;
 
 import org.json.JSONObject;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 import com.potemkin.i.domain.entity.Supplier;
-import com.potemkin.i.repository.interf.SupplierR;
+import com.potemkin.i.repository.interf.SupplierRepository;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -24,29 +24,26 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Profile("!local")
 @Slf4j
-@Component()
-public class SupplierRepository implements SupplierR {
+@RequiredArgsConstructor
+@Component
+public class SupplierRepositoryImpl implements SupplierRepository {
     
-private final EntityManagerFactory MANAGER_FACTORY;
-    
-    @Autowired
-    public SupplierRepository(EntityManagerFactory managerFactory) {
-        this.MANAGER_FACTORY = managerFactory;
-    }
+private final EntityManagerFactory managerFactory;
 
     /**
      * Метод добавления сущности типа Supplier
      * 
      * @param supplier
      */
-    public void addSupplier(Supplier supplier) {
-        var entityManager = MANAGER_FACTORY.createEntityManager();
+    public Supplier addSupplier(Supplier supplier) {
+        var entityManager = managerFactory.createEntityManager();
         EntityTransaction transaction = null;
         try {
             transaction = entityManager.getTransaction();
             transaction.begin();
             entityManager.persist(supplier);
             transaction.commit();
+            return supplier;
         } catch (Exception e) {
             if (transaction != null) {
                 transaction.rollback();
@@ -55,6 +52,7 @@ private final EntityManagerFactory MANAGER_FACTORY;
         } finally {
             entityManager.close();
         }
+        return supplier;
     }
     
     /**
@@ -79,7 +77,7 @@ private final EntityManagerFactory MANAGER_FACTORY;
      * @return Supplier
      */
     public Supplier getSupplier(int supplierId) {
-        var entityManager = MANAGER_FACTORY.createEntityManager();
+        var entityManager = managerFactory.createEntityManager();
         String query = "SELECT sup FROM Supplier sup WHERE sup.supplierId = ?1";
         TypedQuery<Supplier> custQuery = entityManager.createQuery(query, Supplier.class);
         Supplier sup = null;
@@ -100,7 +98,7 @@ private final EntityManagerFactory MANAGER_FACTORY;
      * @return List<Supplier>
      */
     public List<Supplier> getSupplierAll() {
-        var entityManager = MANAGER_FACTORY.createEntityManager();
+        var entityManager = managerFactory.createEntityManager();
         String query = "SELECT sup FROM Supplier sup";
         TypedQuery<Supplier> custQuery = entityManager.createQuery(query, Supplier.class);
         List<Supplier> sups = null;
@@ -123,7 +121,7 @@ private final EntityManagerFactory MANAGER_FACTORY;
      * @return Supplier
      */
     public Supplier changeEntity(JSONObject json, int supplierId) {
-        var entityManager = MANAGER_FACTORY.createEntityManager();
+        var entityManager = managerFactory.createEntityManager();
         Supplier entity = entityManager.find(Supplier.class, supplierId);
         EntityTransaction transaction = null;
         try {
@@ -147,8 +145,8 @@ private final EntityManagerFactory MANAGER_FACTORY;
      * 
      * @param supplierId
      */
-    public void deleteSupplier(int supplierId) {
-        var entityManager = MANAGER_FACTORY.createEntityManager();
+    public boolean deleteSupplier(int supplierId) {
+        var entityManager = managerFactory.createEntityManager();
         EntityTransaction transaction = null;
         Supplier entity = entityManager.find(Supplier.class, supplierId);
         try {
@@ -158,10 +156,12 @@ private final EntityManagerFactory MANAGER_FACTORY;
             transaction.commit();
             log.trace("Поставщик: {}", entity);
             entityManager.persist(entity);
+            return true;
         } catch (Exception e) {
             log.error("Ошибка CrudHandlerSupAndProduct deleteSupplier() {}", e);
         } finally {
             entityManager.close();
         }
+        return false;
     }
 }

@@ -7,14 +7,13 @@ import javax.persistence.EntityTransaction;
 import javax.persistence.TypedQuery;
 
 import org.json.JSONObject;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 import com.potemkin.i.domain.entity.Customer;
-import com.potemkin.i.repository.interf.CustomerR;
+import com.potemkin.i.repository.interf.CustomerRepository;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -25,28 +24,25 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Profile("!local")
 @Slf4j
-@Component()
-public class CustomerRepository implements CustomerR {
-    private final EntityManagerFactory MANAGER_FACTORY;
-    
-    @Autowired
-    public CustomerRepository(@Qualifier("entityManagerFactory") EntityManagerFactory managerFactory) {
-        this.MANAGER_FACTORY = managerFactory;
-    }
+@RequiredArgsConstructor
+@Component
+public class CustomerRepositoryImpl implements CustomerRepository {
+    private final EntityManagerFactory managerFactory;
     
     /**
      * Метод добавления сущности Customer
      * 
      * @param customer
      */
-    public void addCustomer(Customer customer) {
-        var entityManager = MANAGER_FACTORY.createEntityManager();
+    public Customer addCustomer(Customer customer) {
+        var entityManager = managerFactory.createEntityManager();
         EntityTransaction transaction = null;
         try {
             transaction = entityManager.getTransaction();
             transaction.begin();
             entityManager.persist(customer);
             transaction.commit();
+            return customer;
         } catch (Exception e) {
             if (transaction != null) {
                 transaction.rollback();
@@ -55,6 +51,7 @@ public class CustomerRepository implements CustomerR {
         } finally {
             entityManager.close();
         }
+        return customer;
     }
     
     /**
@@ -64,7 +61,7 @@ public class CustomerRepository implements CustomerR {
      * @return - объектов Customer
      */
     public Customer getCustomer(int customerId) {
-        var entityManager = MANAGER_FACTORY.createEntityManager();
+        var entityManager = managerFactory.createEntityManager();
         String query = "SELECT cust FROM Customer cust WHERE cust.customerId = ?1";
         TypedQuery<Customer> custQuery = entityManager.createQuery(query, Customer.class);
         Customer cust = null;
@@ -85,7 +82,7 @@ public class CustomerRepository implements CustomerR {
      * @return - список Customer
      */
     public List<Customer> getCustomerAll() {
-        var entityManager = MANAGER_FACTORY.createEntityManager();
+        var entityManager = managerFactory.createEntityManager();
         String query = "SELECT cust FROM Customer cust";
         TypedQuery<Customer> custQuery = entityManager.createQuery(query, Customer.class);
         List<Customer> custs = null;
@@ -123,7 +120,7 @@ public class CustomerRepository implements CustomerR {
      * @return Customer
      */
     public Customer changeEntity(JSONObject json, int customerId) {
-        var entityManager = MANAGER_FACTORY.createEntityManager();
+        var entityManager = managerFactory.createEntityManager();
         Customer entity = entityManager.find(Customer.class, customerId);
         EntityTransaction transaction = null;
         try {
@@ -147,8 +144,8 @@ public class CustomerRepository implements CustomerR {
      * 
      * @param customerId
      */
-    public void deleteCust(int customerId) {
-        var entityManager = MANAGER_FACTORY.createEntityManager();
+    public boolean deleteCust(int customerId) {
+        var entityManager = managerFactory.createEntityManager();
         EntityTransaction transaction = null;
         Customer entity = entityManager.find(Customer.class, customerId);
         try {
@@ -158,10 +155,12 @@ public class CustomerRepository implements CustomerR {
             transaction.commit();
             log.trace("Покупатель: {}", entity);
             entityManager.persist(entity);
+            return true;
         } catch (Exception e) {
             log.error("Ошибка CrudHandler deleteCust() {}", e);
         } finally {
             entityManager.close();
         }
+        return false;
     }
 }

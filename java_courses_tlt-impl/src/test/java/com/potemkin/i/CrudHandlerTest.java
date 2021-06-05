@@ -12,10 +12,10 @@ import org.junit.jupiter.api.Test;
 import com.potemkin.i.config.EntityManagerConfigLocal;
 import com.potemkin.i.domain.entity.Customer;
 import com.potemkin.i.domain.entity.Order;
-import com.potemkin.i.repository.CustomerRepository;
-import com.potemkin.i.repository.OrderRepository;
-import com.potemkin.i.repository.hard.CustRepHard;
-import com.potemkin.i.repository.hard.OrdRepHard;
+import com.potemkin.i.repository.CustomerRepositoryImpl;
+import com.potemkin.i.repository.OrderRepositoryImpl;
+import com.potemkin.i.repository.hard.CustomerRepositoryHard;
+import com.potemkin.i.repository.hard.OrderRepositoryHard;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -32,11 +32,10 @@ public class CrudHandlerTest {
     private EntityManagerFactory entityManagerFactoryMock;
     private EntityManager entityManagerMock;
     private EntityTransaction entityTransactionMock;
-    //private EntityManagerConfigLocal springConfigLocal = new EntityManagerConfigLocal();
-    private CustRepHard custHard = new CustRepHard();
-    private OrdRepHard ordHard = new OrdRepHard();
-    private CustomerRepository repoCust;
-    private OrderRepository repoOrd;
+    private CustomerRepositoryHard custHard = new CustomerRepositoryHard();
+    private OrderRepositoryHard ordHard = new OrderRepositoryHard();
+    private CustomerRepositoryImpl repoCust;
+    private OrderRepositoryImpl repoOrd;
     
     @BeforeEach
     public void maskingObjects() {
@@ -46,8 +45,8 @@ public class CrudHandlerTest {
 
         when(entityManagerFactoryMock.createEntityManager()).thenReturn(entityManagerMock);
         when(entityManagerMock.getTransaction()).thenReturn(entityTransactionMock);
-        repoCust = new CustomerRepository(entityManagerFactoryMock);
-        repoOrd = new OrderRepository(entityManagerFactoryMock);
+        repoCust = new CustomerRepositoryImpl(entityManagerFactoryMock);
+        repoOrd = new OrderRepositoryImpl(entityManagerFactoryMock);
         ordHard.addOrder(new Order(), 0);
         var cust = new Customer();
         cust.setCustomerId(0);

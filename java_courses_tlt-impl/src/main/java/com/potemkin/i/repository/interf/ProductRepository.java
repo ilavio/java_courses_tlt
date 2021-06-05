@@ -4,7 +4,13 @@ import org.json.JSONObject;
 
 import com.potemkin.i.domain.entity.Product;
 
-public interface ProductR {
+/**
+ * Интерфейс ProductRepository
+ * 
+ * @author Илья Пот
+ *
+ */
+public interface ProductRepository {
 
     public void addProduct(Product prod, int supplierId);
 
