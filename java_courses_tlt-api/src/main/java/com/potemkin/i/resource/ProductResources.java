@@ -1,6 +1,6 @@
-package com.potemkin.i.controllers;
+package com.potemkin.i.resource;
 
-public interface ControllerProdResources {
+public interface ProductResources {
 
     public String getProduct(int id);
     

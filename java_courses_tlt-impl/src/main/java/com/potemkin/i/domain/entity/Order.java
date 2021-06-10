@@ -24,6 +24,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import lombok.Data;
+import lombok.ToString;
 
 /**
  * Сущность Order
@@ -31,8 +32,6 @@ import lombok.Data;
  * @author Илья Пот
  *
  */
-@Component("order")
-@Scope("prototype")
 @Entity
 @Table(name = "Orders", schema = "potemkin")
 @Data

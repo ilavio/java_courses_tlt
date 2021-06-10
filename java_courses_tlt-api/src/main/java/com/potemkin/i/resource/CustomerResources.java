@@ -1,6 +1,6 @@
-package com.potemkin.i.controllers;
+package com.potemkin.i.resource;
 
-public interface ControllerCustResources {
+public interface CustomerResources {
     
     public String getCustomer(int id);
     

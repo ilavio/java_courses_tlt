@@ -14,22 +14,21 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
+import org.json.JSONPropertyIgnore;
 
 import lombok.Data;
+import lombok.ToString;
 
 /**
  * Сущность Product
  * 
- * @author ADM
+ * @author Илья Пот
  *
  */
-@Component("product")
-@Scope("prototype")
 @Table(name = "Product", schema = "potemkin")
 @Data
 @Entity
+@ToString(exclude = "order")
 public class Product {
 
     @Id
@@ -49,24 +48,19 @@ public class Product {
 
     @Column(nullable = false, name = "is_discontinued")
     private boolean isDiscontinued;
-    
+
     @ManyToMany(mappedBy = "product")
     private List<Order> order = new ArrayList<>();
 
-    @Override
-    public String toString() {
-        return "Product [productId=" + productId + ", productName=" + productName + ", unitPrice=" + unitPrice
-                + ", isDiscontinued=" + isDiscontinued + ", = supplier" + supplier + "]";
-    }
-
-    public String getOrder() {
-        return order.toString();
+    @JSONPropertyIgnore
+    public List<Order> getOrder() {
+    return order;
     }
 
     public void setOrder(List<Order> order) {
         this.order = order;
     }
-    
+
     public List<Order> addOrder() {
         return order;
     }

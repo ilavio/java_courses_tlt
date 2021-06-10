@@ -1,13 +1,15 @@
-package com.potemkin.i.service;
+package com.potemkin.i.service.impl;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.potemkin.i.domain.entity.Customer;
 import com.potemkin.i.repository.CustomerRepository;
+import com.potemkin.i.service.ServiceCustomer;
+
+import lombok.RequiredArgsConstructor;
 
 /**
  * Класс CustomerService обслуживания сущностей Customer
@@ -16,11 +18,11 @@ import com.potemkin.i.repository.CustomerRepository;
  *
  */
 @Service
+@RequiredArgsConstructor
 @Transactional
-public class CustomerService implements ServiceInt { //
+public class CustomerService implements ServiceCustomer {
 
-    @Autowired
-    private CustomerRepository repository;
+    private final CustomerRepository customerRepository;
 
     /**
      * Метод получения сущности Customer из базы данных
@@ -29,7 +31,7 @@ public class CustomerService implements ServiceInt { //
      * @return JSONObject
      */
     public JSONObject getCustomerJson(Integer id) {
-        JSONObject json = new JSONObject(repository.findById(id).get());
+        JSONObject json = new JSONObject(customerRepository.findById(id).get());
         return json;
     }
 
@@ -40,7 +42,7 @@ public class CustomerService implements ServiceInt { //
      * @return Customer
      */
     public Customer getCustomer(Integer id) {
-        var cust = repository.findById(id).get();
+        var cust = customerRepository.findById(id).get();
         return cust;
     }
 
@@ -50,7 +52,7 @@ public class CustomerService implements ServiceInt { //
      * @return JSONArray
      */
     public JSONArray getCustomers() {
-        var jsonArray = new JSONArray(repository.findAll());
+        var jsonArray = new JSONArray(customerRepository.findAll());
         return jsonArray;
     }
 
@@ -62,7 +64,7 @@ public class CustomerService implements ServiceInt { //
      */
     public JSONObject addCustomer(JSONObject json) {
         var cust = parseForCustomer(json);
-        repository.saveAndFlush(cust);
+        customerRepository.saveAndFlush(cust);
         return json;
     }
 
@@ -74,10 +76,10 @@ public class CustomerService implements ServiceInt { //
      * @return JSONObject
      */
     public JSONObject changeEntity(JSONObject json, int customerId) {
-        Customer entity = repository.findById(customerId).get();
+        Customer entity = customerRepository.findById(customerId).get();
         entity.setCustomerName(json.getString("customerName"));
         entity.setPhone(json.getString("phone"));
-        repository.saveAndFlush(entity);
+        customerRepository.saveAndFlush(entity);
         json.append("id", customerId);
         return json;
     }
@@ -89,8 +91,8 @@ public class CustomerService implements ServiceInt { //
      * @return
      */
     public JSONObject deleteById(int customerId) {
-        repository.deleteById(customerId);
-        var ex = repository.existsById(customerId);
+        customerRepository.deleteById(customerId);
+        var ex = customerRepository.existsById(customerId);
         String str = "{" + "\"Found Customer\" : " + Boolean.toString(ex) + "}";
         var json = new JSONObject(str);
         return json;

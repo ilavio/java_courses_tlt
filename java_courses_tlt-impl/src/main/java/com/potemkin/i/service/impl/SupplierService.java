@@ -1,13 +1,15 @@
-package com.potemkin.i.service;
+package com.potemkin.i.service.impl;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.potemkin.i.domain.entity.Supplier;
 import com.potemkin.i.repository.SupplierRepository;
+import com.potemkin.i.service.ServiceSupplier;
+
+import lombok.RequiredArgsConstructor;
 
 /**
  * Класс SupplierService обслуживания сущностей Supplier
@@ -17,10 +19,10 @@ import com.potemkin.i.repository.SupplierRepository;
  */
 @Service
 @Transactional
-public class SupplierService implements ServiceInt { //
+@RequiredArgsConstructor
+public class SupplierService implements ServiceSupplier  {
 
-    @Autowired
-    private SupplierRepository repository;
+    private final SupplierRepository supplierRepository;
 
     /**
      * Метод получения сущности Supplier из базы данных
@@ -29,7 +31,7 @@ public class SupplierService implements ServiceInt { //
      * @return JSONObject
      */
     public JSONObject getSupplierJson(Integer id) {
-        JSONObject json = new JSONObject(repository.findById(id).get());
+        JSONObject json = new JSONObject(supplierRepository.findById(id).get());
         return json;
     }
 
@@ -40,7 +42,7 @@ public class SupplierService implements ServiceInt { //
      * @return Supplier
      */
     public Supplier getSupplier(Integer id) {
-        var sup = repository.findById(id).get();
+        var sup = supplierRepository.findById(id).get();
         return sup;
     }
 
@@ -50,7 +52,7 @@ public class SupplierService implements ServiceInt { //
      * @return JSONArray
      */
     public JSONArray getSuppliers() {
-        var jsonArray = new JSONArray(repository.findAll());
+        var jsonArray = new JSONArray(supplierRepository.findAll());
         return jsonArray;
     }
 
@@ -62,7 +64,7 @@ public class SupplierService implements ServiceInt { //
      */
     public JSONObject addSupplier(JSONObject json) {
         var sup = parseForSupplier(json);
-        repository.saveAndFlush(sup);
+        supplierRepository.saveAndFlush(sup);
         return json;
     }
 
@@ -74,10 +76,10 @@ public class SupplierService implements ServiceInt { //
      * @return JSONObject
      */
     public JSONObject changeEntity(JSONObject json, int supplierId) {
-        var entity = repository.findById(supplierId).get();
+        var entity = supplierRepository.findById(supplierId).get();
         entity.setCompanyName(json.getString("companyName"));
         entity.setPhone(json.getString("phone"));
-        repository.saveAndFlush(entity);
+        supplierRepository.saveAndFlush(entity);
         json.append("id", supplierId);
         return json;
     }
@@ -89,8 +91,8 @@ public class SupplierService implements ServiceInt { //
      * @return JSONObject
      */
     public JSONObject deleteById(int supplierId) {
-        repository.deleteById(supplierId);
-        var ex = repository.existsById(supplierId);
+        supplierRepository.deleteById(supplierId);
+        var ex = supplierRepository.existsById(supplierId);
         String str = "{" + "\"Found Supplier\" : " + Boolean.toString(ex) + "}";
         var json = new JSONObject(str);
         return json;

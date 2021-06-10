@@ -13,10 +13,12 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import org.json.JSONPropertyIgnore;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import lombok.Data;
+import lombok.ToString;
 
 /**
  * Сущность Customer
@@ -24,11 +26,10 @@ import lombok.Data;
  * @author Илья Пот
  *
  */
-@Component("customer")
-@Scope("prototype")
 @Entity
 @Table(name = "Customers", schema = "potemkin")
 @Data
+@ToString(exclude = "orders")
 public class Customer {
     
     @Id
@@ -41,20 +42,16 @@ public class Customer {
 
     @Column
     private String phone;
-
+    
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "customer", fetch = FetchType.EAGER)
     private List<Order> orders = new ArrayList<>();
 
-    public String getOrders() {
-        return orders.toString();
+    @JSONPropertyIgnore
+    public List<Order> getOrders() {
+        return orders;
     }
 
     public void setOrders(List<Order> orders) {
         this.orders = orders;
-    }
-
-    @Override
-    public String toString() {
-        return "Customer [customerId=" + customerId + ", customerName=" + customerName + ", phone=" + phone + "]";
     }
 }

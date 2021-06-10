@@ -1,4 +1,4 @@
-package com.potemkin.i.service;
+package com.potemkin.i.service.impl;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.potemkin.i.domain.entity.Order;
 import com.potemkin.i.repository.OrderRepository;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -25,14 +26,12 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Service
 @Transactional
-public class OrderService implements ServiceInt { //
-
-    @Autowired
-    private OrderRepository repository;
-    @Autowired
-    private ProductService productService;
-    @Autowired
-    private CustomerService customerService;
+@RequiredArgsConstructor
+public class OrderService  {
+    
+    private final OrderRepository orderRepository;
+    private final ProductService productService;
+    private final CustomerService customerService;
 
     /**
      * Метод получения сущности Order из базы данных
@@ -41,7 +40,7 @@ public class OrderService implements ServiceInt { //
      * @return JSONObject
      */
     public JSONObject getOrderJson(Integer id) {
-        Order ord = repository.findById(id).get();
+        Order ord = orderRepository.findById(id).get();
         JSONObject json = new JSONObject(ord);
         return json;
     }
@@ -53,7 +52,7 @@ public class OrderService implements ServiceInt { //
      * @return Customer
      */
     public Order getOrder(Integer id) {
-        var ord = repository.findById(id).get();
+        var ord = orderRepository.findById(id).get();
         return ord;
     }
 
@@ -63,7 +62,7 @@ public class OrderService implements ServiceInt { //
      * @return JSONArray
      */
     public JSONArray getOrders(int id) {
-        var jsonArray = new JSONArray(repository.findByCustomerCustomerId(id));
+        var jsonArray = new JSONArray(orderRepository.findByCustomerCustomerId(id));
         return jsonArray;
     }
 
@@ -75,7 +74,7 @@ public class OrderService implements ServiceInt { //
      */
     public JSONObject addOrder(JSONObject json) {
         var ord = parseForOrder(json);
-        repository.saveAndFlush(ord);
+        orderRepository.saveAndFlush(ord);
         return json;
     }
 
@@ -87,7 +86,7 @@ public class OrderService implements ServiceInt { //
      * @return JSONObject
      */
     public JSONObject changeEntity(JSONObject json, int orderId) {
-        var entity = repository.findById(orderId).get();
+        var entity = orderRepository.findById(orderId).get();
         entity.setOrderNumber(json.getString("orderNumber"));
         Date date = null;
         try {
@@ -97,7 +96,7 @@ public class OrderService implements ServiceInt { //
         }
         entity.setOrderDate(date);
         entity.setTotalAmount(json.getDouble("totalAmount"));
-        repository.saveAndFlush(entity);
+        orderRepository.saveAndFlush(entity);
         json.append("id", orderId);
         return json;
     }
@@ -109,8 +108,8 @@ public class OrderService implements ServiceInt { //
      * @return JSONObject
      */
     public JSONObject deleteById(int orderId) {
-        repository.deleteById(orderId);
-        var ex = repository.existsById(orderId);
+        orderRepository.deleteById(orderId);
+        var ex = orderRepository.existsById(orderId);
         String str = "{" + "\"Found Order\" : " + Boolean.toString(ex) + "}";
         var json = new JSONObject(str);
         return json;
