@@ -1,5 +1,7 @@
 package com.potemkin.i;
 
+import com.potemkin.i.dto.CustomerDTO;
+
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j

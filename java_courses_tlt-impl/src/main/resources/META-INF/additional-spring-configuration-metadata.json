@@ -1,0 +1,17 @@
+{"properties": [
+  {
+    "name": "spring.datasource.logging.level.root",
+    "type": "java.lang.String",
+    "description": "A description for 'spring.datasource.logging.level.root'"
+  },
+  {
+    "name": "spring.datasource.contextPath",
+    "type": "java.lang.String",
+    "description": "A description for 'spring.datasource.contextPath'"
+  },
+  {
+    "name": "server.contextPath",
+    "type": "java.lang.String",
+    "description": "A description for 'server.contextPath'"
+  }
+]}

@@ -2,9 +2,9 @@ package com.potemkin.i;
 
 import org.junit.jupiter.api.Test;
 
-public class MainImplTest {
+public class ApplicationTest {
     @Test
     public void main() {
-        MainImpl.main(null);
+        Application.main(null);
     }
 }
