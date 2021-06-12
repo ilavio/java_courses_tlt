@@ -2,10 +2,9 @@ package com.potemkin.i.repository.stub;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
+
 import java.util.Optional;
 
-import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Profile;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
@@ -16,7 +15,6 @@ import org.springframework.stereotype.Component;
 import com.potemkin.i.domain.entity.Customer;
 import com.potemkin.i.repository.CustomerRepository;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**

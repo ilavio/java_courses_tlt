@@ -16,7 +16,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import com.potemkin.i.converter.ProductConverter;
+import com.potemkin.i.domain.entity.Product;
 import com.potemkin.i.domain.entity.Supplier;
+import com.potemkin.i.dto.ProductDTO;
 import com.potemkin.i.resource.impl.ControllerProductResources;
 import com.potemkin.i.service.impl.ProductService;
 
@@ -33,6 +36,8 @@ public class ControllerProductResourcesTest {
 
     @Mock
     private ProductService productService;
+    @Mock
+    private ProductConverter productConverter;
     @InjectMocks
     private ControllerProductResources resources;
 
@@ -43,29 +48,36 @@ public class ControllerProductResourcesTest {
 
     @Test
     public void getProductTest() {
-        var json = new JSONObject();
-        when(productService.getProductJson(0)).thenReturn(json);
+        var prod = new Product();
+        var prodDTO = new ProductDTO();
+        when(productService.getProduct(0)).thenReturn(prod);
+        when(productConverter.productToDto(prod)).thenReturn(prodDTO);
         resources.getProduct(0);
-        verify(productService).getProductJson(eq(0));
+        verify(productService).getProduct(eq(0));
     }
 
     @Test
     public void getProductsTest() {
-        List<Supplier> list = new ArrayList<>();
-        list.add(new Supplier());
-        var jsonArraySup = new JSONArray(list);
-        when(productService.getProducts()).thenReturn(jsonArraySup);
-        var jsonArray = resources.getProducts();
-        log.info("getProductsTest() - {}", jsonArray);
+        List<Product> list = new ArrayList<>();
+        list.add(new Product());
+        List<ProductDTO> listDTO = new ArrayList<>();
+        listDTO.add(new ProductDTO());
+        when(productService.getProducts()).thenReturn(list);
+        when(productConverter.productToDto(list)).thenReturn(listDTO);
+        var prods = resources.getProducts();
+        log.info("getProductsTest() - {}", prods);
         verify(productService).getProducts();
     }
 
     @Test
     public void addProductTest() {
-        JSONObject json = new JSONObject(
-                "{\r\n" + "    \"productName\" : \"TRUSARDI\",\r\n" + "    \"supplierId\" : 1,\r\n"
-                        + "    \"unitPrice\" : 1000.12,\r\n" + "    \"isDiscontinued\" : true\r\n" + "}");
-        when(productService.addProduct(any())).thenReturn(json);
+        var prod = new Product();
+        var prodDTO = new ProductDTO();
+//        JSONObject json = new JSONObject(
+//                "{\r\n" + "    \"productName\" : \"TRUSARDI\",\r\n" + "    \"supplierId\" : 1,\r\n"
+//                        + "    \"unitPrice\" : 1000.12,\r\n" + "    \"isDiscontinued\" : true\r\n" + "}");
+        when(productService.addProduct(any())).thenReturn(prod);
+        when(productConverter.productToDto(prod)).thenReturn(prodDTO);
         var str = resources
                 .addProduct("{\r\n" + "    \"productName\" : \"TRUSARDI\",\r\n" + "    \"supplierId\" : 1,\r\n"
                         + "    \"unitPrice\" : 1000.12,\r\n" + "    \"isDiscontinued\" : true\r\n" + "}");
@@ -75,9 +87,12 @@ public class ControllerProductResourcesTest {
 
     @Test
     public void changeProductTest() {
+        var prod = new Product();
+        var prodDTO = new ProductDTO();
         var json = new JSONObject("{\r\n" + "    \"productName\" : \"TRUSARDI\",\r\n" + "    \"supplierId\" : 1,\r\n"
                 + "    \"unitPrice\" : 1000.12,\r\n" + "    \"isDiscontinued\" : true\r\n" + "}");
-        when(productService.changeEntity(any(), eq(0))).thenReturn(json);
+        when(productService.changeEntity(any(), eq(0))).thenReturn(prod);
+        when(productConverter.productToDto(prod)).thenReturn(prodDTO);
         resources.changeProduct("{\r\n" + "    \"productName\" : \"TRUSARDI\",\r\n" + "    \"supplierId\" : 1,\r\n"
                 + "    \"unitPrice\" : 1000.12,\r\n" + "    \"isDiscontinued\" : true\r\n" + "}", 0);
         verify(productService).changeEntity(any(), eq(0));
@@ -85,8 +100,8 @@ public class ControllerProductResourcesTest {
 
     @Test
     public void deleteByIdTest() {
-        var json = new JSONObject("{\"Found Product\":\" false \" }");
-        when(productService.deleteById(0)).thenReturn(json);
+        var json = new JSONObject("{\"Delete Product\":\" true \" }");
+        when(productService.deleteById(0)).thenReturn(true);
         resources.deleteById(0);
         verify(productService).deleteById(eq(0));
     }

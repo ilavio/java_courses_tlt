@@ -231,6 +231,7 @@
                 <configuration>
                     <excludes>
                         <exclude>**/entity/*</exclude>
+                        <exclude>**/dto/*</exclude>
                     </excludes>
                 </configuration>
                 <executions>

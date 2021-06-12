@@ -1,22 +1,25 @@
 package com.potemkin.i.resource.impl;
 
+import java.util.List;
+
+import org.json.JSONArray;
 import org.json.JSONObject;
-import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.potemkin.i.converter.CustomerConverter;
+import com.potemkin.i.domain.entity.Customer;
+import com.potemkin.i.dto.CustomerDTO;
 import com.potemkin.i.resource.CustomerResources;
 import com.potemkin.i.service.impl.CustomerService;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -27,16 +30,12 @@ import lombok.extern.slf4j.Slf4j;
  *
  */
 @Slf4j
-@Controller()
-@RequestMapping("/Customers")
+@Controller
+@RequiredArgsConstructor
 public class ControllerCustomerResources implements CustomerResources {
 
     private final CustomerService customerService;
-
-    @Autowired
-    public ControllerCustomerResources(CustomerService customerService) {
-        this.customerService = customerService;
-    }
+    private final CustomerConverter customerConverter;
 
     /**
      * Метод получения сущности Customer
@@ -44,10 +43,10 @@ public class ControllerCustomerResources implements CustomerResources {
      * @param id
      * @return
      */
-    @GetMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public String getCustomer(@PathVariable("id") int id) {
-        var json = customerService.getCustomerJson(id);
+        CustomerDTO dto = customerConverter.customerToDto(customerService.getCustomer(id));
+        var json = new JSONObject(dto);
         return json.toString();
     }
 
@@ -56,10 +55,11 @@ public class ControllerCustomerResources implements CustomerResources {
      * 
      * @return
      */
-    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public String getCustomers() {
-        var jsonArray = customerService.getCustomers();
+        List<Customer> custs = customerService.getCustomers();
+        var dtos = customerConverter.customerToDto(custs);
+        var jsonArray = new JSONArray(dtos);
         return jsonArray.toString();
     }
 
@@ -69,11 +69,11 @@ public class ControllerCustomerResources implements CustomerResources {
      * @param strCust
      * @return
      */
-    @PostMapping(consumes = "application/json", produces = "application/json")
     @ResponseBody
     public String addCustomer(@RequestBody String strCust) {
         var json = new JSONObject(strCust);
-        var jsonCust = customerService.addCustomer(json);
+        var cust = customerService.addCustomer(customerConverter.parseForCustomer(json));
+        var jsonCust = new JSONObject(customerConverter.customerToDto(cust));
         log.info("ControllerCustomerResources addCustomer() - {}", jsonCust);
         return jsonCust.toString();
     }
@@ -89,7 +89,9 @@ public class ControllerCustomerResources implements CustomerResources {
     @ResponseBody
     public String changeCustomer(@RequestBody String strCust, @RequestParam(name = "id") int id) {
         var json = new JSONObject(strCust);
-        var jsonResponse = customerService.changeEntity(json, id);
+        var cust = customerConverter.parseForCustomer(json);
+        var dto = customerConverter.customerToDto(customerService.changeEntity(cust, id));
+        var jsonResponse = new JSONObject(dto);
         return jsonResponse.toString();
     }
 
@@ -99,10 +101,11 @@ public class ControllerCustomerResources implements CustomerResources {
      * @param id
      * @return
      */
-    @DeleteMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public String deleteById(@RequestParam(name = "id") int id) {
         var ex = customerService.deleteById(id);
-        return ex.toString();
+        String str = "{" + "\"Delete Customer\" : " + Boolean.toString(ex) + "}";
+        var json = new JSONObject(str);
+        return json.toString();
     }
 }

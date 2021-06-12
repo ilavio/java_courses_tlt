@@ -14,8 +14,6 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import org.json.JSONPropertyIgnore;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
 
 import lombok.Data;
 import lombok.ToString;

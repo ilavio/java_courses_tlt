@@ -1,16 +1,10 @@
 package com.potemkin.i;
 
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
-import java.util.Optional;
 
 import org.json.JSONObject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.data.domain.Example;
 
 import com.potemkin.i.converter.CustomerConverter;
 import com.potemkin.i.converter.OrderConverter;
@@ -26,13 +20,14 @@ import com.potemkin.i.service.impl.SupplierService;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * Класс теста OrderService
+ * Тестирование конвертера OrderConverter
  * 
  * @author Илья Пот
  *
  */
 @Slf4j
-public class OrderServiceTest {
+public class OrderConverterTest {
+    
     private OrderRepositoryStub repositoryStub;
     private OrderService orderService;
     private ProductService productService;
@@ -43,7 +38,7 @@ public class OrderServiceTest {
     private SupplierRepositoryStub repositorySupStub;
     private OrderConverter orderConverter;
     private CustomerConverter customerConverter;
-
+    
     @BeforeEach
     public void maskingObjects() {
         repositorySupStub = new SupplierRepositoryStub();
@@ -66,67 +61,17 @@ public class OrderServiceTest {
         var ord = orderConverter.parseForOrder(json);
         orderService.addOrder(ord);
     }
-
+    
     @Test
-    public void addOrderTets() {
+    public void dtoToOrderTest() {
         JSONObject json = new JSONObject("{\r\n" + "    \"orderNumber\" : \"121\",\r\n"
                 + "    \"orderDate\" : \"23-05-2021\",\r\n" + "    \"totalAmount\" : 12.02,\r\n"
                 + "    \"customerId\" : 2,\r\n" + "    \"productId\" : 1\r\n" + "}");
         var ord = orderConverter.parseForOrder(json);
-        orderService.addOrder(ord);
-        var ordTest = orderService.getOrder(0);
-        assertEquals(orderService.getOrder(0), ordTest);
+        var ordDTO = orderConverter.orderToDto(ord);
+        var ordTest = orderConverter.dtoToOrder(ordDTO);
+        log.info("OrderConverterTest dtoToOrderTest() - {}; {}", ord, ordTest);
+        assertNotNull(ordTest);
     }
-
-    @Test
-    public void getOrderTest() {
-        var ord = orderService.getOrder(0);
-        log.info("{}", ord);
-        assertEquals(ord, orderService.getOrder(0));
-    }
-
-    @Test
-    public void getOrdersTets() {
-        var ords = orderService.getOrders(0);
-        log.info("getOrdersTets() - {}", ords);
-        assertEquals(ords.toString(), orderService.getOrders(0).toString());
-    }
-
-    @Test
-    public void changeEntityTest() {
-        var json = new JSONObject("{\r\n" + "    \"orderNumber\" : \"121\",\r\n"
-                + "    \"orderDate\" : \"23-05-2021\",\r\n" + "    \"totalAmount\" : 12.02,\r\n"
-                + "    \"customerId\" : 2,\r\n" + "    \"productId\" : 1\r\n" + "}");
-        var ord = orderConverter.parseForOrder(json); 
-        var ordTest = orderService.changeOrder(ord, 0);
-        assertNotNull(ord);
-    }
-
-    @Test
-    public void deleteById() {
-        var ex = orderService.deleteById(0);
-        log.info("deleteById() - {}", ex);
-        assertTrue(ex);
-    }
-
-    @Test
-    public void minorTest() {
-        repositoryStub.count();
-        var supOp = Optional.of(orderService.getOrder(0));
-        repositoryStub.count(Example.of(orderService.getOrder(0)));
-        repositoryStub.delete(orderService.getOrder(0));
-        repositoryStub.deleteAll();
-        repositoryStub.deleteAll(null);
-        repositoryStub.deleteAllById(null);
-        repositoryStub.deleteAllInBatch();
-        repositoryStub.deleteAllByIdInBatch(null);
-        repositoryStub.findAll(Example.of(orderService.getOrder(0)));
-        repositoryStub.findAllById(null);
-        repositoryStub.findOne(null);
-        repositoryStub.flush();
-        repositoryStub.save(null);
-        repositoryStub.saveAll(null);
-        repositoryStub.saveAllAndFlush(null);
-        assertFalse(repositoryStub.exists(null));
-    }
+    
 }

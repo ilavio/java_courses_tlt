@@ -1,7 +1,7 @@
 package com.potemkin.i.resource.impl;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -10,10 +10,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.potemkin.i.converter.ProductConverter;
 import com.potemkin.i.repository.CustomerRepository;
 import com.potemkin.i.resource.ProductResources;
 import com.potemkin.i.service.impl.ProductService;
@@ -29,12 +29,12 @@ import lombok.extern.slf4j.Slf4j;
  *
  */
 @Slf4j
-@Controller()
-@RequestMapping("/Product")
+@Controller
 @RequiredArgsConstructor
 public class ControllerProductResources implements ProductResources {
 
     private final ProductService productService;
+    private final ProductConverter productConverter;
 
     /**
      * Метод получения сущности Product
@@ -42,10 +42,10 @@ public class ControllerProductResources implements ProductResources {
      * @param id
      * @return String
      */
-    @GetMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public String getProduct(@PathVariable("id") int id) {
-        var json = productService.getProductJson(id);
+        var dto = productConverter.productToDto(productService.getProduct(id));
+        var json = new JSONObject(dto);
         return json.toString();
     }
 
@@ -54,10 +54,11 @@ public class ControllerProductResources implements ProductResources {
      * 
      * @return String
      */
-    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public String getProducts() {
-        var jsonArray = productService.getProducts();
+        var prods = productService.getProducts();
+        var dtos = productConverter.productToDto(prods);
+        var jsonArray = new JSONArray(dtos);
         return jsonArray.toString();
     }
 
@@ -67,11 +68,13 @@ public class ControllerProductResources implements ProductResources {
      * @param strProd
      * @return String
      */
-    @PostMapping(consumes = "application/json", produces = "application/json")
     @ResponseBody
     public String addProduct(@RequestBody String strProd) {
         var json = new JSONObject(strProd);
-        return productService.addProduct(json).toString();
+        var prod = productConverter.parseForProduct(json);
+        var jsonCust = new JSONObject(productConverter.productToDto(productService.addProduct(prod)));
+        log.info("ControllerProductResources addProduct() - {}", jsonCust);
+        return jsonCust.toString();
     }
 
     /**
@@ -85,7 +88,9 @@ public class ControllerProductResources implements ProductResources {
     @ResponseBody
     public String changeProduct(@RequestBody String strProd, @RequestParam(name = "id") int id) {
         var json = new JSONObject(strProd);
-        var jsonResponse = productService.changeEntity(json, id);
+        var prod = productConverter.parseForProduct(json);
+        var dto =  productConverter.productToDto(productService.changeEntity(prod, id));
+        var jsonResponse = new JSONObject(dto);
         return jsonResponse.toString();
     }
 
@@ -95,11 +100,12 @@ public class ControllerProductResources implements ProductResources {
      * @param id
      * @return String
      */
-    @DeleteMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public String deleteById(@RequestParam(name = "id") int id) {
         var ex = productService.deleteById(id);
         log.info("ControllerProductResources deleteById() - {}", ex);
-        return ex.toString();
+        String str = "{" + "\"Delete Product\" : " + Boolean.toString(ex) + "}";
+        var json = new JSONObject(str);
+        return json.toString();
     }
 }

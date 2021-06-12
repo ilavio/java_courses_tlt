@@ -1,5 +1,6 @@
 package com.potemkin.i.resource.impl;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
@@ -9,10 +10,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.potemkin.i.converter.SupplierConverter;
 import com.potemkin.i.resource.SupplierResources;
 import com.potemkin.i.service.impl.SupplierService;
 
@@ -27,12 +28,12 @@ import lombok.extern.slf4j.Slf4j;
  *
  */
 @Slf4j
-@Controller()
-@RequestMapping("/Supplier")
+@Controller
 @RequiredArgsConstructor
-public class ControllerSupplierResources  implements SupplierResources {
+public class ControllerSupplierResources implements SupplierResources {
 
     private final SupplierService supplierService;
+    private final SupplierConverter supplierConverter;
 
     /**
      * Метод получения сущности Supplier
@@ -40,11 +41,11 @@ public class ControllerSupplierResources  implements SupplierResources {
      * @param id
      * @return String
      */
-    @GetMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public String getSupplier(@PathVariable("id") int id) {
-        var json = supplierService.getSupplierJson(id);
-        log.info("ControllerSupplierResources getSupplier() {}", json);
+        var dto = supplierConverter.supplierToDTO(supplierService.getSupplier(id));
+        var json = new JSONObject(dto);
+        log.info("ControllerSupplierResources getSupplier() {}", dto);
         return json.toString();
     }
 
@@ -53,10 +54,10 @@ public class ControllerSupplierResources  implements SupplierResources {
      * 
      * @return String
      */
-    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public String getSuppliers() {
-        var jsonArray = supplierService.getSuppliers();
+        var dtos = supplierConverter.supplierToDTO(supplierService.getSuppliers());
+        var jsonArray = new JSONArray(dtos);
         return jsonArray.toString();
     }
 
@@ -66,12 +67,14 @@ public class ControllerSupplierResources  implements SupplierResources {
      * @param strSup
      * @return String
      */
-    @PostMapping(consumes = "application/json", produces = "application/json")
     @ResponseBody
     public String addSupplier(@RequestBody String strSup) {
         var json = new JSONObject(strSup);
-        log.info("ControllerSupplierResources addSupplier() {}", json);
-        return supplierService.addSupplier(json).toString();
+        var sup = supplierService.addSupplier(supplierConverter.parseForSupplier(json));
+        var supDTO = supplierConverter.supplierToDTO(sup);
+        var jsonDTO = new JSONObject(supDTO);
+        log.info("ControllerSupplierResources addSupplier() {}", jsonDTO);
+        return jsonDTO.toString();
     }
 
     /**
@@ -85,8 +88,9 @@ public class ControllerSupplierResources  implements SupplierResources {
     @ResponseBody
     public String changeSupplier(@RequestBody String strSup, @RequestParam(name = "id") int id) {
         var json = new JSONObject(strSup);
-        var jsonResponse = supplierService.changeEntity(json, id);
-
+        var sup = supplierConverter.parseForSupplier(json);
+        var dto = supplierConverter.supplierToDTO(supplierService.changeEntity(sup, id));
+        var jsonResponse = new JSONObject(dto);
         return jsonResponse.toString();
     }
 
@@ -96,10 +100,11 @@ public class ControllerSupplierResources  implements SupplierResources {
      * @param id
      * @return String
      */
-    @DeleteMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public String deleteById(@RequestParam(name = "id") int id) {
         var ex = supplierService.deleteById(id);
-        return ex.toString();
+        String str = "{" + "\"Delete Supplier\" : " + Boolean.toString(ex) + "}";
+        var json = new JSONObject(str);
+        return json.toString();
     }
 }

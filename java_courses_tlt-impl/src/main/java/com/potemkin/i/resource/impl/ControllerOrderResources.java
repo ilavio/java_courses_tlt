@@ -1,20 +1,19 @@
 package com.potemkin.i.resource.impl;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
-import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.potemkin.i.repository.CustomerRepository;
+import com.potemkin.i.converter.OrderConverter;
+
 import com.potemkin.i.resource.OrderResources;
 import com.potemkin.i.service.impl.OrderService;
 
@@ -29,12 +28,12 @@ import lombok.extern.slf4j.Slf4j;
  *
  */
 @Slf4j
-@Controller()
-@RequestMapping("/Orders")
+@Controller
 @RequiredArgsConstructor
 public class ControllerOrderResources implements OrderResources {
 
     private final OrderService orderService;
+    private final OrderConverter orderConverter;
 
     /**
      * Метод получения сущности Order
@@ -42,10 +41,10 @@ public class ControllerOrderResources implements OrderResources {
      * @param id
      * @return String
      */
-    @GetMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public String getOrder(@PathVariable("id") int id) {
-        var json = orderService.getOrderJson(id);
+        var dto = orderConverter.orderToDto(orderService.getOrder(id));
+        var json = new JSONObject(dto);
         return json.toString();
     }
 
@@ -55,10 +54,11 @@ public class ControllerOrderResources implements OrderResources {
      * @param customerId
      * @return String
      */
-    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public String getOrders(@RequestParam(name = "customerId") int customerId) {
-        var jsonArray = orderService.getOrders(customerId);
+        var ords = orderService.getOrders(customerId);
+        var dtos = orderConverter.orderToDto(ords);
+        var jsonArray = new JSONArray(dtos);
         return jsonArray.toString();
     }
 
@@ -68,11 +68,14 @@ public class ControllerOrderResources implements OrderResources {
      * @param strOrd
      * @return String
      */
-    @PostMapping(consumes = "application/json", produces = "application/json")
     @ResponseBody
     public String addOrder(@RequestBody String strOrd) {
         var json = new JSONObject(strOrd);
-        return orderService.addOrder(json).toString();
+        log.info("ControllerOrderResources addOrder {}", json);
+        var ord = orderConverter.parseForOrder(json);
+        var ordResponse = orderService.addOrder(ord);
+        var jsonOrd = new JSONObject(orderConverter.orderToDto(ordResponse));
+        return jsonOrd.toString();
     }
 
     /**
@@ -86,7 +89,9 @@ public class ControllerOrderResources implements OrderResources {
     @ResponseBody
     public String changeOrder(@RequestBody String strOrd, @RequestParam(name = "id") int id) {
         var json = new JSONObject(strOrd);
-        var jsonResponse = orderService.changeEntity(json, id);
+        var ord = orderConverter.parseForOrder(json);
+        var dto = orderConverter.orderToDto(orderService.changeOrder(ord, id));
+        var jsonResponse = new JSONObject(dto);
         return jsonResponse.toString();
     }
 
@@ -96,11 +101,12 @@ public class ControllerOrderResources implements OrderResources {
      * @param id
      * @return String
      */
-    @DeleteMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public String deleteById(@RequestParam(name = "id") int id) {
         var ex = orderService.deleteById(id);
         log.info("ControllerOrderResources deleteById() {}", ex);
-        return ex.toString();
+        String str = "{" + "\"Delete Order\" : " + Boolean.toString(ex) + "}";
+        var json = new JSONObject(str);
+        return json.toString();
     }
 }

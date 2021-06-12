@@ -4,15 +4,14 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import java.util.Locale;
 import java.util.Optional;
 
 import org.json.JSONObject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.context.MessageSource;
 import org.springframework.data.domain.Example;
 
+import com.potemkin.i.converter.CustomerConverter;
 import com.potemkin.i.repository.stub.CustomerRepositoryStub;
 import com.potemkin.i.service.impl.CustomerService;
 
@@ -22,31 +21,35 @@ import lombok.extern.slf4j.Slf4j;
 public class CustomerServiceTest {
     private CustomerService customerService;
     private CustomerRepositoryStub repositoryStub;
+    private CustomerConverter customerConverter; 
     
 
     @BeforeEach
     public void maskingObjects() {
         repositoryStub = new CustomerRepositoryStub();
         customerService = new CustomerService(repositoryStub);
+        customerConverter = new CustomerConverter();
         JSONObject json = new JSONObject(
                 "{\r\n" + "    \"customerName\": \"CHIGIK\",\r\n" + "    \"phone\": \"89377810580\"\r\n" + "}");
-        customerService.addCustomer(json);
+        var cust = customerConverter.parseForCustomer(json);
+        customerService.addCustomer(cust);
     }
 
     @Test
     public void addCustomerTest() {
         JSONObject json = new JSONObject(
                 "{\r\n" + "    \"customerName\": \"CHIGIK\",\r\n" + "    \"phone\": \"89377810580\"\r\n" + "}");
-        var jsonTest = customerService.addCustomer(json);
-        log.info("{} : {}", json, jsonTest);
-        assertEquals(json, jsonTest);
+        var cust = customerConverter.parseForCustomer(json);
+        var custTest = customerService.addCustomer(cust);
+        log.info("{} : {}", json, custTest);
+        assertEquals(cust, custTest);
     }
     
     @Test
     public void getCustomerJsonTest() {
-        var json = customerService.getCustomerJson(0);
-        log.info("{}", json);
-        assertEquals(json.toString(), customerService.getCustomerJson(0).toString());
+        var cust = customerService.getCustomer(0);
+        log.info("{}", cust);
+        assertEquals(cust, customerService.getCustomer(0));
     }
     
     @Test
@@ -66,15 +69,16 @@ public class CustomerServiceTest {
     public void changeEntityTets() {
         JSONObject json = new JSONObject(
                 "{\r\n" + "    \"customerName\": \"CHIGIK\",\r\n" + "    \"phone\": \"89377810580\"\r\n" + "}");
-        var cust = customerService.changeEntity(json, 0);
+        var cust = customerConverter.parseForCustomer(json);
+        var custTest = customerService.changeEntity(cust, 0);
         log.info("{}", cust);
-        assertEquals(cust, customerService.changeEntity(json, 0));
+        assertEquals(custTest, customerService.changeEntity(cust, 0));
     }
     
     @Test
     public void deleteByIdTest() {
         var del = customerService.deleteById(0);
-        log.info(del.toString());
+        log.info("{}", del);
         assertNotNull(del);
     }
     
@@ -82,7 +86,7 @@ public class CustomerServiceTest {
     public void parseForCustomerTest() {
         JSONObject json = new JSONObject(
                 "{\r\n" + "    \"customerName\": \"CHIGIK\",\r\n" + "    \"phone\": \"89377810580\"\r\n" + "}");
-        var cust = customerService.parseForCustomer(json);
+        var cust = customerConverter.parseForCustomer(json);
         log.info(cust.toString());
         assertNotNull(cust);
     }

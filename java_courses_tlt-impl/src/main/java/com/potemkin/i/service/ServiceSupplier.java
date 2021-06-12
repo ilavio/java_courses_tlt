@@ -1,6 +1,12 @@
 package com.potemkin.i.service;
 
+import java.util.List;
+
+import org.json.JSONArray;
 import org.json.JSONObject;
+import org.springframework.stereotype.Component;
+
+import com.potemkin.i.domain.entity.Supplier;
 
 /**
  * Интерфейс взаимодествия с базой данных
@@ -8,15 +14,16 @@ import org.json.JSONObject;
  * @author Илья Пот
  *
  */
+@Component
 public interface ServiceSupplier {
 
     /**
-     * Метод получения сущности из базы данных
+     * Метод получения Supplier
      * 
      * @param id
-     * @return JSONObject
+     * @return Supplier
      */
-    public JSONObject getSupplierJson(Integer id);
+    public Supplier getSupplier(Integer id);
 
     /**
      * Метод добавления сущности в базу данных
@@ -24,7 +31,7 @@ public interface ServiceSupplier {
      * @param json
      * @return JSONObject
      */
-    public JSONObject addSupplier(JSONObject json);
+    public Supplier addSupplier(Supplier sup);
 
     /**
      * Метод изменения сущности в базе данных
@@ -33,7 +40,7 @@ public interface ServiceSupplier {
      * @param supplierId
      * @return JSONObject
      */
-    public JSONObject changeEntity(JSONObject json, int supplierId);
+    public Supplier changeEntity(Supplier sup, int supplierId);
 
     /**
      * Метод удаления сущности по id
@@ -41,5 +48,12 @@ public interface ServiceSupplier {
      * @param supplierId
      * @return JSONObject
      */
-    public JSONObject deleteById(int supplierId);
+    public boolean deleteById(int supplierId);
+
+    /**
+     * Метод получения списка Supplier
+     * 
+     * @return
+     */
+    public List<Supplier> getSuppliers();
 }

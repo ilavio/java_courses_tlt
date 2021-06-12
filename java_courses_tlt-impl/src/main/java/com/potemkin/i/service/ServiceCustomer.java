@@ -1,6 +1,12 @@
 package com.potemkin.i.service;
 
+import java.util.List;
+
+import org.json.JSONArray;
 import org.json.JSONObject;
+import org.springframework.stereotype.Component;
+
+import com.potemkin.i.domain.entity.Customer;
 
 /**
  * Интерфейс взаимодествия с базой данных
@@ -8,15 +14,8 @@ import org.json.JSONObject;
  * @author Илья Пот
  *
  */
+@Component
 public interface ServiceCustomer {
-
-    /**
-     * Метод получения сущности из базы данных
-     * 
-     * @param id
-     * @return Customer
-     */
-    public JSONObject getCustomerJson(Integer id);
 
     /**
      * Метод изменения сущности в базе данных
@@ -25,7 +24,7 @@ public interface ServiceCustomer {
      * @param customerId
      * @return JSONObject
      */
-    public JSONObject changeEntity(JSONObject json, int customerId);
+    public Customer changeEntity(Customer cust, int customerId);
 
     /**
      * Метод удаления из базы данных
@@ -33,7 +32,7 @@ public interface ServiceCustomer {
      * @param id
      * @return JSONObject
      */
-    public JSONObject deleteById(int id);
+    public boolean deleteById(int customerId);
 
     /**
      * Метод добавления сущности Customer
@@ -41,5 +40,12 @@ public interface ServiceCustomer {
      * @param json
      * @return
      */
-    public JSONObject addCustomer(JSONObject json);
+    public Customer addCustomer(Customer cust);
+
+    /**
+     * Метод получения списка Customer
+     * 
+     * @return
+     */
+    public List<Customer> getCustomers();
 }
