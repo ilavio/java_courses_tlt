@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd">
+
+    <changeSet id="2021-06-06_customers"
+        author="Iliya_Potemkin">
+        <comment>
+            Создание таблицы Customers
+        </comment>
+
+        <createTable tableName="customers">
+            <column name="customer_id" type="int"
+                autoIncrement="true">
+                <constraints primaryKey="true"
+                    nullable="false" unique="true" />
+            </column>
+            <column name="customer_name" type="varchar(50)">
+            </column>
+            <column name="phone" type="varchar(20)">
+                <constraints nullable="true" />
+            </column>
+        </createTable>
+
+    </changeSet>
+
+    <changeSet id="2021-06-06_customers_orders"
+        author="Iliya_Potemkin">
+        <comment>
+            Создание таблицы Orders
+        </comment>
+
+        <createTable tableName="orders">
+            <column name="order_id" type="int"
+                autoIncrement="true">
+                <constraints primaryKey="true"
+                    nullable="false" unique="true" />
+            </column>
+            <column name="order_number" type="varchar(10)">
+                <constraints nullable="true" unique="true" />
+            </column>
+            <column name="customer_id" type="int">
+            </column>
+            <column name="order_date" type="timestamp">
+                <constraints nullable="false" />
+            </column>
+            <column name="total_amount" type="decimal(12,2)">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint
+            baseColumnNames="customer_id" baseTableName="orders"
+            constraintName="fk_orders_customerid"
+            referencedColumnNames="customer_id"
+            referencedTableName="customers" onDelete="CASCADE"
+            onUpdate="CASCADE" />
+
+    </changeSet>
+
+    <changeSet id="2021-06-06_customers_supplier"
+        author="Iliya_Potemkin">
+        <comment>
+            Создание таблицы Supplier
+        </comment>
+
+        <createTable tableName="supplier">
+            <column name="supplier_id" type="int"
+                autoIncrement="true">
+                <constraints primaryKey="true"
+                    nullable="false" unique="true" />
+            </column>
+            <column name="company_name" type="varchar(40)">
+                <constraints nullable="false" />
+            </column>
+            <column name="phone" type="varchar(20)">
+                <constraints nullable="true" />
+            </column>
+        </createTable>
+
+    </changeSet>
+
+    <changeSet id="2021-06-06_customers_product"
+        author="Iliya_Potemkin">
+        <comment>
+            Создание таблицы Product
+        </comment>
+
+        <createTable tableName="product">
+            <column name="product_id" type="int"
+                autoIncrement="true">
+                <constraints primaryKey="true"
+                    nullable="false" />
+            </column>
+            <column name="product_name" type="varchar(50)">
+                <constraints nullable="false" />
+            </column>
+            <column name="supplier_id" type="int">
+                <constraints />
+            </column>
+            <column name="unit_price" type="decimal(12,2)">
+                <constraints nullable="true" />
+            </column>
+            <column name="is_discontinued" type="boolean">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint
+            baseColumnNames="supplier_id" baseTableName="product"
+            constraintName="fk_Product_SupplierId"
+            referencedColumnNames="supplier_id"
+            referencedTableName="supplier" onDelete="CASCADE"
+            onUpdate="CASCADE" />
+
+    </changeSet>
+
+    <changeSet id="2021-06-06_customers_OrderProduct"
+        author="Iliya_Potemkin">
+        <comment>
+            Создание таблицы OrderProduct
+        </comment>
+
+        <createTable tableName="order_product">
+            <column name="order_id" type="int">
+                <constraints nullable="false" />
+            </column>
+            <column name="product_id" type="int">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint
+            baseColumnNames="order_id" baseTableName="order_product"
+            constraintName="fk_Order_OrderId"
+            referencedColumnNames="order_id"
+            referencedTableName="orders" onDelete="CASCADE"
+            onUpdate="CASCADE" />
+        <addForeignKeyConstraint
+            baseColumnNames="product_id" baseTableName="order_product"
+            constraintName="fk_Product_SupplierId"
+            referencedColumnNames="product_id"
+            referencedTableName="product" onDelete="CASCADE"
+            onUpdate="CASCADE" />
+
+    </changeSet>
+
+</databaseChangeLog>
