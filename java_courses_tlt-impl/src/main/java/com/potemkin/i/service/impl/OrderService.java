@@ -3,11 +3,10 @@ package com.potemkin.i.service.impl;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
-import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
-import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,26 +29,12 @@ import lombok.extern.slf4j.Slf4j;
 public class OrderService  {
     
     private final OrderRepository orderRepository;
-    private final ProductService productService;
-    private final CustomerService customerService;
-
-    /**
-     * Метод получения сущности Order из базы данных
-     * 
-     * @param id
-     * @return JSONObject
-     */
-    public JSONObject getOrderJson(Integer id) {
-        Order ord = orderRepository.findById(id).get();
-        JSONObject json = new JSONObject(ord);
-        return json;
-    }
 
     /**
      * Метод получения сущности Order
      * 
      * @param id
-     * @return Customer
+     * @return Order
      */
     public Order getOrder(Integer id) {
         var ord = orderRepository.findById(id).get();
@@ -59,23 +44,25 @@ public class OrderService  {
     /**
      * Метод получения списка Order
      * 
-     * @return JSONArray
+     * @return List<Order>
      */
-    public JSONArray getOrders(int id) {
-        var jsonArray = new JSONArray(orderRepository.findByCustomerCustomerId(id));
-        return jsonArray;
+    public List<Order> getOrders(int id) {
+        List<Order> ords  = orderRepository.findByCustomerCustomerId(id);
+        log.info("OrderService getOrders() {}", ords);
+        return ords;
     }
 
     /**
      * Метод добавления в базу данных Order
      * 
      * @param json
-     * @return JSONObject
+     * @return Order
      */
-    public JSONObject addOrder(JSONObject json) {
-        var ord = parseForOrder(json);
+    public Order addOrder(Order ord) {
+        log.info("3---->>> OrderService addOrder {}", ord.toString());
         orderRepository.saveAndFlush(ord);
-        return json;
+        log.info("OrderService addOrder {}", ord);
+        return ord;
     }
 
     /**
@@ -83,22 +70,22 @@ public class OrderService  {
      * 
      * @param json
      * @param orderId
-     * @return JSONObject
+     * @return Order
      */
-    public JSONObject changeEntity(JSONObject json, int orderId) {
+    public Order changeOrder(Order ord, int orderId) {
         var entity = orderRepository.findById(orderId).get();
-        entity.setOrderNumber(json.getString("orderNumber"));
+        entity.setOrderNumber(ord.getOrderNumber());
         Date date = null;
         try {
-            date = new SimpleDateFormat("dd-MM-yyyy").parse(json.getString("orderDate"));
+            date = new SimpleDateFormat("dd-MM-yyyy").parse(ord.getOrderDate());
         } catch (JSONException | ParseException e) {
             log.error("Ошибка в OrderService changeOrder() {}", e);
         }
         entity.setOrderDate(date);
-        entity.setTotalAmount(json.getDouble("totalAmount"));
+        entity.setTotalAmount(ord.getTotalAmount());
         orderRepository.saveAndFlush(entity);
-        json.append("id", orderId);
-        return json;
+        log.info("OrderService changeOrder {}", entity);
+        return entity;
     }
 
     /**
@@ -107,40 +94,14 @@ public class OrderService  {
      * @param customerId
      * @return JSONObject
      */
-    public JSONObject deleteById(int orderId) {
+
+    public boolean deleteById(int orderId) {
         orderRepository.deleteById(orderId);
         var ex = orderRepository.existsById(orderId);
-        String str = "{" + "\"Found Order\" : " + Boolean.toString(ex) + "}";
-        var json = new JSONObject(str);
-        return json;
-    }
-
-    /**
-     * Метод разбора JSONObject для создания Order
-     * 
-     * @param json
-     * @return Order
-     */
-    public Order parseForOrder(JSONObject json) {
-        Order order = new Order();
-        if (json != null) {
-            order.setOrderNumber(json.getString("orderNumber"));
-            order.setTotalAmount(json.getDouble("totalAmount"));
-            Date date = null;
-            try {
-                date = new SimpleDateFormat("dd-MM-yyyy").parse(json.getString("orderDate"));
-            } catch (JSONException | ParseException e) {
-                log.error("Ошибка в OrderService parseForOrder() {}", e);
-            }
-            order.setOrderDate(date);
-            if (json.has("productId")) {
-                var prod = productService.getProduct(json.getInt("productId"));
-                order.addProduct().add(prod);
-                prod.addOrder().add(order);
-            }
-            var cust = customerService.getCustomer(json.getInt("customerId"));
-            order.setCustomer(cust);
+        if(ex == false) {
+            ex = true;
+            return ex;
         }
-        return order;
+        return false;
     }
 }

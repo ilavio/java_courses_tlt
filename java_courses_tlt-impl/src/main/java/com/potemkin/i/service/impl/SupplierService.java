@@ -1,15 +1,15 @@
 package com.potemkin.i.service.impl;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.potemkin.i.domain.entity.Supplier;
 import com.potemkin.i.repository.SupplierRepository;
-import com.potemkin.i.service.ServiceSupplier;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Класс SupplierService обслуживания сущностей Supplier
@@ -17,23 +17,13 @@ import lombok.RequiredArgsConstructor;
  * @author Илья Пот
  *
  */
+@Slf4j
 @Service
 @Transactional
 @RequiredArgsConstructor
-public class SupplierService implements ServiceSupplier  {
+public class SupplierService {
 
     private final SupplierRepository supplierRepository;
-
-    /**
-     * Метод получения сущности Supplier из базы данных
-     * 
-     * @param id
-     * @return JSONObject
-     */
-    public JSONObject getSupplierJson(Integer id) {
-        JSONObject json = new JSONObject(supplierRepository.findById(id).get());
-        return json;
-    }
 
     /**
      * Метод получения сущности Supplier
@@ -49,11 +39,12 @@ public class SupplierService implements ServiceSupplier  {
     /**
      * Метод получения списка Supplier
      * 
-     * @return JSONArray
+     * @return List<Supplier>
      */
-    public JSONArray getSuppliers() {
-        var jsonArray = new JSONArray(supplierRepository.findAll());
-        return jsonArray;
+    public List<Supplier> getSuppliers() {
+        List<Supplier> sups = supplierRepository.findAll();
+        log.info("getSuppliers() {}", sups);
+        return sups;
     }
 
     /**
@@ -62,10 +53,10 @@ public class SupplierService implements ServiceSupplier  {
      * @param json
      * @return JSONObject
      */
-    public JSONObject addSupplier(JSONObject json) {
-        var sup = parseForSupplier(json);
+    public Supplier addSupplier(Supplier sup) {
         supplierRepository.saveAndFlush(sup);
-        return json;
+        log.info("SupplierService addSupplier() {}", sup);
+        return sup;
     }
 
     /**
@@ -75,13 +66,13 @@ public class SupplierService implements ServiceSupplier  {
      * @param supplierId
      * @return JSONObject
      */
-    public JSONObject changeEntity(JSONObject json, int supplierId) {
+    public Supplier changeEntity(Supplier sup, int supplierId) {
         var entity = supplierRepository.findById(supplierId).get();
-        entity.setCompanyName(json.getString("companyName"));
-        entity.setPhone(json.getString("phone"));
+        entity.setCompanyName(sup.getCompanyName());
+        entity.setPhone(sup.getPhone());
         supplierRepository.saveAndFlush(entity);
-        json.append("id", supplierId);
-        return json;
+        log.info("SupplierService changeEntity {}", entity);
+        return entity;
     }
 
     /**
@@ -90,26 +81,13 @@ public class SupplierService implements ServiceSupplier  {
      * @param supplierId
      * @return JSONObject
      */
-    public JSONObject deleteById(int supplierId) {
+    public boolean deleteById(int supplierId) {
         supplierRepository.deleteById(supplierId);
         var ex = supplierRepository.existsById(supplierId);
-        String str = "{" + "\"Found Supplier\" : " + Boolean.toString(ex) + "}";
-        var json = new JSONObject(str);
-        return json;
-    }
-
-    /**
-     * Метод разбора JSONObject для создания Supplier
-     * 
-     * @param json
-     * @return Supplier
-     */
-    public Supplier parseForSupplier(JSONObject json) {
-        Supplier sup = new Supplier();
-        if (json != null) {
-            sup.setCompanyName(json.getString("companyName"));
-            sup.setPhone(json.getString("phone"));
+        if(ex == false) {
+            ex = true;
+            return ex;
         }
-        return sup;
+        return false;
     }
 }

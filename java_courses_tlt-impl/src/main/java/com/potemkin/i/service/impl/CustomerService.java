@@ -1,15 +1,15 @@
 package com.potemkin.i.service.impl;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.potemkin.i.domain.entity.Customer;
 import com.potemkin.i.repository.CustomerRepository;
-import com.potemkin.i.service.ServiceCustomer;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Класс CustomerService обслуживания сущностей Customer
@@ -17,23 +17,13 @@ import lombok.RequiredArgsConstructor;
  * @author Илья Пот
  *
  */
+@Slf4j
 @Service
 @RequiredArgsConstructor
 @Transactional
-public class CustomerService implements ServiceCustomer {
+public class CustomerService {
 
     private final CustomerRepository customerRepository;
-
-    /**
-     * Метод получения сущности Customer из базы данных
-     * 
-     * @param id
-     * @return JSONObject
-     */
-    public JSONObject getCustomerJson(Integer id) {
-        JSONObject json = new JSONObject(customerRepository.findById(id).get());
-        return json;
-    }
 
     /**
      * Метод получения сущности Customer
@@ -49,39 +39,39 @@ public class CustomerService implements ServiceCustomer {
     /**
      * Метод получения списка Customer
      * 
-     * @return JSONArray
+     * @return List<Customer>
      */
-    public JSONArray getCustomers() {
-        var jsonArray = new JSONArray(customerRepository.findAll());
-        return jsonArray;
+    public List<Customer> getCustomers() {
+        List<Customer> custs = customerRepository.findAll();
+        log.info("CustomerService getCustomers() {}", custs);
+        return custs;
     }
 
     /**
      * Метод добавления в базу данных Customer
      * 
-     * @param json
-     * @return JSONObject
+     * @param Customer
+     * @return Customer
      */
-    public JSONObject addCustomer(JSONObject json) {
-        var cust = parseForCustomer(json);
+    public Customer addCustomer(Customer cust) {
         customerRepository.saveAndFlush(cust);
-        return json;
+        return cust;
     }
 
     /**
      * Метод изменения сущности Customer
      * 
-     * @param json
+     * @param Customer
      * @param customerId
-     * @return JSONObject
+     * @return Customer
      */
-    public JSONObject changeEntity(JSONObject json, int customerId) {
+    public Customer changeEntity(Customer cust, int customerId) {
         Customer entity = customerRepository.findById(customerId).get();
-        entity.setCustomerName(json.getString("customerName"));
-        entity.setPhone(json.getString("phone"));
+        entity.setCustomerName(cust.getCustomerName());
+        entity.setPhone(cust.getPhone());
         customerRepository.saveAndFlush(entity);
-        json.append("id", customerId);
-        return json;
+        log.info("CustomerService changeEntity() {}", entity);
+        return entity;
     }
 
     /**
@@ -90,26 +80,14 @@ public class CustomerService implements ServiceCustomer {
      * @param customerId
      * @return
      */
-    public JSONObject deleteById(int customerId) {
+
+    public boolean deleteById(int customerId) {
         customerRepository.deleteById(customerId);
         var ex = customerRepository.existsById(customerId);
-        String str = "{" + "\"Found Customer\" : " + Boolean.toString(ex) + "}";
-        var json = new JSONObject(str);
-        return json;
-    }
-
-    /**
-     * Метод разбора JSONObject для создания Customer
-     * 
-     * @param json
-     * @return Customer
-     */
-    public Customer parseForCustomer(JSONObject json) {
-        Customer cust = new Customer();
-        if (json != null) {
-            cust.setCustomerName(json.getString("customerName"));
-            cust.setPhone(json.getString("phone"));
+        if (ex == false) {
+            ex = true;
+            return ex;
         }
-        return cust;
+        return false;
     }
 }

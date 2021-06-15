@@ -20,11 +20,9 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
+import org.json.JSONPropertyIgnore;
 
 import lombok.Data;
-import lombok.ToString;
 
 /**
  * Сущность Order
@@ -52,7 +50,8 @@ public class Order {
     @Column(nullable = false, columnDefinition = "NUMERIC(12,2)", name = "total_amount")
     private double totalAmount;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+
+    @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "customer_id")
     private Customer customer;
     
@@ -79,10 +78,10 @@ public class Order {
         this.orderDate = orderDate;
     }
 
-    public String getProduct() {
-        return product.toString();
+    public List<Product> getProduct() {
+        return product;
     }
-    
+  
     public List<Product> addProduct() {
         return product;
     }
@@ -91,8 +90,9 @@ public class Order {
         this.product = product;
     }
 
-    public String getCustomer() {
-        return customer.toString();
+    @JSONPropertyIgnore
+    public Customer getCustomer() {
+        return customer;
     }
 
     public void setCustomer(Customer customer) {
