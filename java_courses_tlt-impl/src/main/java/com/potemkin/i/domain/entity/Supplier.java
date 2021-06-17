@@ -24,7 +24,7 @@ import lombok.ToString;
  * @author Илья Пот
  *
  */
-@Table(name = "Supplier", schema = "potemkin")
+@Table(name = "Supplier")
 @Data
 @Entity
 @ToString(exclude = "products")
@@ -41,6 +41,6 @@ public class Supplier {
     @Column
     private String phone;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "supplier", fetch = FetchType.EAGER)
+    @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "supplier", fetch = FetchType.EAGER)
     private List<Product> products = new ArrayList<>();
 }

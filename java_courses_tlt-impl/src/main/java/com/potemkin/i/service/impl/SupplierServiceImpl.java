@@ -2,6 +2,9 @@ package com.potemkin.i.service.impl;
 
 import java.util.List;
 
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.potemkin.i.domain.entity.Supplier;
 import com.potemkin.i.repository.SupplierRepository;
 
@@ -15,7 +18,9 @@ import lombok.extern.slf4j.Slf4j;
  *
  */
 @Slf4j
+@Service
 @RequiredArgsConstructor
+@Transactional
 public class SupplierServiceImpl {
 
     private final SupplierRepository supplierRepository;
@@ -49,6 +54,7 @@ public class SupplierServiceImpl {
      * @return Supplier
      */
     public Supplier addSupplier(Supplier sup) {
+        log.info("SupplierService addSupplier() {}", sup);
         supplierRepository.saveAndFlush(sup);
         log.info("SupplierService addSupplier() {}", sup);
         return sup;

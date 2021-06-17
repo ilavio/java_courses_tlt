@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.potemkin.i.MyLogging;
 import com.potemkin.i.domain.entity.Customer;
 import com.potemkin.i.repository.CustomerRepository;
 
@@ -31,6 +32,7 @@ public class CustomerServiceImpl {
      * @param Customer
      * @return Customer
      */
+    @MyLogging
     public Customer addCustomer(Customer cust) {
         log.info("CustomerServiceImpl addCustomer() - {}", cust);
         customerRepository.saveAndFlush(cust);
@@ -43,6 +45,7 @@ public class CustomerServiceImpl {
      * @param id
      * @return Customer
      */
+    @MyLogging
     public Customer getCustomer(Integer id) {
         var cust = customerRepository.findById(id).get();
         log.info("CustomerServiceImpl getCustomer() - {}", cust);
@@ -71,6 +74,7 @@ public class CustomerServiceImpl {
     }
     
     public Customer chengeEntity(Customer cust, int customerId) {
+        log.info("CustomerService changeEntity() {}: - {}", customerId, cust);
         Customer entity = customerRepository.findById(customerId).get();
         entity.setCustomerName(cust.getCustomerName());
         entity.setPhone(cust.getPhone());

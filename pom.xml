@@ -17,6 +17,7 @@
         <module>java_courses_tlt-api</module>
         <module>java_courses_tlt-db</module>
         <module>java_courses_tlt-impl</module>
+        <module>java_courses_tlt-logging</module>
     </modules>
     <name>java_courses_tlt Maven Webapp</name>
     <url>http://maven.apache.org</url>
@@ -36,6 +37,7 @@
         <maven-surefire-plugin.version>2.19.1</maven-surefire-plugin.version>
         <json.version>20201115</json.version>
         <postgresql.version>42.2.20</postgresql.version>
+        <com.h2database.version>1.4.200</com.h2database.version>
     </properties>
 
     <dependencyManagement>
@@ -99,10 +101,22 @@
                 <artifactId>postgresql</artifactId>
                 <version>${postgresql.version}</version>
             </dependency>
+            <!-- https://mvnrepository.com/artifact/com.h2database/h2 -->
+            <dependency>
+                <groupId>com.h2database</groupId>
+                <artifactId>h2</artifactId>
+                <version>${com.h2database.version}</version>
+                <scope>test</scope>
+            </dependency>
             <!-- мои зависимости -->
             <dependency>
                 <groupId>com.potemkin</groupId>
                 <artifactId>i-api</artifactId>
+                <version>0.0.1-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>com.potemkin</groupId>
+                <artifactId>i-logging</artifactId>
                 <version>0.0.1-SNAPSHOT</version>
             </dependency>
         </dependencies>
@@ -133,6 +147,14 @@
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
                 <version>${jacoco-maven-plugin.version}</version>
+                <configuration>
+                    <excludes>
+                        <exclude>**/entity/*</exclude>
+                        <exclude>**/dto/*</exclude>
+                        <exclude>**/ConfigLog.class</exclude>
+                        <exclude>**/LoggingAOP.class</exclude>
+                    </excludes>
+                </configuration>
                 <executions>
                     <execution>
                         <goals>
@@ -166,7 +188,7 @@
                                         <limit>
                                             <counter>LINE</counter>
                                             <value>COVEREDRATIO</value>
-                                            <minimum>0.0</minimum>
+                                            <minimum>0.7</minimum>
                                         </limit>
                                     </limits>
                                 </rule>

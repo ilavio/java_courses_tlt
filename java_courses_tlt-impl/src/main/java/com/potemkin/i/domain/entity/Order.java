@@ -31,7 +31,7 @@ import lombok.Data;
  *
  */
 @Entity
-@Table(name = "Orders", schema = "potemkin")
+@Table(name = "Orders")
 @Data
 public class Order {
     @Id
@@ -49,11 +49,11 @@ public class Order {
     @Column(nullable = false, columnDefinition = "NUMERIC(12,2)", name = "total_amount")
     private double totalAmount;
 
-    @ManyToOne(cascade = CascadeType.MERGE)
+    @ManyToOne(cascade = CascadeType.DETACH)
     @JoinColumn(name = "customer_id")
     private Customer customer;
     
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.DETACH)
     @JoinTable(name = "order_product", joinColumns = @JoinColumn(name = "order_id", referencedColumnName = "order_id"), 
     inverseJoinColumns = @JoinColumn(name = "product_id", referencedColumnName = "product_id"))
     private List<Product> product = new ArrayList<>();
@@ -76,7 +76,6 @@ public class Order {
         this.orderDate = orderDate;
     }
     
-    @JSONPropertyIgnore
     public List<Product> getProduct() {
         return product;
     }

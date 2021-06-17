@@ -58,7 +58,7 @@ public class CustomerResourceImpl implements CustomerResource {
     @Override
     public CustomerDTO chengeCustomer(@RequestBody CustomerDTO custDTO, @RequestParam(name = "id") int id) {
         var cust = conversionService.convert(custDTO, Customer.class);
-        var custDTOresp = conversionService.convert(customerServiceImpl.chengeEntity(cust, cust.getCustomerId()), CustomerDTO.class);
+        var custDTOresp = conversionService.convert(customerServiceImpl.chengeEntity(cust, id), CustomerDTO.class);
         log.info("CustomerResourceImpl chengeCustomer() {}", custDTOresp);
         return custDTOresp;
     }

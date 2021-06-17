@@ -22,7 +22,7 @@ public class ProductToProductDTO implements Converter<Product, ProductDTO> {
     @Override
     public ProductDTO convert(Product source) {
         var prodDTO = new ProductDTO();
-        prodDTO.setDiscountinued(source.isDiscontinued());
+        prodDTO.setDiscountinued(source.getIsDiscontinued());
         prodDTO.setProductId(source.getProductId());
         prodDTO.setSupplierId(source.getSupplier().getSupplierId());
         prodDTO.setUnitPrice(source.getUnitPrice());

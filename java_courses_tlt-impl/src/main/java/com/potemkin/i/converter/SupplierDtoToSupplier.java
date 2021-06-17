@@ -12,7 +12,7 @@ public class SupplierDtoToSupplier implements Converter<SupplierDTO, Supplier> {
         var sup = new Supplier();
         sup.setCompanyName(source.getCompanyName());
         sup.setPhone(source.getPhone());
-        sup.setSupplierId(source.getSupplierId());
-        return null;
+//        sup.setSupplierId(source.getSupplierId());
+        return sup;
     }
 }

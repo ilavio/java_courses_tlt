@@ -25,7 +25,7 @@ import lombok.ToString;
  * @author Илья Пот
  *
  */
-@Table(name = "Product", schema = "potemkin")
+@Table(name = "Product")
 @Data
 @Entity
 @ToString(exclude = "order")
@@ -39,7 +39,7 @@ public class Product {
     @Column(nullable = false, name = "product_name")
     private String productName;
 
-    @ManyToOne(cascade = CascadeType.MERGE)
+    @ManyToOne
     @JoinColumn(name = "supplier_id")
     private Supplier supplier;
 
@@ -64,5 +64,13 @@ public class Product {
     @JSONPropertyIgnore
     public Supplier getSupplier() {
         return supplier;
+    }
+
+    public boolean getIsDiscontinued() {
+        return isDiscontinued;
+    }
+
+    public void setDiscontinued(boolean isDiscontinued) {
+        this.isDiscontinued = isDiscontinued;
     }
 }

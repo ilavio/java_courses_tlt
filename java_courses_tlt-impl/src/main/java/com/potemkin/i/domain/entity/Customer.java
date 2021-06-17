@@ -24,7 +24,7 @@ import lombok.ToString;
  *
  */
 @Entity
-@Table(name = "Customers", schema = "potemkin")
+@Table(name = "Customers")
 @Data
 @ToString(exclude = "orders")
 public class Customer {
@@ -40,7 +40,7 @@ public class Customer {
     @Column
     private String phone;
     
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "customer", fetch = FetchType.EAGER)
+    @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "customer", fetch = FetchType.EAGER)
     private List<Order> orders = new ArrayList<>();
 
     

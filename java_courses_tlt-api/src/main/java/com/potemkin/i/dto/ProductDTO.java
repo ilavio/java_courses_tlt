@@ -17,7 +17,7 @@ public class ProductDTO {
 
     private double unitPrice;
 
-    private boolean isDiscountinued;
+    private boolean discountinued;
 
     private Integer supplierId;
 }

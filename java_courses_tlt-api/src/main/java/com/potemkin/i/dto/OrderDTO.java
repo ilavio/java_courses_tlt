@@ -19,12 +19,14 @@ public class OrderDTO {
     private Integer orderId;
 
     private String orderNumber;
-
-    private Date orderDate;
+    
+    private String orderDate;
 
     private double totalAmount;
 
     private Integer customerId;
+    
+    private Integer productId;
 
     private List<Integer> products;
 }

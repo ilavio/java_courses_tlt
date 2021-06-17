@@ -12,7 +12,6 @@ public class CustomerDtoToCustomer implements Converter<CustomerDTO, Customer> {
         var cust = new Customer();
         cust.setCustomerName(source.getCustomerName());
         cust.setPhone(source.getPhone());
-        cust.setCustomerId(source.getCustomerId());
         return cust;
     }
 
