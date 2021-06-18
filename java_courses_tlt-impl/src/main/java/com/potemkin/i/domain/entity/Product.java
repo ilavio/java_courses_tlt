@@ -14,8 +14,6 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import org.json.JSONPropertyIgnore;
-
 import lombok.Data;
 import lombok.ToString;
 
@@ -52,7 +50,6 @@ public class Product {
     @ManyToMany(mappedBy = "product")
     private List<Order> order = new ArrayList<>();
 
-    @JSONPropertyIgnore
     public List<Order> getOrder() {
     return order;
     }
@@ -61,7 +58,6 @@ public class Product {
         this.order = order;
     }
     
-    @JSONPropertyIgnore
     public Supplier getSupplier() {
         return supplier;
     }

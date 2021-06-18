@@ -1,13 +1,26 @@
 package com.potemkin.i.converter;
 
 import org.springframework.core.convert.converter.Converter;
+import org.springframework.stereotype.Component;
 
 import com.potemkin.i.domain.entity.Product;
 import com.potemkin.i.domain.entity.Supplier;
 import com.potemkin.i.dto.ProductDTO;
 
+/**
+ * Класс ProductDtoToProduct преоброзования ProductDTO в Product
+ * 
+ * @author Илья Пот
+ *
+ */
+@Component
 public class ProductDtoToProduct implements Converter<ProductDTO, Product> {
 
+    /**
+     * Метод преоброзования ProductDTO в Product
+     * 
+     * @return Product
+     */
     @Override
     public Product convert(ProductDTO source) {
         var prod = new Product();
@@ -21,5 +34,4 @@ public class ProductDtoToProduct implements Converter<ProductDTO, Product> {
         prod.setUnitPrice(source.getUnitPrice());
         return prod;
     }
-
 }

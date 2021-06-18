@@ -3,6 +3,7 @@ package com.potemkin.i.resource;
 import java.util.List;
 
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -58,5 +59,5 @@ public interface ProductResource {
      * @return
      */
     @DeleteMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public String deleteById(int id);
+    public ResponseEntity<?> deleteById(int id);
 }

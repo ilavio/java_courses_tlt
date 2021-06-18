@@ -1,6 +1,7 @@
 package com.potemkin.i.converter;
 
 import org.springframework.core.convert.converter.Converter;
+import org.springframework.stereotype.Component;
 
 import com.potemkin.i.domain.entity.Product;
 import com.potemkin.i.dto.ProductDTO;
@@ -11,6 +12,7 @@ import com.potemkin.i.dto.ProductDTO;
  * @author Илья Пот
  *
  */
+@Component
 public class ProductToProductDTO implements Converter<Product, ProductDTO> {
 
     /**

@@ -3,8 +3,9 @@ package com.potemkin.i.resource.impl;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.json.JSONObject;
 import org.springframework.core.convert.ConversionService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -18,6 +19,13 @@ import com.potemkin.i.service.impl.CustomerServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * Класс CustomerResourceImpl обработки запросов и взаимодествия с сущьностью
+ * Customer
+ * 
+ * @author Илья Пот
+ *
+ */
 @Slf4j
 @RestController
 @RequiredArgsConstructor
@@ -36,16 +44,18 @@ public class CustomerResourceImpl implements CustomerResource {
     @Override
     public List<CustomerDTO> getCustomers() {
         var custs = customerServiceImpl.getCustomers();
-        var custDTOs = custs.stream().map(cust -> conversionService.convert(cust, CustomerDTO.class)).collect(Collectors.toList());
+        var custDTOs = custs.stream().map(cust -> conversionService.convert(cust, CustomerDTO.class))
+                .collect(Collectors.toList());
         return custDTOs;
     }
 
     @Override
-    public String deleteById(@RequestParam(name = "id") int id) {
+    public ResponseEntity<?> deleteById(@RequestParam(name = "id") int id) {
         var ex = customerServiceImpl.deleteById(id);
-        String str = "{" + "\"Delete Customer\" : " + Boolean.toString(ex) + "}";
-        var json = new JSONObject(str);
-        return json.toString();
+        if (ex) {
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.I_AM_A_TEAPOT);
     }
 
     @Override

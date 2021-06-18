@@ -3,6 +3,7 @@ package com.potemkin.i.converter;
 import java.util.stream.Collectors;
 
 import org.springframework.core.convert.converter.Converter;
+import org.springframework.stereotype.Component;
 
 import com.potemkin.i.domain.entity.Supplier;
 import com.potemkin.i.dto.SupplierDTO;
@@ -13,6 +14,7 @@ import com.potemkin.i.dto.SupplierDTO;
  * @author Илья Пот 
  * 
  */
+@Component
 public class SupplierToSupplierDTO implements Converter<Supplier, SupplierDTO> {
 
     /**

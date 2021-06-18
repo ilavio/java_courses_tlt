@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.core.convert.converter.Converter;
+import org.springframework.stereotype.Component;
 
 import com.potemkin.i.domain.entity.Customer;
 import com.potemkin.i.domain.entity.Order;
@@ -15,6 +16,7 @@ import com.potemkin.i.dto.CustomerDTO;
  * @author Илья Пот
  *
  */
+@Component
 public class CustomerToCustomerDTO implements Converter<Customer, CustomerDTO> {
 
     /**

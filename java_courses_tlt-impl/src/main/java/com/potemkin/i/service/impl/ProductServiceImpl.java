@@ -1,5 +1,6 @@
 package com.potemkin.i.service.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -31,7 +32,7 @@ public class ProductServiceImpl {
      * @return Product
      */
     public Product addProduct(Product prod) {
-        productRepository.saveAndFlush(prod);
+        productRepository.save(prod);
         log.info("ProductService addProduct {}", prod);
         return prod;
     }
@@ -53,7 +54,9 @@ public class ProductServiceImpl {
      * @return List<Product>
      */
     public List<Product> getProducts() {
-        List<Product> prods = productRepository.findAll();
+        List<Product> prods = new ArrayList<>();
+        var iter = productRepository.findAll();
+        iter.forEach(x -> prods.add(x));
         log.info("ProductService getProducts() {}", prods);
         return prods;
     }
@@ -70,7 +73,7 @@ public class ProductServiceImpl {
         entity.setDiscontinued(prod.getIsDiscontinued());
         entity.setProductName(prod.getProductName());
         entity.setUnitPrice(prod.getUnitPrice());
-        productRepository.saveAndFlush(entity);
+        productRepository.save(entity);
         log.info("ProductService changeEntity {}", entity);
         return entity;
     }

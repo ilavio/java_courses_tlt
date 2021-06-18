@@ -3,8 +3,9 @@ package com.potemkin.i.resource.impl;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.json.JSONObject;
 import org.springframework.core.convert.ConversionService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -91,12 +92,13 @@ public class OrderResourceImpl implements OrderResource {
      * @param id
      * @return String
      */
-    public String deleteById(@RequestParam(name = "id") int id) {
+    public ResponseEntity<?> deleteById(@RequestParam(name = "id") int id) {
         log.info("deleteById() id - {}", id);
         var ex = orderServiceImpl.deleteById(id);
         log.info("OrderResourcesImpl deleteById() {}", ex);
-        String str = "{" + "\"Delete Order\" : " + Boolean.toString(ex) + "}";
-        var json = new JSONObject(str);
-        return json.toString();
+        if (ex) {
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.I_AM_A_TEAPOT);
     }
 }

@@ -5,6 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import org.springframework.core.convert.converter.Converter;
+import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.potemkin.i.domain.entity.Customer;
@@ -14,11 +15,16 @@ import com.potemkin.i.dto.OrderDTO;
 
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * Класс OrderDtoToOrder конвертер из OrderDTO в Order
+ * 
+ * @author Илья Пот
+ *
+ */
 @Slf4j
-//@RequiredArgsConstructor
 @Transactional
+@Component
 public class OrderDtoToOrder implements Converter<OrderDTO, Order> {
-//    private final ProductServiceImpl productServiceImpl;
 
     @Override
     public Order convert(OrderDTO source) {
@@ -42,7 +48,6 @@ public class OrderDtoToOrder implements Converter<OrderDTO, Order> {
         if (source.getProductId() != null && source.getProductId() != 0) {
             var prod = new Product();
             prod.setProductId(source.getProductId());
-//             var prod = productServiceImpl.getProduct(source.getProductId());
             ord.getProduct().add(prod);
             prod.getOrder().add(ord);
         }

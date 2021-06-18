@@ -3,8 +3,9 @@ package com.potemkin.i.resource.impl;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.json.JSONObject;
 import org.springframework.core.convert.ConversionService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -64,10 +65,11 @@ public class SupplierResourceImpl implements SupplierResource {
         return supDTO;
     }
 
-    public String deleteById(@RequestParam(name = "id") int id) {
+    public ResponseEntity<?> deleteById(@RequestParam(name = "id") int id) {
         var ex = supplierServiceImpl.deleteById(id);
-        String str = "{" + "\"Delete Supplier\" : " + Boolean.toString(ex) + "}";
-        var json = new JSONObject(str);
-        return json.toString();
+        if (ex) {
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.I_AM_A_TEAPOT);
     }
 }

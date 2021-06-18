@@ -1,5 +1,6 @@
 package com.potemkin.i.service.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -35,7 +36,7 @@ public class CustomerServiceImpl {
     @MyLogging
     public Customer addCustomer(Customer cust) {
         log.info("CustomerServiceImpl addCustomer() - {}", cust);
-        customerRepository.saveAndFlush(cust);
+        customerRepository.save(cust);
         return cust;
     }
 
@@ -58,11 +59,19 @@ public class CustomerServiceImpl {
      * @return List<Customer>
      */
     public List<Customer> getCustomers() {
-        var custs = customerRepository.findAll();
+        var custs = new ArrayList<Customer>();
+        var iter = customerRepository.findAll();
+        iter.forEach(x -> custs.add(x));
         log.info("CustomerServiceImpl getCustomers() {}", custs);
         return custs;
     }
-    
+
+    /**
+     * Метод удаления Customer по id
+     * 
+     * @param customerId
+     * @return
+     */
     public boolean deleteById(int customerId) {
         customerRepository.deleteById(customerId);
         var ex = customerRepository.existsById(customerId);
@@ -72,13 +81,13 @@ public class CustomerServiceImpl {
         }
         return false;
     }
-    
+
     public Customer chengeEntity(Customer cust, int customerId) {
         log.info("CustomerService changeEntity() {}: - {}", customerId, cust);
         Customer entity = customerRepository.findById(customerId).get();
         entity.setCustomerName(cust.getCustomerName());
         entity.setPhone(cust.getPhone());
-        customerRepository.saveAndFlush(entity);
+        customerRepository.save(entity);
         log.info("CustomerService changeEntity() {}", entity);
         return entity;
     }

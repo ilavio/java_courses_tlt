@@ -20,8 +20,6 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
-import org.json.JSONPropertyIgnore;
-
 import lombok.Data;
 
 /**
@@ -84,7 +82,6 @@ public class Order {
         this.product = product;
     }
 
-    @JSONPropertyIgnore
     public Customer getCustomer() {
         return customer;
     }

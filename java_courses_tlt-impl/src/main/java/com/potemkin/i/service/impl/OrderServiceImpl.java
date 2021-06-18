@@ -5,7 +5,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
-import org.json.JSONException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -36,7 +35,7 @@ public class OrderServiceImpl {
      */
     public Order addOrder(Order ord) {
         log.info("OrderService addOrder {}", ord);
-        orderRepository.saveAndFlush(ord);
+        orderRepository.save(ord);
         log.info("OrderService addOrder {}", ord);
         return ord;
     }
@@ -76,12 +75,12 @@ public class OrderServiceImpl {
         Date date = null;
         try {
             date = new SimpleDateFormat("dd-MM-yyyy").parse(ord.getOrderDate());
-        } catch (JSONException | ParseException e) {
+        } catch (ParseException e) {
             log.error("Ошибка в OrderService changeOrder() {}", e);
         }
         entity.setOrderDate(date);
         entity.setTotalAmount(ord.getTotalAmount());
-        orderRepository.saveAndFlush(entity);
+        orderRepository.save(entity);
         log.info("OrderService changeOrder {}", entity);
         return entity;
     }
@@ -94,7 +93,6 @@ public class OrderServiceImpl {
      */
     public boolean deleteById(int orderId) {
         orderRepository.deleteById(orderId);
-        orderRepository.flush();
         var ex = orderRepository.existsById(orderId);
         if(ex == false) {
             ex = true;

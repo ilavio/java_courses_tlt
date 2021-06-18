@@ -1,5 +1,6 @@
 package com.potemkin.i.service.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -42,7 +43,9 @@ public class SupplierServiceImpl {
      * @return List<Supplier>
      */
     public List<Supplier> getSuppliers() {
-        List<Supplier> sups = supplierRepository.findAll();
+        List<Supplier> sups = new ArrayList<>();
+        var iter = supplierRepository.findAll();
+        iter.forEach(x -> sups.add(x));
         log.info("getSuppliers() {}", sups);
         return sups;
     }
@@ -55,7 +58,7 @@ public class SupplierServiceImpl {
      */
     public Supplier addSupplier(Supplier sup) {
         log.info("SupplierService addSupplier() {}", sup);
-        supplierRepository.saveAndFlush(sup);
+        supplierRepository.save(sup);
         log.info("SupplierService addSupplier() {}", sup);
         return sup;
     }
@@ -71,7 +74,7 @@ public class SupplierServiceImpl {
         var entity = supplierRepository.findById(supplierId).get();
         entity.setCompanyName(sup.getCompanyName());
         entity.setPhone(sup.getPhone());
-        supplierRepository.saveAndFlush(entity);
+        supplierRepository.save(entity);
         log.info("SupplierService changeEntity {}", entity);
         return entity;
     }
