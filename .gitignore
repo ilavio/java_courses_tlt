@@ -17,3 +17,8 @@ java_courses_tlt-impl/.settings/
 java_courses_tlt-impl/target/
 java_courses_tlt-impl/.classpath
 java_courses_tlt-impl/.project
+
+java_courses_tlt-logging/target/
+java_courses_tlt-logging/.settings/
+java_courses_tlt-logging/.classpath
+java_courses_tlt-logging/.project
