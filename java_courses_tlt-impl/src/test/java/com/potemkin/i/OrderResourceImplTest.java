@@ -1,27 +1,34 @@
 package com.potemkin.i;
 
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import org.springframework.core.convert.ConversionService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.potemkin.i.converter.OrderDtoToOrder;
+import com.potemkin.i.converter.OrderToOrderDTO;
 import com.potemkin.i.domain.entity.Customer;
 import com.potemkin.i.domain.entity.Order;
-import com.potemkin.i.dto.CustomerDTO;
 import com.potemkin.i.dto.OrderDTO;
 import com.potemkin.i.resource.impl.OrderResourceImpl;
 import com.potemkin.i.service.impl.OrderServiceImpl;
+
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Класс тестирование OrderResourceImpl
@@ -29,73 +36,93 @@ import com.potemkin.i.service.impl.OrderServiceImpl;
  * @author Илья Пот
  *
  */
+@Slf4j
+@WebMvcTest(OrderResourceImpl.class)
+@ContextConfiguration(classes = { OrderServiceImpl.class, OrderResourceImpl.class, OrderDtoToOrder.class,
+        OrderToOrderDTO.class })
 public class OrderResourceImplTest {
 
-    @Mock
+    @Autowired
+    private MockMvc mockMvc;
+
+    @MockBean
     private OrderServiceImpl orderService;
-    @Mock
-    private ConversionService conversionService;
-    @InjectMocks
-    private OrderResourceImpl resources;
 
-    @BeforeEach
-    public void setup() {
-        MockitoAnnotations.initMocks(this);
+    @Autowired
+    private ObjectMapper objectMapper;
+
+
+    @Test
+    public void getOrderTets() throws Exception {
+        var ord = createOrder();
+        when(orderService.getOrder(1)).thenReturn(ord);
+        mockMvc.perform(MockMvcRequestBuilders.get("/Orders/1")).andExpect(status().isOk());
     }
 
     @Test
-    public void getOrderTets() {
-        var ord = new Order();
-        var ordDTO = new OrderDTO();
-        when(conversionService.convert(any(), eq(Order.class))).thenReturn(ord);
-        when(conversionService.convert(ord, OrderDTO.class)).thenReturn(ordDTO);
-        when(orderService.getOrder(0)).thenReturn(ord);
-        resources.getOrder(0);
-        verify(orderService).getOrder(eq(0));
-    }
-
-    @Test
-    public void changeOrderTest() {
-        var ordDTO = new OrderDTO();
-        var ord = new Order();
-        when(conversionService.convert(any(), eq(Order.class))).thenReturn(ord);
-        when(conversionService.convert(ord, OrderDTO.class)).thenReturn(ordDTO);
-        when(orderService.changeOrder(any(), eq(0))).thenReturn(ord);
-        resources.changeOrder(ordDTO, 0);
-        verify(orderService).changeOrder(any(), eq(0));
+    public void changeOrderTest() throws Exception {
+        var ordDTO = createDTO();
+        var ord = createOrder();
+        when(orderService.changeOrder(ord, 1)).thenReturn(ord);
+        mockMvc.perform(MockMvcRequestBuilders.put("/Orders").accept(MediaType.APPLICATION_JSON).param("id", "1")
+                .content(objectMapper.writeValueAsString(ordDTO)).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk()).andReturn();
     }
     
     @Test
-    public void getOrders() {
-        var ord = new Order();
-        var ordDTO = new OrderDTO();
+    public void getOrders() throws Exception {
+        var ord = createOrder();
         List<Order> list = new ArrayList<>();
         list.add(ord);
-        List<OrderDTO> listDTO = new ArrayList<>();
-        listDTO.add(ordDTO);
-        when(conversionService.convert(any(), eq(Order.class))).thenReturn(ord);
-        when(conversionService.convert(ord, OrderDTO.class)).thenReturn(ordDTO);
-        when(orderService.getOrders(eq(0))).thenReturn(list);
-        resources.getOrders(0);
-        verify(orderService).getOrders(eq(0));
+        when(orderService.getOrders(1)).thenReturn(list);
+        mockMvc.perform(MockMvcRequestBuilders.get("/Orders").param("orderId", "1")).andExpect(status().isOk());
     }
     
     @Test
-    public void deleteTest() {
-        when(orderService.deleteById(0)).thenReturn(true);
-        resources.deleteById(0);
-        verify(orderService).deleteById(eq(0));
+    public void deleteTest() throws Exception {
+        when(orderService.deleteById(1)).thenReturn(true);
+        mockMvc.perform(MockMvcRequestBuilders.delete("/Orders").param("id", "1").accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
     }
     
     @Test
-    public void addTest() {
+    public void addTest() throws Exception {
+        var ordDTO = createDTO();
+        var ord = createOrder();
+        when(orderService.addOrder(any())).thenReturn(ord);
+        mockMvc.perform(MockMvcRequestBuilders.post("/Orders").accept(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(ordDTO)).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk()).andReturn();
+    }
+    
+    public Order createOrder() {
         var ord = new Order();
-        ord.setOrderDate(new Date());
-        var ordDTO = new OrderDTO();
-        when(conversionService.convert(any(), eq(Order.class))).thenReturn(ord);
-        when(conversionService.convert(ord, OrderDTO.class)).thenReturn(ordDTO);
-        when(orderService.addOrder(ord)).thenReturn(ord);
-        resources.addOrder(ordDTO);
-        verify(orderService).addOrder(ord);
+        var cust = new Customer();
+        cust.setCustomerId(1);
+        ord.setOrderId(1);
+        ord.setOrderNumber("111");
+        ord.setCustomer(cust);
+        var date = new Date();
+        ord.setOrderDate(date);
+        return ord;
+    }
+    
+    public OrderDTO createDTO() {
+        var dto = new OrderDTO();
+        SimpleDateFormat dateformate = new SimpleDateFormat("dd-MM-yyyy");
+        Date date = null;
+        String str = "22-05-2021";
+        try {
+            date = dateformate.parse(str);
+        } catch (ParseException e) {
+            log.info("Ошибка OrderDtoToOrder test() {}", e);
+        }
+        dto.setOrderDate(str);
+        dto.setCustomerId(1);
+        dto.setOrderId(1);
+        dto.setOrderNumber("111");
+        dto.setTotalAmount(1.1);
+        dto.setProductId(1);
+        return dto;
     }
 }
